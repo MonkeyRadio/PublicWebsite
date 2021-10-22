@@ -299,7 +299,7 @@ function checkplay(){
     document.querySelector(".play").style.display="block";
     document.querySelector(".stop").style.display="none";
   }
-  setTimeout(checkplay,100)
+  setTimeout(checkplay,1000)
 }
 
 checkplay()
