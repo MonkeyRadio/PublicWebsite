@@ -148,7 +148,6 @@ function epgprogress() {
             document.querySelector(".progress-bar").style.width = epgPercent + "%"
             document.querySelector(".hours").style.display = "block";
             document.querySelector("#titbp").style.top = "42px";
-            document.querySelector(".bottomplayer").style.height = "110px";
 
             textstart = new Date(eventradios["epg"]["start"] * 1000);
             textstop = new Date(eventradios["epg"]["stop"] * 1000)
