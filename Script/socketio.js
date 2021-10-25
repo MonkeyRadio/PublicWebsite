@@ -20,7 +20,7 @@ radiosel = false;
 hls = new Hls();
 plyeditms = {};
 incomming = {};
-
+scroll = false;
 
 socket.on('onair', function(msg) {
     data = msg;
@@ -127,6 +127,11 @@ socket.on('event', function(msg) {
             break
         }
         a += 1
+    }
+
+    if (scroll == false) {
+        scroll = true;
+        setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
     }
 
 });

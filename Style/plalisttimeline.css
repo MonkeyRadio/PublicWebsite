@@ -569,7 +569,6 @@ div.timeline .column_center .timeline_element:before {
     position: relative;
     height: 80px;
     margin-bottom: 5px;
-    width: 100vh;
 }
 
 .imgtimeline {
