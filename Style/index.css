@@ -1,18 +1,23 @@
+body {
+    height: 100vh;
+    overflow-x: hidden;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-*{
-    font-family: "Roboto",sans-serif;
-    z-index:2;
+* {
+    font-family: "Roboto", sans-serif;
+    z-index: 2;
 }
 
-html{
-    overflow-x:hidden;
+html {
+    overflow-x: hidden;
 }
 
-.iconRounded{
+.iconRounded {
     border-radius: 15px;
 }
 
-.bottomplayer{
+.bottomplayer {
     background-color: #3e3e3e;
     position: fixed;
     bottom: -110px;
@@ -21,19 +26,19 @@ html{
     height: 105px;
 }
 
-.fright{
+.fright {
     position: absolute;
-    right:5px;
+    right: 5px;
 }
 
-.player_artist{
-    color:hsla(0,0%,100%,.7);
+.player_artist {
+    color: hsla(0, 0%, 100%, .7);
 }
 
-.grey{
+.grey {
     background-color: #3e3e3e;
 }
 
-.player-bfix{
+.player-bfix {
     height: 100px;
 }
