@@ -101,6 +101,34 @@ socket.on('event', function(msg) {
 </li>
 `;
 
+    a = 0
+    for (let e of req["IncommingItems"]) {
+        var date = new Date(e["trackTStart"] * 1000);
+        // Hours part from the timestamp
+        var hours = ("0" + date.getHours()).slice(-2);
+        // Minutes part from the timestamp
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+        plist.innerHTML += `
+        <li class="timeline-item success list-group-item-warning">
+        <div class="margin-left-15">
+            <img class="imgtimeline" src="` + e["trackCover"] + `" />
+            <p id="titbp" style="position: absolute; left: 90px; top:0px;" class="text-truncate">
+                <span class="text-muted text-small text-truncate">
+                    ` + hours + ":" + minutes + `
+                </span><br/>
+                <a class="text-truncate">
+                    ` + e["trackArtist"] + `
+                </a> <br/> <span class="text-truncate"> ` + e["trackTitle"] + `</span>
+            </p>
+        </div>
+    </li>
+    `
+        if (a == 35) {
+            break
+        }
+        a += 1
+    }
+
 });
 
 function epgprogress() {

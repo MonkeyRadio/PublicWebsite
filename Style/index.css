@@ -1,44 +1,65 @@
-body {
-    height: 100vh;
-    overflow-x: hidden;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-* {
-    font-family: "Roboto", sans-serif;
-    z-index: 2;
-}
-
-html {
-    overflow-x: hidden;
-}
-
-.iconRounded {
-    border-radius: 15px;
-}
-
-.bottomplayer {
-    background-color: #3e3e3e;
-    position: fixed;
-    bottom: -110px;
-    width: 100%;
-    transition: bottom 0.6s ease 0s, height 0.2s ease 0s;
-    height: 105px;
-}
-
-.fright {
-    position: absolute;
-    right: 5px;
-}
-
-.player_artist {
-    color: hsla(0, 0%, 100%, .7);
-}
-
-.grey {
-    background-color: #3e3e3e;
-}
-
-.player-bfix {
-    height: 100px;
-}
+    body {
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    /* width */
+    
+     ::-webkit-scrollbar {
+        width: 5px;
+    }
+    /* Track */
+    
+     ::-webkit-scrollbar-track {
+        background: #222;
+    }
+    /* Handle */
+    
+     ::-webkit-scrollbar-thumb {
+        background: rgb(151, 151, 151);
+    }
+    /* Handle on hover */
+    
+     ::-webkit-scrollbar-thumb:hover {
+        background: rgb(230, 228, 228);
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    * {
+        font-family: "Roboto", sans-serif;
+        z-index: 2;
+    }
+    
+    html {
+        overflow-x: hidden;
+    }
+    
+    .iconRounded {
+        border-radius: 15px;
+    }
+    
+    .bottomplayer {
+        background-color: #3e3e3e;
+        position: fixed;
+        bottom: -110px;
+        width: 100%;
+        transition: bottom 0.6s ease 0s, height 0.2s ease 0s;
+        height: 105px;
+    }
+    
+    .fright {
+        position: absolute;
+        right: 5px;
+    }
+    
+    .player_artist {
+        color: hsla(0, 0%, 100%, .7);
+    }
+    
+    .grey {
+        background-color: #3e3e3e;
+    }
+    
+    .player-bfix {
+        height: 100px;
+    }
