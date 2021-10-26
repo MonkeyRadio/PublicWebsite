@@ -64,7 +64,7 @@ socket.on('event', function(msg) {
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
-            <p id="titbp" style="position: absolute; left: 90px; top:0px;" class="text-truncate">
+            <p style="position: absolute; left: 90px; top:0px;" class="text-truncate">
                 <span class="text-muted text-small text-truncate">
                     ` + hours + ":" + minutes + `
                 </span><br/>
@@ -89,7 +89,7 @@ socket.on('event', function(msg) {
     <li class="timeline-item success list-group-item-warning timeline-now">
     <div class="margin-left-15">
         <img class="imgtimeline" src="` + d["now"]["trackCover"] + `" />
-        <p id="titbp" style="position: absolute; left: 90px; top:0px;" class="text-truncate">
+        <p style="position: absolute; left: 90px; top:0px;" class="text-truncate">
             <span class="text-muted text-small text-truncate">
                 ` + hours + ":" + minutes + `
             </span><br/>
@@ -112,7 +112,7 @@ socket.on('event', function(msg) {
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
-            <p id="titbp" style="position: absolute; left: 90px; top:0px;" class="text-truncate">
+            <p style="position: absolute; left: 90px; top:0px;" class="text-truncate">
                 <span class="text-muted text-small text-truncate">
                     ` + hours + ":" + minutes + `
                 </span><br/>
