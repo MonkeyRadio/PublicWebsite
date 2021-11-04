@@ -5,20 +5,18 @@
     "theme_color": "#9d5762",
     "background_color": "#1e1e1e",
     "display": "standalone",
-    "scope": "https://www.monkeyradio.ga/",
-    "start_url": "https://www.monkeyradio.ga/",
+    "scope": "https://www.monkeyradio.fr/",
+    "start_url": "https://www.monkeyradio.fr/",
     "orientation": "portrait",
-    "icons": [
-      {
-        "src": "https://www.monkeyradio.ga/assets/monkeyPNG.png",
-        "sizes": "1080x1080",
-        "type": "image/png"
-      },
-      {
-          "src": "https://www.monkeyradio.ga/assets/monkeyICO.ico",
-          "sizes": "256x256",
-          "type": "image/ico"
+    "icons": [{
+            "src": "https://www.monkeyradio.ga/assets/monkeyPNG.png",
+            "sizes": "1080x1080",
+            "type": "image/png"
+        },
+        {
+            "src": "https://www.monkeyradio.ga/assets/monkeyICO.ico",
+            "sizes": "256x256",
+            "type": "image/ico"
         }
     ]
-  }
-  
+}
