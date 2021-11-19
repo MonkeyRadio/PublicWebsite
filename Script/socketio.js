@@ -2,7 +2,7 @@
 //     port: '80',
 //     secure: true,
 // });
-const socket = io.connect('wss://server.nicojqn.ga', {
+const socket = io.connect('wss://cdn.monkeyradio.fr', {
     transports: ["websocket"],
     path: "/monkeysock"
 });
@@ -46,7 +46,7 @@ socket.on('event', function(msg) {
     document.querySelector(".player_artist").innerHTML = d["now"]["trackArtist"]
 
     var req = new XMLHttpRequest();
-    req.open("GET", "https://server.nicojqn.ga:80/web/monkey/live.php?incomming&plyed", false); // false for synchronous request
+    req.open("GET", "https://cdn.monkeyradio.fr/api?incomming&plyed", false); // false for synchronous request
     req.send(null);
     req = JSON.parse(req.responseText);
 
