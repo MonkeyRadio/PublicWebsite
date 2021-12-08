@@ -212,7 +212,6 @@ function play() {
     if (audio.paused) {
         if (link["type"] == "mp3") {
             hls.destroy()
-            dash.destroy()
             audio.setAttribute("src", link["link"]);
             audio.play();
         } else if (link["type"] == "hls") {
