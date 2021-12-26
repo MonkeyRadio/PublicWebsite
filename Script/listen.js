@@ -37,9 +37,8 @@ function playHLS(lnk) {
             log("HLS JS")
             hls.destroy()
             audio.setAttribute("src", "");
-            hls = new Hls({
-                abrEwmaDefaultEstimate: 32000
-            });
+            hls = new Hls();
+            hls.config.startLevel = 1;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
