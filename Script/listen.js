@@ -55,9 +55,9 @@ function playHLS(lnk) {
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
                 if (listening == true) {
-                    setTimeout(()=>{loadingModal.hide()},500)
+                    setTimeout(() => { loadingModal.hide() }, 500)
                     dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-                    log(errorType+errorDetails+errorFatal)
+                    log(errorType + errorDetails + errorFatal)
                     listening = false;
                     ListenStopped()
                 }
@@ -96,9 +96,9 @@ function playMP3(lnk) {
 
 audio.addEventListener("error", function (e) {
     if (listening == true) {
-        setTimeout(()=>{loadingModal.hide()},500)
+        setTimeout(() => { loadingModal.hide() }, 500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-        log(JSON.stringify(e, null, 4))
+        log(JSON.stringify(e, ["message", "arguments", "type", "name"]))
         listening = false;
         ListenStopped()
     }
