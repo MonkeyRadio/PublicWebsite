@@ -33,27 +33,27 @@ function listen() {
 function playHLS(lnk) {
     // HLS Stock
     try {
-        if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
-            log("HLS Stock")
-            audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
-                audio.play();
-                listenPlayed();
-            });
-        } else if (Hls.isSupported()) {
+        if (Hls.isSupported()) {
             log("HLS JS")
             hls.destroy()
             audio.setAttribute("src", "");
-            hls = new Hls({
-                abrEwmaDefaultEstimate: 32000
-            });
+            hls = new Hls();
+            hls.config.startLevel = 1;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
                 audio.play();
                 listenPlayed();
             });
-        }else {
+        }
+        else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
+            log("HLS Stock")
+            audio.src = lnk["link"];
+            audio.addEventListener('loadedmetadata', function () {
+                audio.play();
+                listenPlayed();
+            });
+        } else {
             // Not compatible
             loadingModal.toggle();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
@@ -61,9 +61,41 @@ function playHLS(lnk) {
         }
     } catch (e) {
         loadingModal.toggle();
+        dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
     }
 }
+
+function playMP3(lnk) {
+    try {
+        hls.destroy()
+        audio.setAttribute("src", "");
+        audio.setAttribute("src", lnk["link"]);
+        audio.play();
+        listenPlayed();
+    } catch (e) {
+        loadingModal.toggle();
+        dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
+        log(e)
+    }
+}
+
+audio.onerror=function(e){
+    if(listening==true){
+    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+    log(e)
+    listening=false;
+    ListenStopped()
+    }
+}
+sound.addEventListener("error", function(e) { 
+    if(listening==true){
+        dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+        log(e)
+        listening=false;
+        ListenStopped()
+        }
+     });
 
 
 function dispListenError(err) {
