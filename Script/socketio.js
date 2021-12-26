@@ -29,7 +29,7 @@ socket.on('onair', function(msg) {
     if (radiosel == false) {
         radiosel = true;
         radiolistening = radio;
-        link = radiolistening["link"][0]
+        link = radiolistening["link"]
         document.querySelector(".btnplayerlarge").style.display = "block";
     }
 });
@@ -218,7 +218,9 @@ function play() {
             if (Hls.isSupported()) {
                 hls.destroy()
                 audio.setAttribute("src", "");
-                hls = new Hls();
+                hls = new Hls({
+                    abrEwmaDefaultEstimate:32000
+                });
                 hls.loadSource(link["link"]);
                 hls.attachMedia(audio);
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
