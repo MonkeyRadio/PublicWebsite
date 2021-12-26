@@ -11,7 +11,7 @@ window.onerror = function(message, url, lineNumber) {
 
 function log(a){
     if(window.location.hostname=="www.dev.monkeyradio.fr"){
-    document.querySelector(".devlogdiv").innerHTML="<p>"+a+"</p>";
+    document.querySelector(".devlogdiv").innerHTML+="<p>"+a+"</p>";
     devlogz.toggle();
     }
 }
