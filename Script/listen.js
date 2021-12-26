@@ -61,7 +61,30 @@ function playHLS(lnk) {
         }
     } catch (e) {
         loadingModal.toggle();
+        dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
+    }
+}
+
+function playMP3(lnk) {
+    try {
+        hls.destroy()
+        audio.setAttribute("src", "");
+        audio.setAttribute("src", lnk["link"]);
+        audio.play();
+        listenPlayed();
+    } catch (e) {
+        loadingModal.toggle();
+        dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
+        log(e)
+    }
+}
+
+audio.onerror=function(e){
+    if(listening==true){
+    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+    listening=false;
+    ListenStopped()
     }
 }
 
