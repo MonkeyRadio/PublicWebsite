@@ -10,6 +10,6 @@ window.onerror = function(message, url, lineNumber) {
 }
 
 function log(a){
-    document.querySelector(".devlogdiv").innerHTML="<h6>Log JS</h6><br/><p>"+url+"</p>";
+    document.querySelector(".devlogdiv").innerHTML="<h6>Log JS</h6><br/><p>"+a+"</p>";
     devlog.toggle();
 }
