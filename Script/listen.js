@@ -98,7 +98,7 @@ audio.onerror = function (e) {
     if (listening == true) {
         setTimeout(()=>{loadingModal.hide()},500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-        log(e)
+        log(JSON.stringify(e, null, 4))
         listening = false;
         ListenStopped()
     }
@@ -107,7 +107,7 @@ audio.addEventListener("error", function (e) {
     if (listening == true) {
         setTimeout(()=>{loadingModal.hide()},500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-        log(e)
+        log(JSON.stringify(e, null, 4))
         listening = false;
         ListenStopped()
     }
