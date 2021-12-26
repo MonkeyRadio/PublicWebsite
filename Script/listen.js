@@ -14,7 +14,8 @@ function listen() {
         audio.setAttribute("src", "");
         listening = false;
     } else {
-
+        
+        listening = true;
         loadingModal.toggle();
         lnk = link[linkSelected];
         switch (lnk["type"]) {
@@ -80,22 +81,24 @@ function playMP3(lnk) {
     }
 }
 
-audio.onerror=function(e){
-    if(listening==true){
-    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-    log(e)
-    listening=false;
-    ListenStopped()
-    }
-}
-audio.addEventListener("error", function(e) { 
-    if(listening==true){
+audio.onerror = function (e) {
+    if (listening == true) {
+        loadingModal.hide()
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(e)
-        listening=false;
+        listening = false;
         ListenStopped()
-        }
-     });
+    }
+}
+audio.addEventListener("error", function (e) {
+    if (listening == true) {
+        loadingModal.hide()
+        dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+        log(e)
+        listening = false;
+        ListenStopped()
+    }
+});
 
 
 function dispListenError(err) {
@@ -113,7 +116,6 @@ function listenPlayed() {
         e.style.display = "block"
     });
     setTimeout(() => { loadingModal.toggle() }, 500);
-    listening = true;
 }
 
 function ListenStopped() {
