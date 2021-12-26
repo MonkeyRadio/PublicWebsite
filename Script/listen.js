@@ -35,7 +35,7 @@ function playHLS(lnk){
     try{
     if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
         log("HLS Stock")
-        audio.src = lnk["link"];
+        audio.setAttribute("src", lnk["link"]);
         audio.addEventListener('loadedmetadata', function() {
             audio.play();
             listenPlayed();
