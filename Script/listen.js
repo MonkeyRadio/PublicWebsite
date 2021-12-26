@@ -14,7 +14,7 @@ function listen() {
         audio.setAttribute("src", "");
         listening = false;
     } else {
-        
+
         listening = true;
         loadingModal.toggle();
         lnk = link[linkSelected];
@@ -89,6 +89,7 @@ audio.onerror = function (e) {
         listening = false;
         ListenStopped()
     }
+    console.log("e")
 }
 audio.addEventListener("error", function (e) {
     if (listening == true) {
@@ -98,6 +99,7 @@ audio.addEventListener("error", function (e) {
         listening = false;
         ListenStopped()
     }
+    console.log("e1")
 });
 
 
