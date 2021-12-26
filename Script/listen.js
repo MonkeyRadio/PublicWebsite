@@ -34,7 +34,15 @@ function listen() {
 function playHLS(lnk) {
     // HLS Stock
     try {
-        if (Hls.isSupported()) {
+        if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
+            log("HLS Stock")
+            audio.src = lnk["link"];
+            audio.addEventListener('loadedmetadata', function () {
+                audio.play();
+                listenPlayed();
+            });
+        }
+        else if (Hls.isSupported()) {
             log("HLS JS")
             hls.destroy()
             audio.setAttribute("src", "");
@@ -56,14 +64,6 @@ function playHLS(lnk) {
                 console.log("e1")
             });
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                audio.play();
-                listenPlayed();
-            });
-        }
-        else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
-            log("HLS Stock")
-            audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
                 audio.play();
                 listenPlayed();
             });
