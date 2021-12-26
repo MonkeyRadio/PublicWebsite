@@ -42,6 +42,19 @@ function playHLS(lnk) {
             hls.config.startLevel = 1;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                var errorType = data.type;
+                var errorDetails = data.details;
+                var errorFatal = data.fatal;
+                if (listening == true) {
+                    loadingModal.hide()
+                    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+                    log(errorType+errorDetails+errorFatal)
+                    listening = false;
+                    ListenStopped()
+                }
+                console.log("e1")
+            });
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
                 audio.play();
                 listenPlayed();
@@ -102,19 +115,6 @@ audio.addEventListener("error", function (e) {
     console.log("e1")
 });
 
-hls.on(Hls.Events.ERROR, function (event, data) {
-    var errorType = data.type;
-    var errorDetails = data.details;
-    var errorFatal = data.fatal;
-    if (listening == true) {
-        loadingModal.hide()
-        dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-        log(errorType+errorDetails+errorFatal)
-        listening = false;
-        ListenStopped()
-    }
-    console.log("e1")
-});
 
 
 function dispListenError(err) {
