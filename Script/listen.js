@@ -88,7 +88,7 @@ audio.onerror=function(e){
     ListenStopped()
     }
 }
-sound.addEventListener("error", function(e) { 
+audio.addEventListener("error", function(e) { 
     if(listening==true){
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(e)
