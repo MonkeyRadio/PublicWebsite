@@ -33,12 +33,14 @@ function listen(){
 function playHLS(lnk){
     // HLS Stock
     if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
+        log("HLS Stock")
         audio.src = lnk["link"];
         audio.addEventListener('loadedmetadata', function() {
             audio.play();
             listenPlayed();
         });
     }else if (Hls.isSupported()) {
+        log("HLS JS")
         hls.destroy()
         audio.setAttribute("src", "");
         hls = new Hls({
