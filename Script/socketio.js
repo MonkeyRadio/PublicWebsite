@@ -140,6 +140,8 @@ function epgprogress() {
     if (radiolistening != null) {
         if (eventradios["epg"] != null && JSON.stringify(eventradios["epg"]) != JSON.stringify({})) {
 
+            try{
+
             now = Math.floor(Date.now() / 1000)
             start = eventradios["epg"]["start"]
             stop = eventradios["epg"]["stop"]
@@ -156,6 +158,8 @@ function epgprogress() {
             if (startTime != document.querySelector(".epgstart").innerHTML) document.querySelector(".epgstart").innerHTML = startTime;
             if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
             if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
+
+            }catch(e){}
 
         } else {
             try{
