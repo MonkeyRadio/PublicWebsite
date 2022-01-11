@@ -8,7 +8,8 @@
     <link rel="manifest" href="assets/manifest.json">
     <link id="favicon" rel='icon' type='image/png' href='assets/monkeyPNG.png' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link id="dark-theme-style" rel="stylesheet" href="https://bootswatch.com/5/darkly/bootstrap.min.css" />
     <link rel="stylesheet" href="Style/index.css?t=17" />
@@ -16,50 +17,31 @@
     <link rel="stylesheet" href="Style/largePlayer.css?t=15" />
     <link rel="stylesheet" href="Style/playerbottom.css?t=15" />
     <link rel="stylesheet" href="Style/plalisttimeline.css?t=17" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.1.95/css/materialdesignicons.min.css" integrity="sha512-0v4BqFdzbpwu0PfllBdLp5xk8WXB+wMy2trN84V/enFPaF2HVn/zFM+w9WcA0xqWkYVv6N9j40cXKMw81YTUxA==" crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/6.1.95/css/materialdesignicons.min.css"
+        integrity="sha512-0v4BqFdzbpwu0PfllBdLp5xk8WXB+wMy2trN84V/enFPaF2HVn/zFM+w9WcA0xqWkYVv6N9j40cXKMw81YTUxA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0-canary.b704e4dfc.0/material-components-web.min.css"
+        integrity="sha512-Gn/5WJemPbmFhRi3K+3JHMoAhHy4H5QXJ/7rJmQYPJMaWueedJnsf2+lXhQRsS+KKPKIVDtncDhg+RRWuslAUA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
 
-    <div class="container-fluid bandeau mt-3">
-        <div class="row">
-            <div class="col-12">
-                <img src="assets/monkeyPNG.png" height="64" class="iconRounded" /><span class="mt-5 h4 ms-3">Monkey Radio</span>
-            </div>
-        </div>
-
-
-        <div class="segmented-control mt-4">
-            <span class="selection"></span>
-            <div class="option">
-                <input type="radio" id="playerb" name="sample" value="playerb" class="segbutton" checked>
-                <label for="playerb"><span class="text-truncate">Player</span></label>
-            </div>
-            <div class="option">
-                <input type="radio" id="progb" name="sample" value="progb" class="segbutton" disabled>
-                <label for="progb"><span class="text-truncate segdisabled">Programmes</span></label>
-            </div>
-            <div class="option">
-                <input type="radio" id="playlistb" name="sample" value="playlistb" class="segbutton">
-                <label for="playlistb"><span class="text-truncate">Playlist</span></label>
-            </div>
-        </div>
-
-
-    </div>
-
 
     <div class="container-fluid embed mt-4" id="playerbdiv" style="display: none;">
 
-        <div class="hours">
+        <div class="container-fluid bandeau pb-4">
             <div class="row">
-                <div class="col-2 epgstart"></div>
-                <div class="col-8 text-center epgtit d-block text-truncate"></div>
-                <div class="col-2 justify-content-end d-flex epgstop"></div>
+                <div class="col-12">
+                    <img src="assets/monkeyPNG.png" height="64" class="iconRounded" /><span class="mt-5 h4 ms-3">Monkey
+                        Radio</span>
+                </div>
             </div>
+
         </div>
-        <div class="progress-bar" role="progressbar" style="height:5px;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+
 
 
         <div class="row justify-content-center mt-4">
@@ -76,11 +58,19 @@
         <div class="row playerlprogress d-none justify-content-center">
             <input type="range" value="25" min="0" max="100" class="progsel mt-4 col-10 col-sm-6" />
         </div>
+
+        <div class="row d-none">
+            <div class="col-auto">
+                <i style="font-size: 30px;" class="mdi mdi-volume-high"></i>
+            </div>
+        </div>
+
         <div class="row playerlcontrols d-flex justify-content-center">
-            <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" onclick="listen()" style="height: 42px; width: 42px; display:none;">
-                    <i class="mdi mdi-play play"></i>
-                    <i class="mdi mdi-stop stop" style="display:none;"></i>
-                    </button>
+            <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" onclick="listen()"
+                style="height: 42px; width: 42px; display:none;">
+                <i class="mdi mdi-play play"></i>
+                <i class="mdi mdi-stop stop" style="display:none;"></i>
+            </button>
         </div>
     </div>
 
@@ -95,7 +85,8 @@
 
 
 
-    <div class="container-fluid embed mt-1" id="playlistbdiv" style="display: none; overflow-y: auto; overflow-x: hidden; height: calc(((100% - 119px) - 85px) - 22px);">
+    <div class="container-fluid embed mt-4" id="playlistbdiv"
+        style="display: none; overflow-y: auto; overflow-x: hidden; height: calc(((100% - 119px) - 85px) - 22px);">
         <div class="panel panel-white no-radius">
             <div class="panel-body">
                 <ul class="timeline-xs margin-top-20 margin-bottom-20 plist-timeline">
@@ -111,22 +102,87 @@
     <div class="container-fluid bottomplayer">
         <div class="progress_event"></div>
 
-        <div class="row pt-2 pb-2">
+        <div class="row pb-2">
 
-            <div class="col-10 col-md-9">
-                <img src="assets/monkeyPNG.png" height="64" class="player_cover" />
-                <p id="titbp" style="position: absolute; left: 85px; top:15px; width: calc(100% - 64px - 80px);">
+            <div class="col-10 col-md-9" style="margin-top:5.5px">
+                <img src="assets/monkeyPNG.png" height="43" class="player_cover" />
+                <p id="titbp" style="position: absolute; left: 65px; top:9px; width: calc(100% - 64px - 80px); font-size:13px;">
                     <b><span class="player_title d-flex text-truncate"></span></b><br class="thinbr" />
-                    <span class="player_artist d-flex text-truncate h6" style="margin-top: -22px;"></span> </p>
+                    <span class="player_artist d-flex text-truncate h6" style="margin-top: -22px; font-size:13px;"></span>
+                </p>
             </div>
             <div class="col-2 col-md-3 d-flex justify-content-end mt-2">
-                <select class="form-select col-1 col-md-3 d-md-none d-none" aria-label="" id="LinkSelect" style="margin-top:2px; height: 36px; display:block; margin-right: 5%;"></select>
-                <button type="button" class="btn btn-outline-primary btnplayermini" onclick="listen()" style="height: 42px; margin-top: 5px;">
-              <i class="mdi mdi-play play"></i>
-              <i class="mdi mdi-stop stop" style="display:none;"></i>
-              </button>
+                <select class="form-select col-1 col-md-3 d-md-none d-none" aria-label="" id="LinkSelect"
+                    style="margin-top:2px; height: 36px; display:block; margin-right: 5%;"></select>
+                <span class="btnplayermini" onclick="listen()"
+                    style="height: 25px; margin-top: 4px; font-size: 20px;">
+                    <i class="mdi mdi-play play"></i>
+                    <i class="mdi mdi-stop stop" style="display:none;"></i>
+                </button>
             </div>
 
+        </div>
+    </div>
+
+    <div class="navi">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-10 navsep"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row mt-1">
+            <div class="col navitem navitemactive mdc-button">
+                <span class="mdc-button__ripple" id="playerb"></span>
+                <div class="row cancelpointer">
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-auto">
+                                <i class="mdi mdi-headphones navicon"></i>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+
+
+            <div class="col navitem mdc-button">
+                <span class="mdc-button__ripple" id="homeb"></span>
+                <div class="row cancelpointer">
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-auto">
+                                <i class="mdi mdi-home-outline navicon"></i>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+
+
+            <div class="col navitem mdc-button">
+                <span class="mdc-button__ripple" id="playlistb"></span>
+                <div class="row cancelpointer">
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-auto">
+                                <i class="mdi mdi-playlist-music-outline navicon"></i>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -156,7 +212,8 @@
         </div>
     </div>
 
-    <div class="modal fade listen-loading" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal fade listen-loading" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body mt-2 ns">
@@ -201,7 +258,13 @@
 
     <audio src=''></audio>
     <!-- Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0-canary.b704e4dfc.0/material-components-web.min.js"
+        integrity="sha512-aT2bjtsPikszAF22zwogoP4p5OeDaJXjsSTjrNkrJOAr54fgX04qB9X0juA2i/RuPhm0QrSEnX/9I49AAf1iUA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="//cdn.jsdelivr.net/npm/eruda"></script>
     <script src="Script/devlog.js?t=5"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
@@ -213,6 +276,7 @@
     <script src="Script/embedGest.js?t=17"></script>
     <script src="Script/playerlarge.js?t=15"></script>
     <script src="Script/listen.js?t=9"></script>
+    <script src="Script/volume.js?t=9"></script>
 </body>
 
 </html>
