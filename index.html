@@ -59,17 +59,37 @@
             <input type="range" value="25" min="0" max="100" class="progsel mt-4 col-10 col-sm-6" />
         </div>
 
+        <div class="row mt-3 pb-2">
+            <div class="col"></div>
+
+            <div class="col-8 col-md-6 col-xl-4 col-xxl-2 pbar">
+                <div class="pbarfill"></div>
+            </div>
+
+            <div class="col"></div>
+        </div>
+
         <div class="row d-none">
             <div class="col-auto">
                 <i style="font-size: 30px;" class="mdi mdi-volume-high"></i>
             </div>
         </div>
 
-        <div class="row playerlcontrols d-flex justify-content-center">
-            <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" onclick="listen()"
-                style="height: 42px; width: 42px; display:none;">
+        <div class="row playerlcontrols d-flex justify-content-center mt-4">
+
+        <button class="btnplayerlarge mdc-button mdc-button--raised" onclick="listen()" style="display:none; width: 64px; background: var(--main-color);">
+            <span class="mdc-button__label">
                 <i class="mdi mdi-play play"></i>
                 <i class="mdi mdi-stop stop" style="display:none;"></i>
+            </span>
+          </button>
+
+          </div>
+
+        
+            <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" 
+                style="height: 42px; width: 42px; display:none;">
+                
             </button>
         </div>
     </div>
@@ -85,15 +105,30 @@
 
 
 
-    <div class="container-fluid embed mt-4" id="playlistbdiv"
-        style="display: none; overflow-y: auto; overflow-x: hidden; height: calc(((100% - 119px) - 85px) - 22px);">
-        <div class="panel panel-white no-radius">
-            <div class="panel-body">
-                <ul class="timeline-xs margin-top-20 margin-bottom-20 plist-timeline">
-                </ul>
+    <div class="container-fluid embed mt-4" id="playlistbdiv" style="display: none; height: calc(((100% - 119px) - 85px) - 14px);">
+
+        <div class="container-fluid bandeau pb-4">
+            <div class="row">
+                <div class="col-12">
+                    <img src="assets/monkeyPNG.png" height="64" class="iconRounded" /><span class="mt-5 h4 ms-3">Monkey
+                        Radio</span>
+                </div>
             </div>
 
         </div>
+
+        <div id="overf" style="overflow-y: auto; overflow-x: hidden; height: 100%;">
+
+            <div class="panel panel-white no-radius">
+                <div class="panel-body">
+                    <ul class="timeline-xs margin-top-20 margin-bottom-20 plist-timeline">
+                    </ul>
+                </div>
+    
+            </div>
+
+        </div>
+
 
     </div>
 
@@ -106,19 +141,20 @@
 
             <div class="col-10 col-md-9" style="margin-top:5.5px">
                 <img src="assets/monkeyPNG.png" height="43" class="player_cover" />
-                <p id="titbp" style="position: absolute; left: 65px; top:9px; width: calc(100% - 64px - 80px); font-size:13px;">
+                <p id="titbp"
+                    style="position: absolute; left: 65px; top:9px; width: calc(100% - 64px - 80px); font-size:13px;">
                     <b><span class="player_title d-flex text-truncate"></span></b><br class="thinbr" />
-                    <span class="player_artist d-flex text-truncate h6" style="margin-top: -22px; font-size:13px;"></span>
+                    <span class="player_artist d-flex text-truncate h6"
+                        style="margin-top: -22px; font-size:13px;"></span>
                 </p>
             </div>
             <div class="col-2 col-md-3 d-flex justify-content-end mt-2">
                 <select class="form-select col-1 col-md-3 d-md-none d-none" aria-label="" id="LinkSelect"
                     style="margin-top:2px; height: 36px; display:block; margin-right: 5%;"></select>
-                <span class="btnplayermini" onclick="listen()"
-                    style="height: 25px; margin-top: 4px; font-size: 20px;">
+                <span class="btnplayermini" onclick="listen()" style="height: 25px; margin-top: 4px; font-size: 20px;">
                     <i class="mdi mdi-play play"></i>
                     <i class="mdi mdi-stop stop" style="display:none;"></i>
-                </button>
+                    </button>
             </div>
 
         </div>
@@ -131,36 +167,24 @@
             <div class="col"></div>
         </div>
         <div class="row mt-1">
-            <div class="col navitem navitemactive mdc-button">
+            <div class="col navitem mdc-button">
                 <span class="mdc-button__ripple" id="playerb"></span>
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
-                        <div class="row">
-                            <div class="col"></div>
-                            <div class="col-auto">
-                                <i class="mdi mdi-headphones navicon"></i>
-                            </div>
-                            <div class="col"></div>
-                        </div>
+                        <i class="mdi mdi-headphones navicon"></i>
                     </div>
                     <div class="col"></div>
                 </div>
             </div>
 
 
-            <div class="col navitem mdc-button">
+            <div class="col navitem mdc-button d-none">
                 <span class="mdc-button__ripple" id="homeb"></span>
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
-                        <div class="row">
-                            <div class="col"></div>
-                            <div class="col-auto">
-                                <i class="mdi mdi-home-outline navicon"></i>
-                            </div>
-                            <div class="col"></div>
-                        </div>
+                        <i class="mdi mdi-home-outline navicon"></i>
                     </div>
                     <div class="col"></div>
                 </div>
@@ -172,13 +196,7 @@
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
-                        <div class="row">
-                            <div class="col"></div>
-                            <div class="col-auto">
-                                <i class="mdi mdi-playlist-music-outline navicon"></i>
-                            </div>
-                            <div class="col"></div>
-                        </div>
+                        <i class="mdi mdi-playlist-music-outline navicon"></i>
                     </div>
                     <div class="col"></div>
                 </div>

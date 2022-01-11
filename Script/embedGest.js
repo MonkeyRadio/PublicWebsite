@@ -13,7 +13,7 @@ addEventListener("load", () => {
             }catch(a){
                 console.log(e)
             }
-            if (e.target.id == "playlistb") document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300;
+            if (e.target.id == "playlistb") document.querySelector('#playlistbdiv> #overf').scrollTop = document.querySelector('.timeline-now').offsetTop - 300;
             if (e.target.id == "playerb") {
                 bplayer(false)
             } else {

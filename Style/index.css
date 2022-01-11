@@ -23,13 +23,39 @@
         margin-right: 0px;
     }
 
+    .navitem{
+        color: var(--bs-body-color)!important;
+    }
+
+    .navitem > .mdc-button__ripple::before{
+        background-color: var(--bs-body-bg)!important;
+    }
+    .navitem > .mdc-button__ripple::after{
+        background-color: var(--main-color)!important;
+    }
+
     .navicon{
         font-size: 25px;
     }
 
     .navitemactive{
-        color: var(--main-color);
+        color: var(--main-color)!important;
     }
+
+    .pbar{
+        height: 5px;
+        background: grey;
+        padding: 0px;
+    }
+
+    .pbarfill{
+        height: 100%;
+        width: 0%;
+        background: var(--main-color);
+        margin: 0;
+        padding: 0;
+    }
+
 
     .ns
     {

@@ -201,9 +201,11 @@ function eventprogress() {
             }
             eventradios["now"]["percent"] = eventPercent;
             document.querySelector(".progress_event").style.width = eventPercent + "%"
+            document.querySelector(".pbarfill").style.width = eventPercent + "%"
 
         } else {
             document.querySelector(".progress_event").style.width = "0%"
+            document.querySelector(".pbarfill").style.width = "0%"
         }
     }
 
