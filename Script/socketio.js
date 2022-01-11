@@ -158,10 +158,12 @@ function epgprogress() {
             if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
 
         } else {
+            try{
             document.querySelector(".progress-bar").style.width = "100%"
             document.querySelector(".hours").style.display = "none";
             //document.querySelector("#titbp").style.top = "0px";
             document.querySelector(".bottomplayer").style.height = "85px";
+            }catch(e){}
         }
     }
     setTimeout(epgprogress, 100);
