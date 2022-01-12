@@ -94,7 +94,6 @@ function playMP3(lnk) {
     }
 }
 
-<<<<<<< HEAD
 audio.addEventListener("error", function (e) {
     if (listening == true) {
         setTimeout(() => { loadingModal.hide() }, 500)
@@ -105,15 +104,6 @@ audio.addEventListener("error", function (e) {
     }
 });
 
-=======
-audio.onerror=function(e){
-    if(listening==true){
-    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
-    listening=false;
-    ListenStopped()
-    }
-}
->>>>>>> main
 
 
 function dispListenError(err) {
