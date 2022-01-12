@@ -69,23 +69,41 @@
             <div class="col"></div>
         </div>
 
-        <div class="row d-none">
-            <div class="col-auto">
-                <i style="font-size: 30px;" class="mdi mdi-volume-high"></i>
-            </div>
+
+        <div class="row playerlcontrols d-flex mt-4">
+
+            <div class="col"></div>
+
+
+            <div class="col-8 col-md-6 col-xl-4 col-xxl-2">
+
+                <div class="row">
+
+                    <div class="col"></div>
+                    <div class="col"></div>
+
+                    <div class="col-auto">
+                        <button class="btnplayerlarge mdc-button mdc-button--raised mt-1" onclick="listen()" style="display:none; width: 64px; background: var(--main-color);">
+                            <span class="mdc-button__label">
+                                <i class="mdi mdi-play play"></i>
+                                <i class="mdi mdi-stop stop" style="display:none;"></i>
+                            </span>
+                          </button>
+                    </div>
+
+                    <div class="col"></div>
+                    
+                    <div class="col">
+                        <i style="font-size: 27px;" class="d-none justify-content-end mdi mdi-volume-high"></i>
+                    </div>
+
+                </div>
+
         </div>
 
-        <div class="row playerlcontrols d-flex justify-content-center mt-4">
-
-        <button class="btnplayerlarge mdc-button mdc-button--raised" onclick="listen()" style="display:none; width: 64px; background: var(--main-color);">
-            <span class="mdc-button__label">
-                <i class="mdi mdi-play play"></i>
-                <i class="mdi mdi-stop stop" style="display:none;"></i>
-            </span>
-          </button>
+          <div class="col"></div>
 
           </div>
-
         
             <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" 
                 style="height: 42px; width: 42px; display:none;">
@@ -168,7 +186,7 @@
         </div>
         <div class="row mt-1">
             <div class="col navitem mdc-button">
-                <span class="mdc-button__ripple" id="playerb"></span>
+                <span class="mdc-button__ripple navb" id="playerb"></span>
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
@@ -180,7 +198,7 @@
 
 
             <div class="col navitem mdc-button d-none">
-                <span class="mdc-button__ripple" id="homeb"></span>
+                <span class="mdc-button__ripple navb" id="homeb"></span>
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
@@ -192,7 +210,7 @@
 
 
             <div class="col navitem mdc-button">
-                <span class="mdc-button__ripple" id="playlistb"></span>
+                <span class="mdc-button__ripple navb" id="playlistb"></span>
                 <div class="row cancelpointer">
                     <div class="col"></div>
                     <div class="col-auto">
