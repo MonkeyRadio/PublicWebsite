@@ -34,15 +34,7 @@ function listen() {
 function playHLS(lnk) {
     // HLS Stock
     try {
-        if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
-            log("HLS Stock")
-            audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
-                audio.play();
-                listenPlayed();
-            });
-        }
-        else if (Hls.isSupported()) {
+        if (Hls.isSupported()) {
             log("HLS JS")
             hls.destroy()
             audio.setAttribute("src", "");
@@ -54,7 +46,7 @@ function playHLS(lnk) {
                 var errorType = data.type;
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
-                if (listening == true) {
+                if (listening == true && audio.paused) {
                     setTimeout(() => { loadingModal.hide() }, 500)
                     dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
                     log(errorType + errorDetails + errorFatal)
@@ -67,7 +59,14 @@ function playHLS(lnk) {
                 audio.play();
                 listenPlayed();
             });
-        } else {
+        } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
+            log("HLS Stock")
+            audio.src = lnk["link"];
+            audio.addEventListener('loadedmetadata', function () {
+                audio.play();
+                listenPlayed();
+            });
+        }else {
             // Not compatible
             loadingModal.toggle();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
@@ -95,7 +94,7 @@ function playMP3(lnk) {
 }
 
 audio.addEventListener("error", function (e) {
-    if (listening == true) {
+    if (listening == true && audio.paused) {
         setTimeout(() => { loadingModal.hide() }, 500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(JSON.stringify(e, ["message", "arguments", "type", "name"]))
@@ -130,4 +129,11 @@ function ListenStopped() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "none"
     });
+}
+
+function verifpaused() {
+    if (!audio.paused) {
+        listenPlayed();
+    }
+    setTimeout(verifpaused, 500);
 }
