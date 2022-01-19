@@ -34,6 +34,12 @@
         background-color: var(--main-color)!important;
     }
 
+
+    .noback {
+        outline: none;
+        box-shadow: none;
+      }
+
     .navicon{
         font-size: 25px;
     }

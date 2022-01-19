@@ -79,37 +79,46 @@
 
                 <div class="row">
 
-                    <div class="col"></div>
+                    <div class="col">
+                        <button class="mdc-icon-button noback" style="padding: 0px;" onclick="this.blur();">
+                            <div class="mdc-icon-button__ripple"></div>
+                            <i style="font-size: 27px;" class="justify-content-end mdi mdi-tune"></i>
+
+                    </div>
                     <div class="col"></div>
 
-                    <div class="col-auto">
-                        <button class="btnplayerlarge mdc-button mdc-button--raised mt-1" onclick="listen()" style="display:none; width: 64px; background: var(--main-color);">
+                    <div class="col-auto align-self-center">
+                        <button class="btnplayerlarge mdc-button mdc-button--raised align-middle" onclick="listen()"
+                            style="display:none; width: 64px; background: var(--main-color);">
                             <span class="mdc-button__label">
                                 <i class="mdi mdi-play play"></i>
                                 <i class="mdi mdi-stop stop" style="display:none;"></i>
                             </span>
-                          </button>
+                        </button>
                     </div>
 
                     <div class="col"></div>
-                    
+
                     <div class="col">
-                        <i style="font-size: 27px;" class="d-none justify-content-end mdi mdi-volume-high"></i>
+                        <button class="mdc-icon-button" style="padding: 0px;" onclick="this.blur();">
+                            <div class="mdc-icon-button__ripple"></div>
+                            <i style="font-size: 27px;" class="justify-content-end mdi mdi-volume-high"></i>
+                        </button>
                     </div>
 
                 </div>
 
+            </div>
+
+            <div class="col"></div>
+
         </div>
 
-          <div class="col"></div>
+        <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge"
+            style="height: 42px; width: 42px; display:none;">
 
-          </div>
-        
-            <button type="button" class="btn btn-outline-primary mt-4 btnplayerlarge" 
-                style="height: 42px; width: 42px; display:none;">
-                
-            </button>
-        </div>
+        </button>
+    </div>
     </div>
 
     </div>
@@ -123,7 +132,8 @@
 
 
 
-    <div class="container-fluid embed mt-4" id="playlistbdiv" style="display: none; height: calc(((100% - 119px) - 85px) - 14px);">
+    <div class="container-fluid embed mt-4" id="playlistbdiv"
+        style="display: none; height: calc(((100% - 119px) - 85px) - 14px);">
 
         <div class="container-fluid bandeau pb-4">
             <div class="row">
@@ -142,7 +152,7 @@
                     <ul class="timeline-xs margin-top-20 margin-bottom-20 plist-timeline">
                     </ul>
                 </div>
-    
+
             </div>
 
         </div>
