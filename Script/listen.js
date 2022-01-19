@@ -39,7 +39,7 @@ function playHLS(lnk) {
             hls.destroy()
             audio.setAttribute("src", "");
             hls = new Hls();
-            hls.config.startLevel = 0;
+            hls.config.startLevel = 1;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             hls.on(Hls.Events.ERROR, function (event, data) {
