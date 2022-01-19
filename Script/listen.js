@@ -132,9 +132,9 @@ function ListenStopped() {
     });
 }
 
-function verifpaused(){
-    if(!audio.paused){
+function verifpaused() {
+    if (!audio.paused) {
         listenPlayed();
-
     }
+    setTimeout(verifpaused, 500);
 }
