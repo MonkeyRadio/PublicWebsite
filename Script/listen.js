@@ -94,7 +94,7 @@ function playMP3(lnk) {
 }
 
 audio.addEventListener("error", function (e) {
-    if (listening == true) {
+    if (listening == true && audio.paused) {
         setTimeout(() => { loadingModal.hide() }, 500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(JSON.stringify(e, ["message", "arguments", "type", "name"]))
