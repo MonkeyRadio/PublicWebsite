@@ -34,15 +34,7 @@ function listen() {
 function playHLS(lnk) {
     // HLS Stock
     try {
-        if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
-            log("HLS Stock")
-            audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
-                audio.play();
-                listenPlayed();
-            });
-        }
-        else if (Hls.isSupported()) {
+        if (Hls.isSupported()) {
             log("HLS JS")
             hls.destroy()
             audio.setAttribute("src", "");
@@ -67,7 +59,14 @@ function playHLS(lnk) {
                 audio.play();
                 listenPlayed();
             });
-        } else {
+        } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
+            log("HLS Stock")
+            audio.src = lnk["link"];
+            audio.addEventListener('loadedmetadata', function () {
+                audio.play();
+                listenPlayed();
+            });
+        }else {
             // Not compatible
             loadingModal.toggle();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
