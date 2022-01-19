@@ -54,7 +54,7 @@ function playHLS(lnk) {
                 var errorType = data.type;
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
-                if (listening == true) {
+                if (listening == true && audio.paused) {
                     setTimeout(() => { loadingModal.hide() }, 500)
                     dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
                     log(errorType + errorDetails + errorFatal)
@@ -130,4 +130,11 @@ function ListenStopped() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "none"
     });
+}
+
+function verifpaused(){
+    if(!audio.paused){
+        listenPlayed();
+
+    }
 }
