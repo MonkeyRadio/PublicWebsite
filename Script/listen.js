@@ -40,9 +40,10 @@ function playHLS(lnk) {
             audio.setAttribute("src", "");
             hls = new Hls();
             hls.config.startLevel = 1;
+            hls.config.liveMaxLatencyDuration = 60;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
-            hls.on(Hls.Events.ERROR, function (event, data) {
+            hls.on(Hls.Events.ERROR, function(event, data) {
                 var errorType = data.type;
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
@@ -55,18 +56,18 @@ function playHLS(lnk) {
                 }
                 console.log("e1")
             });
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
                 listenPlayed();
             });
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
             audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
+            audio.addEventListener('loadedmetadata', function() {
                 audio.play();
                 listenPlayed();
             });
-        }else {
+        } else {
             // Not compatible
             loadingModal.toggle();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
@@ -93,7 +94,7 @@ function playMP3(lnk) {
     }
 }
 
-audio.addEventListener("error", function (e) {
+audio.addEventListener("error", function(e) {
     if (listening == true && audio.paused) {
         setTimeout(() => { loadingModal.hide() }, 500)
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
@@ -137,3 +138,12 @@ function verifpaused() {
     }
     setTimeout(verifpaused, 500);
 }
+
+
+function getQuality() {
+    try {
+        document.querySelector(".quality-disp").innerHTML = hls.levels[hls.currentLevel]["bitrate"] / 1000 + " Kb";
+    } catch (e) {}
+    setTimeout(getQuality, 100);
+}
+getQuality();
