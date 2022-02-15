@@ -39,8 +39,10 @@ function playHLS(lnk) {
             hls.destroy()
             audio.setAttribute("src", "");
             hls = new Hls();
+            hls.bandwidthEstimate()
             hls.config.startLevel = 1;
             hls.config.liveMaxLatencyDuration = 60;
+            hls.config.startFragPrefetch = true;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             hls.on(Hls.Events.ERROR, function(event, data) {
@@ -142,7 +144,7 @@ function verifpaused() {
 
 function getQuality() {
     try {
-        document.querySelector(".quality-disp").innerHTML = hls.levels[hls.currentLevel]["bitrate"] / 1000 + " Kb";
+        document.querySelector(".quality-disp").innerHTML = Math.floor(hls.levels[hls.currentLevel]["bitrate"] / 1000) + " Kb";
     } catch (e) {}
     setTimeout(getQuality, 100);
 }
