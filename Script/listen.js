@@ -39,7 +39,6 @@ function playHLS(lnk) {
             hls.destroy()
             audio.setAttribute("src", "");
             hls = new Hls();
-            hls.bandwidthEstimate()
             hls.config.startLevel = 1;
             hls.config.liveMaxLatencyDuration = 60;
             hls.config.startFragPrefetch = true;
