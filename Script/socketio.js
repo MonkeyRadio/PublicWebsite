@@ -140,34 +140,34 @@ function epgprogress() {
     if (radiolistening != null) {
         if (eventradios["epg"] != null && JSON.stringify(eventradios["epg"]) != JSON.stringify({})) {
 
-            try{
+            try {
 
-            now = Math.floor(Date.now() / 1000)
-            start = eventradios["epg"]["start"]
-            stop = eventradios["epg"]["stop"]
-            epgPercent = (now - start) * 100 / (stop - start)
-            eventradios["epg"]["percent"] = epgPercent;
-            document.querySelector(".progress-bar").style.width = epgPercent + "%"
-            document.querySelector(".hours").style.display = "block";
-            // document.querySelector("#titbp").style.top = "42px";
+                now = Math.floor(Date.now() / 1000)
+                start = eventradios["epg"]["start"]
+                stop = eventradios["epg"]["stop"]
+                epgPercent = (now - start) * 100 / (stop - start)
+                eventradios["epg"]["percent"] = epgPercent;
+                document.querySelector(".progress-bar").style.width = epgPercent + "%"
+                document.querySelector(".hours").style.display = "block";
+                // document.querySelector("#titbp").style.top = "42px";
 
-            textstart = new Date(eventradios["epg"]["start"] * 1000);
-            textstop = new Date(eventradios["epg"]["stop"] * 1000)
-            startTime = ("0" + textstart.getHours()).slice(-2) + "h" + ("0" + textstart.getMinutes()).slice(-2)
-            stopTime = ("0" + textstop.getHours()).slice(-2) + "h" + ("0" + textstop.getMinutes()).slice(-2)
-            if (startTime != document.querySelector(".epgstart").innerHTML) document.querySelector(".epgstart").innerHTML = startTime;
-            if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
-            if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
+                textstart = new Date(eventradios["epg"]["start"] * 1000);
+                textstop = new Date(eventradios["epg"]["stop"] * 1000)
+                startTime = ("0" + textstart.getHours()).slice(-2) + "h" + ("0" + textstart.getMinutes()).slice(-2)
+                stopTime = ("0" + textstop.getHours()).slice(-2) + "h" + ("0" + textstop.getMinutes()).slice(-2)
+                if (startTime != document.querySelector(".epgstart").innerHTML) document.querySelector(".epgstart").innerHTML = startTime;
+                if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
+                if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
 
-            }catch(e){}
+            } catch (e) {}
 
         } else {
-            try{
-            document.querySelector(".progress-bar").style.width = "100%"
-            document.querySelector(".hours").style.display = "none";
-            //document.querySelector("#titbp").style.top = "0px";
-            document.querySelector(".bottomplayer").style.height = "85px";
-            }catch(e){}
+            try {
+                document.querySelector(".progress-bar").style.width = "100%"
+                document.querySelector(".hours").style.display = "none";
+                //document.querySelector("#titbp").style.top = "0px";
+                document.querySelector(".bottomplayer").style.height = "85px";
+            } catch (e) {}
         }
     }
     setTimeout(epgprogress, 100);
@@ -227,7 +227,7 @@ function play() {
                 hls.destroy()
                 audio.setAttribute("src", "");
                 hls = new Hls({
-                    abrEwmaDefaultEstimate:32000
+                    abrEwmaDefaultEstimate: 32000
                 });
                 hls.loadSource(link["link"]);
                 hls.attachMedia(audio);
