@@ -45,9 +45,27 @@ function playHLS(lnk) {
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             hls.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                      case Hls.ErrorTypes.NETWORK_ERROR:
+                        // try to recover network error
+                        console.log('fatal network error encountered, try to recover');
+                        hls.startLoad();
+                        break;
+                      case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.log('fatal media error encountered, try to recover');
+                        hls.recoverMediaError();
+                        break;
+                      default:
+                        // cannot recover
+                        hls.destroy();
+                        break;
+                    }
+                  }
                 var errorType = data.type;
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
+                if(errorDetails=="bufferStalledError") hls.recoverMediaError();
                 if (listening == true && audio.paused) {
                     setTimeout(() => { loadingModal.hide() }, 500)
                     dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
@@ -55,7 +73,7 @@ function playHLS(lnk) {
                     listening = false;
                     ListenStopped()
                 }
-                console.log("e1")
+                console.log("e1"+ errorType + errorDetails + errorFatal)
             });
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
