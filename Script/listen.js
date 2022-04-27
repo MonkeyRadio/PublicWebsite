@@ -16,7 +16,8 @@ function listen() {
     } else {
 
         listening = true;
-        loadingModal.toggle();
+        loadingModal.show();
+        listenErrormModal.hide();
         lnk = link[linkSelected];
         switch (lnk["type"]) {
             case "hls":
@@ -66,9 +67,14 @@ function playHLS(lnk) {
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
                 if(errorDetails=="bufferStalledError") hls.recoverMediaError();
-                if (listening == true && audio.paused) {
+                if(errorDetails=="levelLoadError"){
                     setTimeout(() => { loadingModal.hide() }, 500)
-                    dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
+                    dispListenError({ "msg": "<h6>Erreur de lecture :(<br/>Reconnexion en cours...</h6>" }) 
+                    hls.destroy(); setTimeout(()=>{playHLS(lnk)},100);
+                }
+                else if (listening == true && audio.paused) {
+                    setTimeout(() => { loadingModal.hide() }, 500)
+                    dispListenError({ "msg": "<h6>Erreur de lecture :(</h6>" })
                     log(errorType + errorDetails + errorFatal)
                     listening = false;
                     ListenStopped()
@@ -88,12 +94,12 @@ function playHLS(lnk) {
             });
         } else {
             // Not compatible
-            loadingModal.toggle();
+            loadingModal.hide();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
             return false;
         }
     } catch (e) {
-        loadingModal.toggle();
+        loadingModal.hide();
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
     }
@@ -107,7 +113,7 @@ function playMP3(lnk) {
         audio.play();
         listenPlayed();
     } catch (e) {
-        loadingModal.toggle();
+        loadingModal.hide();
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
     }
@@ -129,7 +135,7 @@ function dispListenError(err) {
     div = document.querySelector(".listenErrorDiv");
     html = err["msg"];
     div.innerHTML = html;
-    listenErrormModal.toggle();
+    listenErrormModal.show();
 }
 
 function listenPlayed() {
@@ -139,7 +145,7 @@ function listenPlayed() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "block"
     });
-    setTimeout(() => { loadingModal.toggle() }, 500);
+    setTimeout(() => { loadingModal.hide() }, 500);
 }
 
 function ListenStopped() {
