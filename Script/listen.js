@@ -66,21 +66,24 @@ function playHLS(lnk) {
                 var errorType = data.type;
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
-                if(errorDetails=="bufferStalledError") hls.recoverMediaError();
-                if(errorDetails=="levelLoadError"){
-                    setTimeout(() => { loadingModal.hide() }, 500)
-                    dispListenError({ "msg": "<h6>Erreur de lecture :(<br/>Reconnexion en cours...</h6>" }) 
+                if(errorDetails=="bufferStalledError"){
+                    loadingModal.show();
+                }
+                if(errorDetails=="levelLoadError" || errorDetails=="manifestLoadError"){
+                    loadingModal.show();
                     hls.destroy(); setTimeout(()=>{playHLS(lnk)},100);
                 }
                 else if (listening == true && audio.paused) {
-                    setTimeout(() => { loadingModal.hide() }, 500)
-                    dispListenError({ "msg": "<h6>Erreur de lecture :(</h6>" })
+                    loadingModal.show();
                     log(errorType + errorDetails + errorFatal)
                     listening = false;
                     ListenStopped()
                 }
                 console.log("e1"+ errorType + errorDetails + errorFatal)
             });
+            hls.on(Hls.Events.FRAG_BUFFERED, () => {
+                loadingModal.hide();
+              })
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
                 listenPlayed();
@@ -121,7 +124,7 @@ function playMP3(lnk) {
 
 audio.addEventListener("error", function(e) {
     if (listening == true && audio.paused) {
-        setTimeout(() => { loadingModal.hide() }, 500)
+        loadingModal.hide();
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(JSON.stringify(e, ["message", "arguments", "type", "name"]))
         listening = false;
@@ -145,7 +148,7 @@ function listenPlayed() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "block"
     });
-    setTimeout(() => { loadingModal.hide() }, 500);
+    loadingModal.hide();
 }
 
 function ListenStopped() {
