@@ -71,7 +71,7 @@ function playHLS(lnk) {
                 }
                 if(errorDetails=="levelLoadError" || errorDetails=="manifestLoadError"){
                     loadingModal.show();
-                    hls.destroy(); setTimeout(()=>{playHLS(lnk)},100);
+                    hls.destroy(); setTimeout(()=>{playHLS(lnk)},600);
                 }
                 else if (listening == true && audio.paused) {
                     loadingModal.show();
