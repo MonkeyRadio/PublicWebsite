@@ -52,9 +52,12 @@ socket.on('event', function(msg) {
     document.querySelector(".player_artist").innerHTML = d["now"]["trackArtist"]
 
     var req = new XMLHttpRequest();
-    req.open("GET", "https://cdn.monkeyradio.fr/api?incomming&plyed", false); // false for synchronous request
-    req.send(null);
-    req = JSON.parse(req.responseText);
+    req.open("GET", "https://cdn.monkeyradio.fr/api?incomming&plyed");
+    req.send();
+
+    req.onload = function(){
+
+        req = JSON.parse(req.responseText);
 
     //Update Playlist
     plist = document.querySelector(".plist-timeline");
@@ -138,6 +141,8 @@ socket.on('event', function(msg) {
     if (scroll == false) {
         scroll = true;
         setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
+    }
+
     }
 
 });
