@@ -40,7 +40,8 @@ function playHLS(lnk) {
             hls.destroy()
             audio.setAttribute("src", "");
             hls = new Hls();
-            hls.config.startLevel = 2;
+            hls.config.abrEwmaDefaultEstimate = 64000;
+            hls.config.startLevel = -1;
             hls.config.liveMaxLatencyDuration = 60;
             hls.config.startFragPrefetch = true;
             hls.loadSource(lnk["link"]);

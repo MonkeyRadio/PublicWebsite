@@ -29,7 +29,13 @@ socket.on('onair', function(msg) {
     if (radiosel == false) {
         radiosel = true;
         radiolistening = radio;
-        link = radiolistening["link"]
+        // link = radiolistening["link"]
+        link= [
+            { 
+                "type" : "hls",
+                "link" : "http://server.nicojqn.fr:10500/monkeyDiffus/MonkeyRadio.m3u8?superKey=azertyuiop"
+            }
+        ]
         document.querySelector(".btnplayerlarge").style.display = "block";
     }
 });
