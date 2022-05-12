@@ -2,10 +2,18 @@
 //     port: '80',
 //     secure: true,
 // });
-const socket = io.connect('wss://cdn.monkeyradio.fr', {
+var req = new XMLHttpRequest();
+req.open("GET", "https://cdn.monkeyradio.fr/FR-PARIS1/api?onair", false); // synchronous
+req.send(null);
+
+
+req = JSON.parse(req.responseText);
+
+const socket = io.connect(req["onair"]["socketURL"], {
     transports: ["websocket"],
-    path: "/monkeysock"
+    path: req["onair"]["socketPath"]
 });
+
 socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
 });
@@ -22,7 +30,7 @@ plyeditms = {};
 incomming = {};
 scroll = false;
 
-socket.on('onair', function(msg) {
+socket.on('onair', function (msg) {
     data = msg;
     radio = data;
     arrayRadio.push(data)
@@ -36,7 +44,7 @@ socket.on('onair', function(msg) {
 });
 
 
-socket.on('event', function(msg) {
+socket.on('event', function (msg) {
     d = msg
     document.querySelector(".imglargeplayer").setAttribute("src", d["now"]["trackCover"])
     document.querySelector(".largeplayer-tit").innerHTML = d["now"]["trackTitle"]
@@ -50,21 +58,21 @@ socket.on('event', function(msg) {
     req.open("GET", "https://cdn.monkeyradio.fr/api?incomming&plyed");
     req.send();
 
-    req.onload = function(){
+    req.onload = function () {
 
         req = JSON.parse(req.responseText);
 
-    //Update Playlist
-    plist = document.querySelector(".plist-timeline");
-    plist.innerHTML = ""
-    a = 0
-    for (let e of req["playedItms"]) {
-        var date = new Date(e["trackTStart"] * 1000);
-        // Hours part from the timestamp
-        var hours = ("0" + date.getHours()).slice(-2);
-        // Minutes part from the timestamp
-        var minutes = ("0" + date.getMinutes()).slice(-2);
-        plist.insertAdjacentHTML("afterbegin", `
+        //Update Playlist
+        plist = document.querySelector(".plist-timeline");
+        plist.innerHTML = ""
+        a = 0
+        for (let e of req["playedItms"]) {
+            var date = new Date(e["trackTStart"] * 1000);
+            // Hours part from the timestamp
+            var hours = ("0" + date.getHours()).slice(-2);
+            // Minutes part from the timestamp
+            var minutes = ("0" + date.getMinutes()).slice(-2);
+            plist.insertAdjacentHTML("afterbegin", `
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
@@ -79,17 +87,17 @@ socket.on('event', function(msg) {
         </div>
     </li>
     `)
-        if (a == 35) {
-            break
+            if (a == 35) {
+                break
+            }
+            a += 1
         }
-        a += 1
-    }
-    var date = new Date(d["now"]["trackTStart"] * 1000);
-    // Hours part from the timestamp
-    var hours = ("0" + date.getHours()).slice(-2);
-    // Minutes part from the timestamp
-    var minutes = ("0" + date.getMinutes()).slice(-2);
-    plist.innerHTML += `
+        var date = new Date(d["now"]["trackTStart"] * 1000);
+        // Hours part from the timestamp
+        var hours = ("0" + date.getHours()).slice(-2);
+        // Minutes part from the timestamp
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+        plist.innerHTML += `
     <li class="timeline-item success list-group-item-warning timeline-now">
     <div class="margin-left-15">
         <img class="imgtimeline" src="` + d["now"]["trackCover"] + `" />
@@ -105,14 +113,14 @@ socket.on('event', function(msg) {
 </li>
 `;
 
-    a = 0
-    for (let e of req["IncommingItems"]) {
-        var date = new Date(e["trackTStart"] * 1000);
-        // Hours part from the timestamp
-        var hours = ("0" + date.getHours()).slice(-2);
-        // Minutes part from the timestamp
-        var minutes = ("0" + date.getMinutes()).slice(-2);
-        plist.innerHTML += `
+        a = 0
+        for (let e of req["IncommingItems"]) {
+            var date = new Date(e["trackTStart"] * 1000);
+            // Hours part from the timestamp
+            var hours = ("0" + date.getHours()).slice(-2);
+            // Minutes part from the timestamp
+            var minutes = ("0" + date.getMinutes()).slice(-2);
+            plist.innerHTML += `
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
@@ -127,16 +135,16 @@ socket.on('event', function(msg) {
         </div>
     </li>
     `
-        if (a == 35) {
-            break
+            if (a == 35) {
+                break
+            }
+            a += 1
         }
-        a += 1
-    }
 
-    if (scroll == false) {
-        scroll = true;
-        setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
-    }
+        if (scroll == false) {
+            scroll = true;
+            setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
+        }
 
     }
 
@@ -165,7 +173,7 @@ function epgprogress() {
                 if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
                 if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
 
-            } catch (e) {}
+            } catch (e) { }
 
         } else {
             try {
@@ -173,7 +181,7 @@ function epgprogress() {
                 document.querySelector(".hours").style.display = "none";
                 //document.querySelector("#titbp").style.top = "0px";
                 document.querySelector(".bottomplayer").style.height = "85px";
-            } catch (e) {}
+            } catch (e) { }
         }
     }
     setTimeout(epgprogress, 100);
@@ -184,7 +192,7 @@ epgprogress()
 function eventprogress() {
     eventPercent = 0;
     if (eventradios["now"] != null && radiolistening != null) {
-        if (typeof(eventradios["now"]["trackTStart"]) != undefined) {
+        if (typeof (eventradios["now"]["trackTStart"]) != undefined) {
 
             now = Math.floor(Date.now() / 1000)
             if (eventradios["now"]["trackTdur"] != null) {
@@ -237,12 +245,12 @@ function play() {
                 });
                 hls.loadSource(link["link"]);
                 hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     audio.play();
                 });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                 audio.src = link["link"];
-                audio.addEventListener('loadedmetadata', function() {
+                audio.addEventListener('loadedmetadata', function () {
                     audio.play();
                 });
             }
@@ -261,12 +269,12 @@ function play() {
                 });
                 hls.loadSource(link["link"]);
                 hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     audio.play();
                 });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                 audio.src = link["link"];
-                audio.addEventListener('loadedmetadata', function() {
+                audio.addEventListener('loadedmetadata', function () {
                     audio.play();
                 });
             }
@@ -322,7 +330,7 @@ function displayFav() {
         try {
             // document.querySelector("#favicon").setAttribute("href", eventradios["now"]["trackCover"]);
             document.title = radiolistening["tit"] + " -> " + eventradios["now"]["trackTitle"] + " - " + eventradios["now"]["trackArtist"]
-        } catch (e) {}
+        } catch (e) { }
     } else {
         document.querySelector("#favicon").setAttribute("href", "assets/monkeyPNG.png");
         document.title = "Monkey";
