@@ -2,16 +2,16 @@
 //     port: '80',
 //     secure: true,
 // });
-var req = new XMLHttpRequest();
-req.open("GET", "https://cdn.monkeyradio.fr/FR-PARIS1/api?onair", false); // synchronous
-req.send(null);
+var reqonair = new XMLHttpRequest();
+reqonair.open("GET", "https://cdn.monkeyradio.fr/FR-PARIS1/api?onair", false); // synchronous
+reqonair.send(null);
 
 
-req = JSON.parse(req.responseText);
+apiOnair = JSON.parse(reqonair.responseText)["onair"];
 
-const socket = io.connect(req["onair"]["socketURL"], {
+const socket = io.connect(apiOnair["socketURL"], {
     transports: ["websocket"],
-    path: req["onair"]["socketPath"]
+    path: apiOnair["socketPath"]
 });
 
 socket.on("connect_error", (err) => {
@@ -55,7 +55,7 @@ socket.on('event', function (msg) {
     document.querySelector(".player_artist").innerHTML = d["now"]["trackArtist"]
 
     var req = new XMLHttpRequest();
-    req.open("GET", "https://cdn.monkeyradio.fr/api?incomming&plyed");
+    req.open("GET", "https://cdn.monkeyradio.fr/" + apiOnair["region"] + "/api?incomming&plyed");
     req.send();
 
     req.onload = function () {
