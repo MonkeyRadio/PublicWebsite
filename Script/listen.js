@@ -5,7 +5,7 @@ listening = false;
 linkSelected = 0;
 
 function linkplus1(){
-    if(linkSelected == linkCount){
+    if(linkSelected == linkCount-1){
         linkSelected = 0;
     }else linkSelected += 1;
 
