@@ -35,6 +35,7 @@ hls = new Hls();
 plyeditms = {};
 incomming = {};
 scroll = false;
+link = []
 
 socket.on('onair', function (msg) {
     data = msg;
@@ -47,15 +48,17 @@ socket.on('onair', function (msg) {
         reqlink.open("GET", cdnURL + "?request=Service/Diffusion-JS"); // asynchronous
         reqlink.send();
 
-        reqlink.onload = function () {
-            rlink = JSON.parse(reqlink.responseText);
-            link = [];
-            rlink["ServiceAccessList"].forEach(e => {
-                link.push({"link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls"});
-            })
+        reqlink.onreadystatechange = function () {
+            if (reqlink.readyState === 4 && reqlink.status == 200) {
+                rlink = JSON.parse(reqlink.responseText);
+                link = [];
+                rlink["ServiceAccessList"].forEach(e => {
+                    link.push({ "link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls" });
+                })
 
-            linkCount = link.length
-            document.querySelector(".btnplayerlarge").style.display = "block";
+                linkCount = link.length
+                document.querySelector(".btnplayerlarge").style.display = "block";
+            }
         }
     }
 });
@@ -357,6 +360,46 @@ function displayFav() {
 
 displayFav();
 
+
+
+function getlnktram() {
+    if (radiosel == true) {
+
+        reqlnk = new XMLHttpRequest();
+        reqlnk.open("GET", cdnURL + "?request=Service/Diffusion-JS");
+        reqlnk.send();
+        reqlnk.onreadystatechange = function () {
+            if (reqlnk.readyState === 4) {
+                if (reqlnk.status == 200) {
+                    rdlnk = JSON.parse(reqlnk.responseText);
+                    link = [];
+                    rdlnk["ServiceAccessList"].forEach(e => {
+                        link.push({ "link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls" });
+                    })
+
+                    linkCount = link.length
+
+                    if (linkSelected > linkCount - 1) {
+                        linkSelected = 0;
+                    }
+                    document.querySelector(".btnplayerlarge").style.display = "block";
+                }else
+                {
+                    link=[];
+                    document.querySelector(".btnplayerlarge").style.display = "none";
+                }
+            }
+        }
+    }
+
+    if (link.length == 0) {
+        setTimeout(getlnktram, 1000);
+    } else {
+        setTimeout(getlnktram, 30000);
+    }
+}
+
+getlnktram();
 
 
 //Déclaration de fonction de cookies
