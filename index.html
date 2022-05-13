@@ -252,14 +252,21 @@
         </div>
     </div>
 
-    <div class="modal fade listen-loading" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal fade listen-loading" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body mt-2 ns">
                     <div class="row">
-                        <div class="col"></div>
-                        <div class="col-auto pe-1"><span class="spinner-grow" role="status"></span></div>
-                        <div class="col-auto ps-1 mt-1">
+                        <div class="col">
+                            <button class="mdc-icon-button noback" style="padding: 0px; margin-top: -3px;" onclick="this.blur(); loadingModal.hide()">
+                                <div class="mdc-icon-button__ripple"></div>
+                                <i style="font-size: 27px;" class="d-none justify-content-end mdi mdi-tune"></i>
+                                <span class="align-middle" style="font-size:90%;"> <i class="mdi mdi-close"></i></span>
+                            </button>
+                        </div>
+                        <div class="col-auto pe-1 mt-1"><span class="spinner-grow" role="status"></span></div>
+                        <div class="col-auto ps-1 mt-2">
                             <h5>Chargement...</h5>
                         </div>
                         <div class="col"></div>
@@ -305,12 +312,12 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="installServiceWorker.js?t=15"></script>
-    <script src="Script/socketio.js?t=27"></script>
+    <script src="Script/socketio.js?t=28"></script>
     <script src="Script/playerStyle.js?t=16"></script>
     <script src="Script/segmentNav.js?t=16"></script>
     <script src="Script/embedGest.js?t=18"></script>
     <script src="Script/playerlarge.js?t=17"></script>
-    <script src="Script/listen.js?t=16"></script>
+    <script src="Script/listen.js?t=17"></script>
     <script src="Script/volume.js?t=9"></script>
 </body>
 

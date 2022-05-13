@@ -111,7 +111,7 @@
     }
     
     .bottomplayer {
-        background-color: #3e3e3e;
+        background-color: var(--bs-body-bg);
         position: fixed;
         bottom: -110px;
         width: 100%;
@@ -138,4 +138,5 @@
 
     :root{
         --main-color:#9d5762;
+        --bs-body-bg:black;
     }

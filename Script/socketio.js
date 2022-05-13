@@ -1,17 +1,23 @@
-// const socket = io.connect('wss://server.nicojqn.ga:80', {
-//     port: '80',
-//     secure: true,
-// });
-var reqonair = new XMLHttpRequest();
-reqonair.open("GET", "https://cdn.monkeyradio.fr/FR-PARIS1/api?onair", false); // synchronous
-reqonair.send(null);
+
+cdnURL = "https://cdn.monkeyradio.fr/";
+
+var reqsocket = new XMLHttpRequest();
+reqsocket.open("GET", cdnURL + "?request=Service/Socket-API/0", false); // synchronous
+reqsocket.send(null);
+
+var reqbasic = new XMLHttpRequest();
+reqbasic.open("GET", cdnURL + "?request=Service/Basic-API/0", false); // synchronous
+reqbasic.send(null);
 
 
-apiOnair = JSON.parse(reqonair.responseText)["onair"];
+SocketURL = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceURL"];
 
-const socket = io.connect(apiOnair["socketURL"], {
+BasicAPIURL = cdnURL + JSON.parse(reqbasic.responseText)["ServiceAccessList"][0]["ServiceURL"];
+
+
+const socket = io.connect(cdnURL, {
     transports: ["websocket"],
-    path: apiOnair["socketPath"]
+    path: "/" + SocketURL
 });
 
 socket.on("connect_error", (err) => {
@@ -37,9 +43,20 @@ socket.on('onair', function (msg) {
     if (radiosel == false) {
         radiosel = true;
         radiolistening = radio;
-        // link = radiolistening["link"]
-        link = radiolistening["link"]
-        document.querySelector(".btnplayerlarge").style.display = "block";
+        var reqlink = new XMLHttpRequest();
+        reqlink.open("GET", cdnURL + "?request=Service/Diffusion-JS"); // asynchronous
+        reqlink.send();
+
+        reqlink.onload = function () {
+            rlink = JSON.parse(reqlink.responseText);
+            link = [];
+            rlink["ServiceAccessList"].forEach(e => {
+                link.push({"link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls"});
+            })
+
+            linkCount = link.length
+            document.querySelector(".btnplayerlarge").style.display = "block";
+        }
     }
 });
 
@@ -55,7 +72,7 @@ socket.on('event', function (msg) {
     document.querySelector(".player_artist").innerHTML = d["now"]["trackArtist"]
 
     var req = new XMLHttpRequest();
-    req.open("GET", "https://cdn.monkeyradio.fr/" + apiOnair["region"] + "/api?incomming&plyed");
+    req.open("GET", BasicAPIURL + "?incomming&plyed");
     req.send();
 
     req.onload = function () {

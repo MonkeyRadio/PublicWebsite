@@ -4,6 +4,15 @@ const listenErrormModal = new bootstrap.Modal(document.querySelector(".listen-er
 listening = false;
 linkSelected = 0;
 
+function linkplus1(){
+    if(linkSelected == linkCount){
+        linkSelected = 0;
+    }else linkSelected += 1;
+
+    return link[linkSelected]
+
+}
+
 function listen() {
 
     //Check If Playing
@@ -72,7 +81,7 @@ function playHLS(lnk) {
                 }
                 if(errorDetails=="levelLoadError" || errorDetails=="manifestLoadError" || errorDetails == "manifestParsingError"){
                     loadingModal.show();
-                    hls.destroy(); setTimeout(()=>{playHLS(lnk)},600);
+                    hls.destroy(); setTimeout(()=>{playHLS(linkplus1())},600);
                 }
                 else if (listening == true && audio.paused) {
                     loadingModal.show();
