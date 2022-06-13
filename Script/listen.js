@@ -4,11 +4,6 @@ const listenErrormModal = new bootstrap.Modal(document.querySelector(".listen-er
 listening = false;
 linkSelected = 0;
 
-function linkplus1() {
-    return link[linkSelected]
-
-}
-
 function listen() {
 
     //Check If Playing
@@ -42,15 +37,20 @@ function playHLS(lnk) {
     try {
         if (Hls.isSupported()) {
             log("HLS JS")
-            hls.destroy()
-            audio.setAttribute("src", "");
             hls = new Hls();
             hls.config.startLevel = -1;
-            hls.config.liveSyncDuration = 4;
+            //hls.config.liveSyncDuration = 4;
             //hls.config.liveMaxLatencyDuration = 50;
             hls.config.startFragPrefetch = true;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
+            setTimeout(() => {
+                if (audio.src == '') {
+                    console.log("HLS attach error")
+                    hls.destroy();
+                    setTimeout(() => { playHLS(link[linkSelected]) }, 600);
+                }
+            }, 500)
             hls.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal) {
                     switch (data.type) {
@@ -77,7 +77,7 @@ function playHLS(lnk) {
                 }
                 if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError") {
                     loadingModal.show();
-                    hls.destroy(); setTimeout(() => { playHLS(linkplus1()) }, 600);
+                    hls.destroy(); setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
                 else if (listening == true && audio.paused) {
                     loadingModal.show();
@@ -108,10 +108,9 @@ function playHLS(lnk) {
                         eventradios["now"]["trackTStop"] = parseInt(tag["tags"]["eventTStop"]);
                         eventradios["now"]["provider"] = "id3";
                         eventElapsed = parseInt(tag["tags"]["eventTElapsed"]);
-                        setTimeout(trignewEvent,100);
+                        setTimeout(trignewEvent, 100);
                     },
-                    onerror: function(err)
-                    {
+                    onerror: function (err) {
                         console.log(err)
                     }
                 })
@@ -188,10 +187,10 @@ function listenPlayed() {
 
 function ListenStopped() {
     id3tag = false;
-    setTimeout(()=>{
+    setTimeout(() => {
         eventradios = JSON.parse(JSON.stringify(eventradiosSock));
         trignewEvent();
-    },500);
+    }, 500);
     document.querySelectorAll(".play").forEach(e => {
         e.style.display = "block"
     });

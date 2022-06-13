@@ -48,7 +48,7 @@ socket.on('onair', function (msg) {
         radiosel = true;
         radiolistening = radio;
         link.push({ "link": radio["DiffLinkPath"], "type": "hls" });
-        document.querySelector(".btnplayerlarge").style.display = "block";
+        setTimeout( () => {document.querySelector(".btnplayerlarge").style.display = "block"; document.querySelector(".btnplayermini").style.display = "block"; },500);
     }
 });
 
@@ -220,8 +220,9 @@ function eventprogress() {
                 d = eventradios["now"]["trackTDur"]
                 eventPercent = eventElapsed * 100 / d
             }
-            if (eventPercent < 0) {
+            if (eventPercent <= 0) {
                 eventPercent = 0;
+                document.querySelector(".pbar").style.opacity=0;
             }
             if (eventradios["now"]["trackTDur"] == null) {
                 eventPercent = 0;
