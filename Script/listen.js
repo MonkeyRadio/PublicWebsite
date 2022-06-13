@@ -93,7 +93,7 @@ function playHLS(lnk) {
             })
 
             hls.on(Hls.Events.FRAG_CHANGED, function (event, data) {
-                jsmediatags.read(data["frag"]["_url"], {
+                jsmediatags.read(data["frag"]["_url"]+"?metadata=true", {
                     onSuccess: function (tag) {
                         id3tag = true;
                         tag["tags"]["TXXX"].forEach(e => {
