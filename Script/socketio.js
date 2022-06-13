@@ -29,6 +29,7 @@ radio = {};
 arrayRadio = [];
 radiolistening = {};
 eventradios = {};
+eventradiosSock = {};
 fav = 1;
 radiosel = false;
 hls = new Hls();
@@ -36,6 +37,8 @@ plyeditms = {};
 incomming = {};
 scroll = false;
 link = []
+id3tag = false;
+eventElapsed=0;
 
 socket.on('onair', function (msg) {
     data = msg;
@@ -44,35 +47,31 @@ socket.on('onair', function (msg) {
     if (radiosel == false) {
         radiosel = true;
         radiolistening = radio;
-        var reqlink = new XMLHttpRequest();
-        reqlink.open("GET", cdnURL + "?request=Service/Diffusion-JS"); // asynchronous
-        reqlink.send();
-
-        reqlink.onreadystatechange = function () {
-            if (reqlink.readyState === 4 && reqlink.status == 200) {
-                rlink = JSON.parse(reqlink.responseText);
-                link = [];
-                rlink["ServiceAccessList"].forEach(e => {
-                    link.push({ "link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls" });
-                })
-
-                linkCount = link.length
-                document.querySelector(".btnplayerlarge").style.display = "block";
-            }
-        }
+        link.push({ "link": radio["DiffLinkPath"], "type": "hls" });
+        document.querySelector(".btnplayerlarge").style.display = "block";
     }
 });
 
+function trignewEvent() {
+    document.querySelector(".imglargeplayer").setAttribute("src", eventradios["now"]["trackCover"])
+    document.querySelector(".largeplayer-tit").innerHTML = eventradios["now"]["trackTitle"]
+    document.querySelector(".largeplayer-art").innerHTML = eventradios["now"]["trackArtist"]
+    document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
+    document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
+    document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
+}
 
-socket.on('event', function (msg) {
-    d = msg
-    document.querySelector(".imglargeplayer").setAttribute("src", d["now"]["trackCover"])
-    document.querySelector(".largeplayer-tit").innerHTML = d["now"]["trackTitle"]
-    document.querySelector(".largeplayer-art").innerHTML = d["now"]["trackArtist"]
-    eventradios = d
-    document.querySelector(".player_cover").setAttribute("src", d["now"]["trackCover"])
-    document.querySelector(".player_title").innerHTML = d["now"]["trackTitle"]
-    document.querySelector(".player_artist").innerHTML = d["now"]["trackArtist"]
+socket.on('event', function (d) {
+    eventradiosSock = d;
+    eventradiosSock["now"]["provider"]="sock";
+    eventradiosSock["epg"]["provider"]="sock";
+
+    if (id3tag == false) {
+        eventradios = JSON.parse(JSON.stringify(eventradiosSock));
+        eventElapsed=0;
+        setTimeout(trignewEvent,100);
+    }
+    
 
     var req = new XMLHttpRequest();
     req.open("GET", BasicAPIURL + "?incomming&plyed");
@@ -212,17 +211,14 @@ epgprogress()
 function eventprogress() {
     eventPercent = 0;
     if (eventradios["now"] != null && radiolistening != null) {
-        if (typeof (eventradios["now"]["trackTStart"]) != undefined) {
+        if (typeof (eventradios["now"]["trackTStart"]) != undefined && id3tag == true) {
+            document.querySelector(".pbar").style.opacity=1;
 
             now = Math.floor(Date.now() / 1000)
-            if (eventradios["now"]["trackTdur"] != null) {
+            if (eventradios["now"]["trackTDur"] != null) {
                 s = eventradios["now"]["trackTStart"]
                 d = eventradios["now"]["trackTDur"]
-                eventPercent = ((Date.now() / 1000) - s) * 100 / d
-            } else if (eventradios["now"]["trackTStop"] != null) {
-                s = eventradios["now"]["trackTStart"]
-                e = eventradios["now"]["trackTStop"]
-                eventPercent = (((Date.now() / 1000) - s) * 100 / (e - s))
+                eventPercent = eventElapsed * 100 / d
             }
             if (eventPercent < 0) {
                 eventPercent = 0;
@@ -238,6 +234,7 @@ function eventprogress() {
             document.querySelector(".pbarfill").style.width = eventPercent + "%"
 
         } else {
+            document.querySelector(".pbar").style.opacity=0;
             document.querySelector(".progress_event").style.width = "0%"
             document.querySelector(".pbarfill").style.width = "0%"
         }
@@ -383,9 +380,8 @@ function getlnktram() {
                         linkSelected = 0;
                     }
                     document.querySelector(".btnplayerlarge").style.display = "block";
-                }else
-                {
-                    link=[];
+                } else {
+                    link = [];
                     document.querySelector(".btnplayerlarge").style.display = "none";
                 }
             }
@@ -399,7 +395,7 @@ function getlnktram() {
     }
 }
 
-getlnktram();
+//getlnktram();
 
 
 //Déclaration de fonction de cookies
@@ -436,3 +432,11 @@ function getCookie(name) {
     }
     return null;
 }
+
+
+function bpm()
+{
+    eventElapsed +=0.01;
+    setTimeout(bpm,10)
+}
+bpm();
