@@ -93,28 +93,31 @@ function playHLS(lnk) {
             })
 
             hls.on(Hls.Events.FRAG_CHANGED, function (event, data) {
-                jsmediatags.read(data["frag"]["_url"]+"?metadata=true", {
-                    onSuccess: function (tag) {
+                var req = new XMLHttpRequest();
+                req.open("GET", data["frag"]["_url"].split(".ts")[0] + ".meta");
+                req.send();
+
+                req.onreadystatechange = function () {
+                    if (req.readyState == 4 && req.status == 200) {
                         id3tag = true;
-                        tag["tags"]["TXXX"].forEach(e => {
-                            tag["tags"][e["data"]["user_description"]] = e["data"]["data"];
-                        })
-                        eventradios["now"]["Type"] = tag["tags"]["eventType"];
-                        eventradios["now"]["trackArtist"] = tag["tags"]["eventArtist"];
-                        eventradios["now"]["trackTitle"] = tag["tags"]["eventTitle"];
-                        eventradios["now"]["trackCover"] = tag["tags"]["WOAF"]["data"];
-                        eventradios["now"]["trackTDur"] = parseInt(tag["tags"]["eventTDur"]);
-                        eventradios["now"]["trackTStart"] = parseInt(tag["tags"]["eventTStart"]);
-                        eventradios["now"]["trackTStop"] = parseInt(tag["tags"]["eventTStop"]);
+                        tag = JSON.parse(this.responseText);
+                        eventradios["now"]["Type"] = tag["eventType"];
+                        eventradios["now"]["trackArtist"] = tag["eventArtist"];
+                        eventradios["now"]["trackTitle"] = tag["eventTitle"];
+                        eventradios["now"]["trackCover"] = tag["coverURL"];
+                        eventradios["now"]["trackTDur"] = parseInt(tag["eventTDur"]);
+                        eventradios["now"]["trackTStart"] = parseInt(tag["eventTStart"]);
+                        eventradios["now"]["trackTStop"] = parseInt(tag["eventTStop"]);
                         eventradios["now"]["provider"] = "id3";
-                        eventElapsed = parseInt(tag["tags"]["eventTElapsed"]);
+                        eventElapsed = parseInt(tag["eventTElapsed"]);
                         setTimeout(trignewEvent, 100);
-                    },
-                    onerror: function (err) {
-                        console.log(err)
+                    } else {
+                        id3tag = false;
                     }
+
+                }
+
                 })
-            })
 
 
 
