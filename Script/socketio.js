@@ -211,7 +211,7 @@ epgprogress()
 function eventprogress() {
     eventPercent = 0;
     if (eventradios["now"] != null && radiolistening != null) {
-        if (typeof (eventradios["now"]["trackTStart"]) != undefined && id3tag == true) {
+        if (typeof (eventradios["now"]["trackTStart"]) != undefined && id3tag == true && eventradios["now"]["Type"] != "MediaMask") {
             document.querySelector(".pbar").style.opacity=1;
 
             now = Math.floor(Date.now() / 1000)

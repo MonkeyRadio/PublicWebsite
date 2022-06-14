@@ -39,9 +39,9 @@ function playHLS(lnk) {
             log("HLS JS")
             hls = new Hls();
             hls.config.startLevel = -1;
-            //hls.config.liveSyncDuration = 4;
+            hls.config.liveSyncDurationCount = 5;
             //hls.config.liveMaxLatencyDuration = 50;
-            hls.config.startFragPrefetch = true;
+            //hls.config.startFragPrefetch = true;
             hls.loadSource(lnk["link"]);
             hls.attachMedia(audio);
             setTimeout(() => {
