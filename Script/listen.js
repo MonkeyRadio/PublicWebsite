@@ -39,7 +39,7 @@ function playHLS(lnk) {
             log("HLS JS")
             hls = new Hls();
             hls.config.startLevel = -1;
-            hls.config.liveSyncDurationCount = 5;
+            hls.config.liveSyncDurationCount = 2;
             //hls.config.liveMaxLatencyDuration = 50;
             //hls.config.startFragPrefetch = true;
             hls.loadSource(lnk["link"]);
