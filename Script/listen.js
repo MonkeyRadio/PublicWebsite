@@ -50,7 +50,7 @@ function playHLS(lnk) {
                     hls.destroy();
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
-            }, 500)
+            }, 3000)
             hls.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal) {
                     switch (data.type) {
