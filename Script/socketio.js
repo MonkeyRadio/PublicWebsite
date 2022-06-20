@@ -74,7 +74,7 @@ socket.on('event', function (d) {
     
 
     var req = new XMLHttpRequest();
-    req.open("GET", BasicAPIURL + "?incomming&plyed");
+    req.open("GET", BasicAPIURL + "?incomming="+ eventradiosSock["now"]["late"] +"&plyed");
     req.send();
 
     req.onload = function () {
