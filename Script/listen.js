@@ -75,7 +75,7 @@ function playHLS(lnk) {
                 if (errorDetails == "bufferStalledError") {
                     loadingModal.show();
                 }
-                if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError" || errorDetails == "bufferStalledError") {
+                if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError") {
                     loadingModal.show();
                     hls.destroy(); setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
