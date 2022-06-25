@@ -48,7 +48,7 @@ socket.on('onair', function (msg) {
     if (radiosel == false) {
         radiosel = true;
         radiolistening = radio;
-        link.push({ "link": radio["DiffLinkPath"], "type": "hls" });
+        link.push({ "link": radio["DiffLinkPath"], "type": radio["DiffLinkType"] });
         setTimeout( () => {document.querySelector(".btnplayerlarge").style.display = "block"; document.querySelector(".btnplayermini").style.display = "block"; },500);
     }
 });
