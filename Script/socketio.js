@@ -11,13 +11,14 @@ reqbasic.send(null);
 
 
 SocketURL = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceURL"];
+SocketDir = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceDir"];
 
-BasicAPIURL = cdnURL + JSON.parse(reqbasic.responseText)["ServiceAccessList"][0]["ServiceURL"];
+BasicAPIURL = JSON.parse(reqbasic.responseText)["ServiceAccessList"][0]["ServiceURL"];
 
 
-const socket = io.connect(cdnURL, {
+const socket = io.connect(SocketURL, {
     transports: ["websocket"],
-    path: "/" + SocketURL
+    path: SocketDir
 });
 
 socket.on("connect_error", (err) => {
