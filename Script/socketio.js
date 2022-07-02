@@ -34,6 +34,7 @@ eventradiosSock = {};
 fav = 1;
 radiosel = false;
 hls = new Hls();
+player = new IcecastMetadataPlayer();
 plyeditms = {};
 incomming = {};
 scroll = false;

@@ -9,6 +9,7 @@ function listen() {
     //Check If Playing
     if (listening == true) {
         ListenStopped();
+        try{ player.stop(); delete player; } catch(e){}
         hls.destroy()
         audio.pause();
         audio.setAttribute("src", "");
@@ -24,7 +25,10 @@ function listen() {
                 playHLS(lnk);
                 break;
             case "mp3":
-                playMP3(lnk);
+                playMP3IceMeta(lnk);
+                break;
+            case "mp3ice":
+                playMP3IceMeta(lnk);
                 break;
         }
     }
@@ -117,7 +121,7 @@ function playHLS(lnk) {
 
                 }
 
-                })
+            })
 
 
 
@@ -147,8 +151,6 @@ function playHLS(lnk) {
 
 function playMP3(lnk) {
     try {
-        hls.destroy()
-        audio.setAttribute("src", "");
         audio.setAttribute("src", lnk["link"]);
         audio.play();
         listenPlayed();
@@ -157,6 +159,39 @@ function playMP3(lnk) {
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
     }
+}
+
+
+function playMP3IceMeta(lnk) {
+        player = new IcecastMetadataPlayer(lnk["link"], {
+            onMetadata: (metadata) => {
+                tag = JSON.parse(metadata["StreamTitle"]);
+                id3tag = true;
+                eventradios["now"]["Type"] = tag["Type"];
+                eventradios["now"]["trackArtist"] = tag["trackArtist"];
+                eventradios["now"]["trackTitle"] = tag["trackTitle"];
+                eventradios["now"]["trackCover"] = tag["trackCover"];
+                eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
+                eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
+                eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
+                eventradios["now"]["provider"] = "icy";
+                eventElapsed = new Date().getTime()/1000 - tag["trackTStart"];
+                console.log(eventradios)
+                setTimeout(trignewEvent, 100);
+            },
+            metadataTypes: ["icy"],
+            audioElement: audio,
+            onLoad: ()=>{
+                setTimeout(()=>{
+                    listenPlayed();
+                    console.log("played")
+                },200)
+            }
+        })
+
+
+        player.play();
+
 }
 
 audio.addEventListener("error", function (e) {
@@ -207,6 +242,7 @@ function verifpaused() {
         listenPlayed();
     } else {
         hls.destroy();
+        delete player;
         ListenStopped();
     }
     setTimeout(verifpaused, 500);
