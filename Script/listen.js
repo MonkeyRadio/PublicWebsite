@@ -267,7 +267,7 @@ function verifpaused() {
     setTimeout(verifpaused, 500);
 }
 
-verifpaused()
+//verifpaused()
 
 function getQuality() {
     try {
