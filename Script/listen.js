@@ -3,6 +3,7 @@ const listenparamModal = new bootstrap.Modal(document.querySelector(".listen-par
 const listenErrormModal = new bootstrap.Modal(document.querySelector(".listen-error"));
 listening = false;
 linkSelected = 0;
+listenloading = false;
 
 function killListen() {
     ListenStopped();
@@ -13,15 +14,18 @@ function killListen() {
     audio.pause();
     audio.setAttribute("src", "");
     listening = false;
+    listenloading = false;
 }
 
 function listen() {
 
     //Check If Playing
     if (listening == true) {
+        log("Stop Listening w listen() trigger");
         killListen();
     } else {
-
+        log("Start Listen() trigger");
+        listenloading = true;
         listening = true;
         loadingModal.show();
         listenErrormModal.hide();
@@ -46,7 +50,7 @@ function playHLS(lnk) {
     // HLS Stock
     try {
         if (Hls.isSupported()) {
-            log("HLS JS")
+            log("HLS JS");
             hls = new Hls();
             hls.config.startLevel = -1;
             hls.config.liveSyncDurationCount = 2;
@@ -56,7 +60,7 @@ function playHLS(lnk) {
             hls.attachMedia(audio);
             setTimeout(() => {
                 if (audio.src == '') {
-                    console.log("HLS attach error")
+                    log("HLS.JS attach error")
                     hls.destroy();
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
@@ -66,11 +70,11 @@ function playHLS(lnk) {
                     switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
                             // try to recover network error
-                            console.log('fatal network error encountered, try to recover');
+                            log('HLS.JS fatal network error encountered, try to recover');
                             hls.startLoad();
                             break;
                         case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.log('fatal media error encountered, try to recover');
+                            log('HLS.JS fatal media error encountered, try to recover');
                             hls.recoverMediaError();
                             break;
                         default:
@@ -86,6 +90,7 @@ function playHLS(lnk) {
                     loadingModal.show();
                 }
                 if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError") {
+                    log("HLS.JS Error : " + errorDetails)
                     loadingModal.show();
                     hls.destroy();
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
@@ -95,7 +100,7 @@ function playHLS(lnk) {
                     listening = false;
                     ListenStopped()
                 }
-                console.log("e1" + errorType + errorDetails + errorFatal)
+                log("HLS.JS Error : " + errorType + " " + errorDetails + " " + errorFatal)
             });
             hls.on(Hls.Events.FRAG_LOADED, () => {
 
@@ -120,6 +125,10 @@ function playHLS(lnk) {
                         eventradios["now"]["trackTStop"] = parseInt(tag["eventTStop"]);
                         eventradios["now"]["provider"] = "id3";
                         eventElapsed = parseInt(tag["eventTElapsed"]);
+                        log("HLS.JS Meta File New Metadata => Meta:")
+                        log(tag)
+                        log("Parsed MetaData :")
+                        log(eventradios["now"])
                         setTimeout(trignewEvent, 100);
                     } else {
                         id3tag = false;
@@ -134,6 +143,7 @@ function playHLS(lnk) {
             hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
                 listenPlayed();
+                log("HLS.JS Loading Complete starting Playing...")
             });
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
@@ -141,6 +151,7 @@ function playHLS(lnk) {
             audio.addEventListener('loadedmetadata', function() {
                 audio.play();
                 listenPlayed();
+                log("HLS.html5 Loading Complete starting Playing...")
             });
         } else {
             // Not compatible
@@ -182,29 +193,33 @@ function playMP3IceMeta(lnk) {
             eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
             eventradios["now"]["provider"] = "icy";
             eventElapsed = new Date().getTime() / 1000 - tag["trackTStart"];
-            console.log("IceCast New Metadata => timestampOffset : " + timestampOffset + " timestamp : " + timestamp + " Meta:")
-            console.log(metadata)
-            console.log("Parsed MetaData :")
-            console.log(eventradios["now"])
+            log("IceCast New Metadata => timestampOffset : " + timestampOffset + " timestamp : " + timestamp + " Meta:")
+            log(metadata)
+            log("Parsed MetaData :")
+            log(eventradios["now"])
             setTimeout(trignewEvent, 100);
         },
         metadataTypes: ["icy"],
         audioElement: audio,
         onLoad: () => {
-            setTimeout(() => {
-                listenPlayed();
-                console.log("played")
-            }, 200)
+            if (audio.src == 'http://localhost:8080/monkeyradio/') {
+                killListen();
+                setTimeout(listen, 500);
+            } else {
+                setTimeout(() => {
+                    listenPlayed();
+                }, 200)
+            }
         },
-        onError: (msg) => {
-            console.log(msg)
+        onError: (msg, err) => {
+            log("MP3 ICY Error " + msg + " " + err)
             if (msg == "Attempting to append audio, but MediaSource has not been or is no longer initialized Please be sure that `detachAudioElement()` was called and awaited before reusing the element with a new IcecastMetadataPlayer instance") {
                 killListen();
                 setTimeout(listen, 500);
             }
         },
-        onWarn: (msg, err) => {
-            console.log(msg + " " + err)
+        onWarn: (msg) => {
+            log("MP3 ICY Warn " + msg)
         }
     })
 
@@ -233,6 +248,7 @@ function dispListenError(err) {
 }
 
 function listenPlayed() {
+    listenloading = false;
     document.querySelectorAll(".play").forEach(e => {
         e.style.display = "none"
     });
@@ -243,6 +259,8 @@ function listenPlayed() {
 }
 
 function ListenStopped() {
+    log("Listen Stopped")
+    listenloading = false;
     id3tag = false;
     setTimeout(() => {
         loadingModal.hide();
@@ -260,14 +278,14 @@ function ListenStopped() {
 function verifpaused() {
     if (!audio.paused) {
         listenPlayed();
-    } else {
+    } else if (!listenloading) {
         killListen();
         ListenStopped();
     }
     setTimeout(verifpaused, 500);
 }
 
-//verifpaused()
+verifpaused()
 
 function getQuality() {
     try {

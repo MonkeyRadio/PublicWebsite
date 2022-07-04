@@ -1,4 +1,3 @@
-
 cdnURL = "https://cdn.monkeyradio.fr/";
 
 var reqsocket = new XMLHttpRequest();
@@ -40,9 +39,9 @@ incomming = {};
 scroll = false;
 link = []
 id3tag = false;
-eventElapsed=0;
+eventElapsed = 0;
 
-socket.on('onair', function (msg) {
+socket.on('onair', function(msg) {
     data = msg;
     radio = data;
     arrayRadio.push(data)
@@ -50,7 +49,10 @@ socket.on('onair', function (msg) {
         radiosel = true;
         radiolistening = radio;
         link.push({ "link": radio["DiffLinkPath"], "type": radio["DiffLinkType"] });
-        setTimeout( () => {document.querySelector(".btnplayerlarge").style.display = "block"; document.querySelector(".btnplayermini").style.display = "block"; },500);
+        setTimeout(() => {
+            document.querySelector(".btnplayerlarge").style.display = "block";
+            document.querySelector(".btnplayermini").style.display = "block";
+        }, 500);
     }
 });
 
@@ -63,23 +65,23 @@ function trignewEvent() {
     document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
 }
 
-socket.on('event', function (d) {
+socket.on('event', function(d) {
     eventradiosSock = d;
-    eventradiosSock["now"]["provider"]="sock";
-    eventradiosSock["epg"]["provider"]="sock";
+    eventradiosSock["now"]["provider"] = "sock";
+    eventradiosSock["epg"]["provider"] = "sock";
 
     if (id3tag == false) {
         eventradios = JSON.parse(JSON.stringify(eventradiosSock));
-        eventElapsed=0;
-        setTimeout(trignewEvent,100);
+        eventElapsed = 0;
+        setTimeout(trignewEvent, 100);
     }
-    
+
 
     var req = new XMLHttpRequest();
-    req.open("GET", BasicAPIURL + "?incomming="+ eventradiosSock["now"]["late"] +"&plyed");
+    req.open("GET", BasicAPIURL + "?incomming=" + eventradiosSock["now"]["late"] + "&plyed");
     req.send();
 
-    req.onload = function () {
+    req.onload = function() {
 
         req = JSON.parse(req.responseText);
 
@@ -194,7 +196,7 @@ function epgprogress() {
                 if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
                 if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
 
-            } catch (e) { }
+            } catch (e) {}
 
         } else {
             try {
@@ -202,7 +204,7 @@ function epgprogress() {
                 document.querySelector(".hours").style.display = "none";
                 //document.querySelector("#titbp").style.top = "0px";
                 document.querySelector(".bottomplayer").style.height = "85px";
-            } catch (e) { }
+            } catch (e) {}
         }
     }
     setTimeout(epgprogress, 100);
@@ -213,8 +215,8 @@ epgprogress()
 function eventprogress() {
     eventPercent = 0;
     if (eventradios["now"] != null && radiolistening != null) {
-        if (typeof (eventradios["now"]["trackTStart"]) != undefined && id3tag == true && eventradios["now"]["Type"] != "MediaMask") {
-            document.querySelector(".pbar").style.opacity=1;
+        if (typeof(eventradios["now"]["trackTStart"]) != undefined && id3tag == true && eventradios["now"]["Type"] != "MediaMask") {
+            document.querySelector(".pbar").style.opacity = 1;
 
             now = Math.floor(Date.now() / 1000)
             if (eventradios["now"]["trackTDur"] != null) {
@@ -224,7 +226,7 @@ function eventprogress() {
             }
             if (eventPercent <= 0) {
                 eventPercent = 0;
-                document.querySelector(".pbar").style.opacity=0;
+                document.querySelector(".pbar").style.opacity = 0;
             }
             if (eventradios["now"]["trackTDur"] == null) {
                 eventPercent = 0;
@@ -237,7 +239,7 @@ function eventprogress() {
             document.querySelector(".pbarfill").style.width = eventPercent + "%"
 
         } else {
-            document.querySelector(".pbar").style.opacity=0;
+            document.querySelector(".pbar").style.opacity = 0;
             document.querySelector(".progress_event").style.width = "0%"
             document.querySelector(".pbarfill").style.width = "0%"
         }
@@ -247,77 +249,6 @@ function eventprogress() {
     setTimeout(eventprogress, 1);
 }
 eventprogress()
-
-
-
-function play() {
-    if (audio.paused) {
-        if (link["type"] == "mp3") {
-            hls.destroy()
-            audio.setAttribute("src", link["link"]);
-            audio.play();
-        } else if (link["type"] == "hls") {
-            if (Hls.isSupported()) {
-                hls.destroy()
-                audio.setAttribute("src", "");
-                hls = new Hls({
-                    abrEwmaDefaultEstimate: 32000
-                });
-                hls.loadSource(link["link"]);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    audio.play();
-                });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audio.src = link["link"];
-                audio.addEventListener('loadedmetadata', function () {
-                    audio.play();
-                });
-            }
-        } else if (link["type"] == "rllhls") {
-            if (Hls.isSupported()) {
-                hls.destroy()
-                audio.setAttribute("src", "");
-                hls = new Hls({
-                    "enableWorker": true,
-                    "maxBufferLength": 1,
-                    "liveBackBufferLength": 0,
-                    "liveSyncDuration": 0,
-                    "liveMaxLatencyDuration": 2,
-                    "liveDurationInfinity": true,
-                    "highBufferWatchdogPeriod": 1,
-                });
-                hls.loadSource(link["link"]);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    audio.play();
-                });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audio.src = link["link"];
-                audio.addEventListener('loadedmetadata', function () {
-                    audio.play();
-                });
-            }
-        }
-        document.querySelectorAll(".play").forEach(e => {
-            e.style.display = "none"
-        });
-        document.querySelectorAll(".stop").forEach(e => {
-            e.style.display = "block"
-        });
-    } else {
-        document.querySelectorAll(".play").forEach(e => {
-            e.style.display = "block"
-        });
-        document.querySelectorAll(".stop").forEach(e => {
-            e.style.display = "none"
-        });
-        audio.pause();
-        hls.destroy();
-        audio.setAttribute("src", "");
-    }
-}
-
 
 
 function checkoffset() {
@@ -350,7 +281,7 @@ function displayFav() {
         try {
             // document.querySelector("#favicon").setAttribute("href", eventradios["now"]["trackCover"]);
             document.title = radiolistening["tit"] + " -> " + eventradios["now"]["trackTitle"] + " - " + eventradios["now"]["trackArtist"]
-        } catch (e) { }
+        } catch (e) {}
     } else {
         document.querySelector("#favicon").setAttribute("href", "assets/monkeyPNG.png");
         document.title = "Monkey";
@@ -359,47 +290,6 @@ function displayFav() {
 }
 
 displayFav();
-
-
-
-function getlnktram() {
-    if (radiosel == true) {
-
-        reqlnk = new XMLHttpRequest();
-        reqlnk.open("GET", cdnURL + "?request=Service/Diffusion-JS");
-        reqlnk.send();
-        reqlnk.onreadystatechange = function () {
-            if (reqlnk.readyState === 4) {
-                if (reqlnk.status == 200) {
-                    rdlnk = JSON.parse(reqlnk.responseText);
-                    link = [];
-                    rdlnk["ServiceAccessList"].forEach(e => {
-                        link.push({ "link": cdnURL + e["ServiceURL"] + radio["DiffLinkPath"], "type": "hls" });
-                    })
-
-                    linkCount = link.length
-
-                    if (linkSelected > linkCount - 1) {
-                        linkSelected = 0;
-                    }
-                    document.querySelector(".btnplayerlarge").style.display = "block";
-                } else {
-                    link = [];
-                    document.querySelector(".btnplayerlarge").style.display = "none";
-                }
-            }
-        }
-    }
-
-    if (link.length == 0) {
-        setTimeout(getlnktram, 1000);
-    } else {
-        setTimeout(getlnktram, 30000);
-    }
-}
-
-//getlnktram();
-
 
 //Déclaration de fonction de cookies
 
@@ -437,9 +327,8 @@ function getCookie(name) {
 }
 
 
-function bpm()
-{
-    eventElapsed +=0.01;
-    setTimeout(bpm,10)
+function bpm() {
+    eventElapsed += 0.0117;
+    setTimeout(bpm, 10)
 }
 bpm();
