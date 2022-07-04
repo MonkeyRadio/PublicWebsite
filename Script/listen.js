@@ -21,10 +21,10 @@ function listen() {
 
     //Check If Playing
     if (listening == true) {
-        log("Stop Listening w listen() trigger");
+        log("Listen() Stop triggered");
         killListen();
     } else {
-        log("Start Listen() trigger");
+        log("Listen() Play triggered");
         listenloading = true;
         listening = true;
         loadingModal.show();
