@@ -259,7 +259,6 @@ function listenPlayed() {
 }
 
 function ListenStopped() {
-    log("Listen Stopped")
     listenloading = false;
     id3tag = false;
     setTimeout(() => {
