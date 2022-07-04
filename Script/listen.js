@@ -167,19 +167,22 @@ function playHLS(lnk) {
 }
 
 function playMP3(lnk) {
+    log("Start Listening MP3 HTML5 URL : " + lnk["link"]);
     try {
         audio.setAttribute("src", lnk["link"]);
         audio.play();
+        log("Listening now MP3");
         listenPlayed();
     } catch (e) {
         loadingModal.hide();
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
-        log(e)
+        log("MP3 HTML5 Error " + e)
     }
 }
 
 
 function playMP3IceMeta(lnk) {
+    log("Start Listening MP3 IceCast URL : " + lnk["link"]);
     player = new IcecastMetadataPlayer(lnk["link"], {
         onMetadataEnqueue: (metadata, timestampOffset, timestamp) => {
             tag = JSON.parse(metadata["StreamTitle"]);
@@ -202,6 +205,7 @@ function playMP3IceMeta(lnk) {
         metadataTypes: ["icy"],
         audioElement: audio,
         onLoad: () => {
+            log("Listening now MP3 IceCast");
             if (audio.src == 'http://localhost:8080/monkeyradio/') {
                 killListen();
                 setTimeout(listen, 500);
