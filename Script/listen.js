@@ -4,16 +4,22 @@ const listenErrormModal = new bootstrap.Modal(document.querySelector(".listen-er
 listening = false;
 linkSelected = 0;
 
+function killListen() {
+    ListenStopped();
+    try { player.stop(); } catch (e) {}
+    try { player.detachAudioElement(); } catch (e) {}
+    try { delete player; } catch (e) {}
+    hls.destroy()
+    audio.pause();
+    audio.setAttribute("src", "");
+    listening = false;
+}
+
 function listen() {
 
     //Check If Playing
     if (listening == true) {
-        ListenStopped();
-        try{ player.stop(); delete player; } catch(e){}
-        hls.destroy()
-        audio.pause();
-        audio.setAttribute("src", "");
-        listening = false;
+        killListen();
     } else {
 
         listening = true;
@@ -55,7 +61,7 @@ function playHLS(lnk) {
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
             }, 3000)
-            hls.on(Hls.Events.ERROR, function (event, data) {
+            hls.on(Hls.Events.ERROR, function(event, data) {
                 if (data.fatal) {
                     switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
@@ -81,9 +87,9 @@ function playHLS(lnk) {
                 }
                 if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError") {
                     loadingModal.show();
-                    hls.destroy(); setTimeout(() => { playHLS(link[linkSelected]) }, 600);
-                }
-                else if (listening == true && audio.paused) {
+                    hls.destroy();
+                    setTimeout(() => { playHLS(link[linkSelected]) }, 600);
+                } else if (listening == true && audio.paused) {
                     loadingModal.show();
                     log(errorType + errorDetails + errorFatal)
                     listening = false;
@@ -96,12 +102,12 @@ function playHLS(lnk) {
                 loadingModal.hide();
             })
 
-            hls.on(Hls.Events.FRAG_CHANGED, function (event, data) {
+            hls.on(Hls.Events.FRAG_CHANGED, function(event, data) {
                 var req = new XMLHttpRequest();
                 req.open("GET", data["frag"]["_url"].split(".ts")[0] + ".meta");
                 req.send();
 
-                req.onreadystatechange = function () {
+                req.onreadystatechange = function() {
                     if (req.readyState == 4 && req.status == 200) {
                         id3tag = true;
                         tag = JSON.parse(this.responseText);
@@ -125,14 +131,14 @@ function playHLS(lnk) {
 
 
 
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
                 audio.play();
                 listenPlayed();
             });
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
             audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function () {
+            audio.addEventListener('loadedmetadata', function() {
                 audio.play();
                 listenPlayed();
             });
@@ -163,38 +169,51 @@ function playMP3(lnk) {
 
 
 function playMP3IceMeta(lnk) {
-        player = new IcecastMetadataPlayer(lnk["link"], {
-            onMetadata: (metadata) => {
-                tag = JSON.parse(metadata["StreamTitle"]);
-                id3tag = true;
-                eventradios["now"]["Type"] = tag["Type"];
-                eventradios["now"]["trackArtist"] = tag["trackArtist"];
-                eventradios["now"]["trackTitle"] = tag["trackTitle"];
-                eventradios["now"]["trackCover"] = tag["trackCover"];
-                eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
-                eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
-                eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
-                eventradios["now"]["provider"] = "icy";
-                eventElapsed = new Date().getTime()/1000 - tag["trackTStart"];
-                console.log(eventradios)
-                setTimeout(trignewEvent, 100);
-            },
-            metadataTypes: ["icy"],
-            audioElement: audio,
-            onLoad: ()=>{
-                setTimeout(()=>{
-                    listenPlayed();
-                    console.log("played")
-                },200)
+    player = new IcecastMetadataPlayer(lnk["link"], {
+        onMetadataEnqueue: (metadata, timestampOffset, timestamp) => {
+            tag = JSON.parse(metadata["StreamTitle"]);
+            id3tag = true;
+            eventradios["now"]["Type"] = tag["Type"];
+            eventradios["now"]["trackArtist"] = tag["trackArtist"];
+            eventradios["now"]["trackTitle"] = tag["trackTitle"];
+            eventradios["now"]["trackCover"] = tag["trackCover"];
+            eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
+            eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
+            eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
+            eventradios["now"]["provider"] = "icy";
+            eventElapsed = new Date().getTime() / 1000 - tag["trackTStart"];
+            console.log("IceCast New Metadata => timestampOffset : " + timestampOffset + " timestamp : " + timestamp + " Meta:")
+            console.log(metadata)
+            console.log("Parsed MetaData :")
+            console.log(eventradios["now"])
+            setTimeout(trignewEvent, 100);
+        },
+        metadataTypes: ["icy"],
+        audioElement: audio,
+        onLoad: () => {
+            setTimeout(() => {
+                listenPlayed();
+                console.log("played")
+            }, 200)
+        },
+        onError: (msg) => {
+            console.log(msg)
+            if (msg == "Attempting to append audio, but MediaSource has not been or is no longer initialized Please be sure that `detachAudioElement()` was called and awaited before reusing the element with a new IcecastMetadataPlayer instance") {
+                killListen();
+                setTimeout(listen, 500);
             }
-        })
+        },
+        onWarn: (msg, err) => {
+            console.log(msg + " " + err)
+        }
+    })
 
 
-        player.play();
+    player.play();
 
 }
 
-audio.addEventListener("error", function (e) {
+audio.addEventListener("error", function(e) {
     if (listening == true && audio.paused) {
         loadingModal.hide();
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
@@ -226,6 +245,7 @@ function listenPlayed() {
 function ListenStopped() {
     id3tag = false;
     setTimeout(() => {
+        loadingModal.hide();
         eventradios = JSON.parse(JSON.stringify(eventradiosSock));
         trignewEvent();
     }, 500);
@@ -241,8 +261,7 @@ function verifpaused() {
     if (!audio.paused) {
         listenPlayed();
     } else {
-        hls.destroy();
-        delete player;
+        killListen();
         ListenStopped();
     }
     setTimeout(verifpaused, 500);
@@ -253,7 +272,7 @@ verifpaused()
 function getQuality() {
     try {
         document.querySelector(".quality-disp").innerHTML = Math.floor(hls.levels[hls.currentLevel]["bitrate"] / 1000) + " Kb";
-    } catch (e) { }
+    } catch (e) {}
     setTimeout(getQuality, 100);
 }
 getQuality();
