@@ -10,7 +10,7 @@ function killListen() {
     try { player.stop(); } catch (e) {}
     try { player.detachAudioElement(); } catch (e) {}
     try { delete player; } catch (e) {}
-    hls.destroy()
+    try { hls.destroy(); } catch (e) {}
     audio.pause();
     audio.setAttribute("src", "");
     listening = false;
@@ -185,22 +185,29 @@ function playMP3IceMeta(lnk) {
     log("Start Listening MP3 IceCast URL : " + lnk["link"]);
     player = new IcecastMetadataPlayer(lnk["link"], {
         onMetadataEnqueue: (metadata, timestampOffset, timestamp) => {
-            tag = JSON.parse(metadata["StreamTitle"]);
-            id3tag = true;
-            eventradios["now"]["Type"] = tag["Type"];
-            eventradios["now"]["trackArtist"] = tag["trackArtist"];
-            eventradios["now"]["trackTitle"] = tag["trackTitle"];
-            eventradios["now"]["trackCover"] = tag["trackCover"];
-            eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
-            eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
-            eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
-            eventradios["now"]["provider"] = "icy";
-            eventElapsed = new Date().getTime() / 1000 - tag["trackTStart"];
-            log("IceCast New Metadata => timestampOffset : " + timestampOffset + " timestamp : " + timestamp + " Meta:")
-            log(metadata)
-            log("Parsed MetaData :")
-            log(eventradios["now"])
-            setTimeout(trignewEvent, 100);
+            try {
+                tag = JSON.parse(metadata["StreamTitle"]);
+                id3tag = true;
+                eventradios["now"]["Type"] = tag["Type"];
+                eventradios["now"]["trackArtist"] = tag["trackArtist"];
+                eventradios["now"]["trackTitle"] = tag["trackTitle"];
+                eventradios["now"]["trackCover"] = tag["trackCover"];
+                eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
+                eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
+                eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
+                eventradios["now"]["provider"] = "icy";
+                eventElapsed = new Date().getTime() / 1000 - tag["trackTStart"];
+                log("IceCast New Metadata => timestampOffset : " + timestampOffset + " timestamp : " + timestamp + " Meta:")
+                log(metadata)
+                log("Parsed MetaData :")
+                log(eventradios["now"])
+                setTimeout(trignewEvent, 100);
+            } catch (e) {
+                log("IceCast Got Metadata but not JSON exploitable !");
+                log("Meta :")
+                log(metadata)
+                id3tag = false;
+            }
         },
         metadataTypes: ["icy"],
         audioElement: audio,
@@ -217,13 +224,13 @@ function playMP3IceMeta(lnk) {
         },
         onError: (msg, err) => {
             log("MP3 ICY Error " + msg + " " + err)
+        },
+        onWarn: (msg) => {
+            log("MP3 ICY Warn " + msg)
             if (msg == "Attempting to append audio, but MediaSource has not been or is no longer initialized Please be sure that `detachAudioElement()` was called and awaited before reusing the element with a new IcecastMetadataPlayer instance") {
                 killListen();
                 setTimeout(listen, 500);
             }
-        },
-        onWarn: (msg) => {
-            log("MP3 ICY Warn " + msg)
         }
     })
 
@@ -297,3 +304,18 @@ function getQuality() {
     setTimeout(getQuality, 100);
 }
 getQuality();
+
+
+
+function checkCapabalities() {
+
+    cap = [];
+    if (Hls.isSupported()) cap.push("HLS.JS");
+    if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) cap.push("HLS.HTML5")
+    if (IcecastMetadataPlayer.canPlayType("audio/aac")["mediasource"] == "probably" || IcecastMetadataPlayer.canPlayType("audio/aac")["html5"] == "probably") cap.push("AAC.JS")
+    if (IcecastMetadataPlayer.canPlayType("audio/mp3")["mediasource"] == "probably" || IcecastMetadataPlayer.canPlayType("audio/mp3")["html5"] == "probably") cap.push("MP3.JS")
+    if (audio.canPlayType('audio/aac') == "probably") cap.push("AAC.HTML5")
+    if (audio.canPlayType('audio/mp3') == "probably") cap.push("MP3.HTML5")
+
+    return cap
+}
