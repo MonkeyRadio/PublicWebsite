@@ -13,7 +13,10 @@ if (window.location.hostname == "www.dev.monkeyradio.fr") {
 
 function log(a) {
     if (window.location.hostname == "www.dev.monkeyradio.fr") {
+        console.log(a)
         document.querySelector(".devlogdiv").innerHTML += "<p>" + a + "</p>";
         devlogz.toggle();
+    } else if (window.location.hostname == "localhost") {
+        console.log(a)
     }
 }
