@@ -47,6 +47,8 @@ socket.on('onair', function(msg) {
         radiosel = true;
         radiolistening = radio;
         document.querySelector("#favicon").setAttribute("href",radio["cover"]);
+        document.querySelectorAll(".WebDisTit").forEach(e => { e.innerHTML=radio["WebDisTit"] })
+        document.querySelector("title").innerHTML=radio["WebDisTit"];
         document.querySelectorAll(".iconRounded").forEach(element => {
             element.setAttribute("src",radio["cover"])
         });;
