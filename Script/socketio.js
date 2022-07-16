@@ -285,7 +285,7 @@ function displayFav() {
     if (fav == 1) {
         try {
             // document.querySelector("#favicon").setAttribute("href", eventradios["now"]["trackCover"]);
-            document.title = radio["WebDisTit"] + " -> " + eventradios["now"]["trackTitle"] + " - " + eventradios["now"]["trackArtist"]
+            document.title = radio["smallTit"] + " -> " + eventradios["now"]["trackTitle"] + " - " + eventradios["now"]["trackArtist"]
         } catch (e) {}
     } else {
         document.querySelector("#favicon").setAttribute("href", "assets/monkeyPNG.png");
