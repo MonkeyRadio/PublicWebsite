@@ -47,6 +47,8 @@ socket.on('onair', function(msg) {
         radiosel = true;
         radiolistening = radio;
         document.querySelector("#favicon").setAttribute("href",radio["cover"]);
+        document.querySelector(".iconRounded").setAttribute("src",radio["cover"]);
+        document.querySelector(".imglargeplayer").setAttribute("src",radio["cover"]);
         link.push({ "link": radio["DiffLinkPath"], "type": radio["DiffLinkType"] });
         setTimeout(() => {
             document.querySelector(".btnplayerlarge").style.display = "block";
