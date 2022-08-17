@@ -213,14 +213,9 @@ function playMP3IceMeta(lnk) {
         audioElement: audio,
         onLoad: () => {
             log("Listening now MP3 IceCast");
-            if (audio.src == 'http://localhost:8080/monkeyradio/') {
-                killListen();
-                setTimeout(listen, 500);
-            } else {
-                setTimeout(() => {
-                    listenPlayed();
-                }, 200)
-            }
+            audio.play().catch(error => {
+                audio.pause(); setTimeout(listen,100);
+              });
         },
         onError: (msg, err) => {
             log("MP3 ICY Error " + msg + " " + err)
