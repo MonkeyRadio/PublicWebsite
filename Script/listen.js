@@ -213,9 +213,6 @@ function playMP3IceMeta(lnk) {
         audioElement: audio,
         onLoad: () => {
             log("Listening now MP3 IceCast");
-            audio.play().catch(error => {
-                audio.pause(); setTimeout(listen,100);
-              });
         },
         onError: (msg, err) => {
             log("MP3 ICY Error " + msg + " " + err)
