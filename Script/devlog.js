@@ -16,7 +16,7 @@ function log(a) {
         console.log(a)
         document.querySelector(".devlogdiv").innerHTML += "<p>" + a + "</p>";
         devlogz.toggle();
-    } else if (window.location.hostname == "localhost") {
+    } else if (window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1") {
         console.log(a)
     }
 }

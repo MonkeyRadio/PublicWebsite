@@ -109,28 +109,28 @@ function playHLS(lnk) {
 
             hls.on(Hls.Events.FRAG_CHANGED, function(event, data) {
                 var req = new XMLHttpRequest();
-                req.open("GET", data["frag"]["_url"].split(".ts")[0] + ".meta");
+                req.open("GET", BasicAPIURL+"?origin=MonkeyWeb_hls&cur="+Math.round(hls.latency));
                 req.send();
 
                 req.onreadystatechange = function() {
                     if (req.readyState == 4 && req.status == 200) {
                         id3tag = true;
-                        tag = JSON.parse(this.responseText);
-                        eventradios["now"]["Type"] = tag["eventType"];
-                        eventradios["now"]["trackArtist"] = tag["eventArtist"];
-                        eventradios["now"]["trackTitle"] = tag["eventTitle"];
-                        eventradios["now"]["trackCover"] = tag["coverURL"];
-                        eventradios["now"]["trackTDur"] = parseInt(tag["eventTDur"]);
-                        eventradios["now"]["trackTStart"] = parseInt(tag["eventTStart"]);
-                        eventradios["now"]["trackTStop"] = parseInt(tag["eventTStop"]);
+                        tag = JSON.parse(this.responseText).current;
+                        eventradios["now"]["Type"] = tag["Type"];
+                        eventradios["now"]["trackArtist"] = tag["trackArtist"];
+                        eventradios["now"]["trackTitle"] = tag["trackTitle"];
+                        eventradios["now"]["trackCover"] = tag["trackCover"];
+                        eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
+                        eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
+                        eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
                         eventradios["now"]["provider"] = "id3";
-                        eventElapsed = parseInt(tag["eventTElapsed"]);
+                        eventElapsed = parseInt(Math.round(new Date().getTime()/1000) - eventradios["now"]["trackTStart"]);
                         log("HLS.JS Meta File New Metadata => Meta:")
                         log(tag)
                         log("Parsed MetaData :")
                         log(eventradios["now"])
                         setTimeout(trignewEvent, 100);
-                    } else {
+                    } else if (req.readyState == 4 && req.status != 200) {
                         id3tag = false;
                     }
 
