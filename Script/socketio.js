@@ -1,28 +1,6 @@
 cdnURL = "https://cdn.monkeyradio.fr/";
 
-var reqsocket = new XMLHttpRequest();
-reqsocket.open("GET", cdnURL + "?request=Service/Socket-API/0", false); // synchronous
-reqsocket.send(null);
-
-var reqbasic = new XMLHttpRequest();
-reqbasic.open("GET", cdnURL + "?request=Service/Basic-API/0", false); // synchronous
-reqbasic.send(null);
-
-
-SocketURL = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceURL"];
-SocketDir = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceDir"];
-
-BasicAPIURL = JSON.parse(reqbasic.responseText)["ServiceAccessList"][0]["ServiceURL"];
-
-
-const socket = io.connect(SocketURL, {
-    transports: ["websocket"],
-    path: SocketDir
-});
-
-socket.on("connect_error", (err) => {
-    console.log(`connect_error due to ${err.message}`);
-});
+let socket;
 audio = document.querySelector("audio");
 audio.volume = 1;
 radio = {};
@@ -39,68 +17,89 @@ link = []
 id3tag = false;
 eventElapsed = 0;
 
-socket.on('onair', function(msg) {
-    data = msg;
-    radio = data;
-    arrayRadio.push(data)
-    if (radiosel == false) {
-        radiosel = true;
-        radiolistening = radio;
-        document.querySelector("#favicon").setAttribute("href",radio["cover"]);
-        document.querySelectorAll(".WebDisTit").forEach(e => { e.innerHTML=radio["WebDisTit"] })
-        document.querySelector("title").innerHTML=radio["WebDisTit"];
-        document.querySelectorAll(".iconRounded").forEach(element => {
-            element.setAttribute("src",radio["cover"])
-        });;
-        document.querySelector(".imglargeplayer").setAttribute("src",radio["cover"]);
-        link.push({ "link": radio["DiffLinkPath"], "type": radio["DiffLinkType"] });
-        setTimeout(() => {
-            document.querySelector(".btnplayerlarge").style.display = "block";
-            document.querySelector(".btnplayermini").style.display = "block";
-        }, 500);
-    }
-});
-
-function trignewEvent() {
-    document.querySelector(".imglargeplayer").setAttribute("src", eventradios["now"]["trackCover"])
-    document.querySelector(".largeplayer-tit").innerHTML = eventradios["now"]["trackTitle"]
-    document.querySelector(".largeplayer-art").innerHTML = eventradios["now"]["trackArtist"]
-    document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
-    document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
-    document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
-}
-
-socket.on('event', function(d) {
-    eventradiosSock = d;
-    eventradiosSock["now"]["provider"] = "sock";
-    eventradiosSock["epg"]["provider"] = "sock";
-
-    if (id3tag == false) {
-        eventradios = JSON.parse(JSON.stringify(eventradiosSock));
-        eventElapsed = 0;
-        setTimeout(trignewEvent, 100);
-    }
+SocketURL = "";
+SocketDir = "";
+BasicAPIURL = "";
 
 
-    var req = new XMLHttpRequest();
-    req.open("GET", BasicAPIURL + "?incomming=" + eventradiosSock["now"]["late"] + "&plyed");
-    req.send();
+var reqsocket = new XMLHttpRequest();
+reqsocket.open("GET", cdnURL + "?request=Service/Socket-API/0", true);
 
-    req.onload = function() {
+reqsocket.onload = function () {
 
-        req = JSON.parse(req.responseText);
+    SocketURL = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceURL"];
+    SocketDir = JSON.parse(reqsocket.responseText)["ServiceAccessList"][0]["ServiceDir"];
 
-        //Update Playlist
-        plist = document.querySelector(".plist-timeline");
-        plist.innerHTML = ""
-        a = 0
-        for (let e of req["playedItms"]) {
-            var date = new Date(e["trackTStart"] * 1000);
-            // Hours part from the timestamp
-            var hours = ("0" + date.getHours()).slice(-2);
-            // Minutes part from the timestamp
-            var minutes = ("0" + date.getMinutes()).slice(-2);
-            plist.insertAdjacentHTML("afterbegin", `
+    var reqbasic = new XMLHttpRequest();
+    reqbasic.open("GET", cdnURL + "?request=Service/Basic-API/0", true);
+
+    reqbasic.onload = function(){
+
+    BasicAPIURL = JSON.parse(reqbasic.responseText)["ServiceAccessList"][0]["ServiceURL"];
+
+    socket = io.connect(SocketURL, {
+        transports: ["websocket"],
+        path: SocketDir
+    });
+
+    socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
+    });
+
+
+    socket.on('onair', function (msg) {
+        data = msg;
+        radio = data;
+        arrayRadio.push(data)
+        if (radiosel == false) {
+            radiosel = true;
+            radiolistening = radio;
+            document.querySelector("#favicon").setAttribute("href", radio["cover"]);
+            document.querySelectorAll(".WebDisTit").forEach(e => { e.innerHTML = radio["WebDisTit"] })
+            document.querySelector("title").innerHTML = radio["WebDisTit"];
+            document.querySelectorAll(".iconRounded").forEach(element => {
+                element.setAttribute("src", radio["cover"])
+            });;
+            document.querySelector(".imglargeplayer").setAttribute("src", radio["cover"]);
+            link.push({ "link": radio["DiffLinkPath"], "type": radio["DiffLinkType"] });
+            setTimeout(() => {
+                document.querySelector(".btnplayerlarge").style.display = "block";
+                document.querySelector(".btnplayermini").style.display = "block";
+            }, 500);
+        }
+    });
+
+    socket.on('event', function (d) {
+        eventradiosSock = d;
+        eventradiosSock["now"]["provider"] = "sock";
+        eventradiosSock["epg"]["provider"] = "sock";
+
+        if (id3tag == false) {
+            eventradios = JSON.parse(JSON.stringify(eventradiosSock));
+            eventElapsed = 0;
+            setTimeout(trignewEvent, 100);
+        }
+
+
+        var req = new XMLHttpRequest();
+        req.open("GET", BasicAPIURL + "?incomming=" + eventradiosSock["now"]["late"] + "&plyed");
+        req.send();
+
+        req.onload = function () {
+
+            req = JSON.parse(req.responseText);
+
+            //Update Playlist
+            plist = document.querySelector(".plist-timeline");
+            plist.innerHTML = ""
+            a = 0
+            for (let e of req["playedItms"]) {
+                var date = new Date(e["trackTStart"] * 1000);
+                // Hours part from the timestamp
+                var hours = ("0" + date.getHours()).slice(-2);
+                // Minutes part from the timestamp
+                var minutes = ("0" + date.getMinutes()).slice(-2);
+                plist.insertAdjacentHTML("afterbegin", `
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
@@ -115,17 +114,17 @@ socket.on('event', function(d) {
         </div>
     </li>
     `)
-            if (a == 35) {
-                break
+                if (a == 35) {
+                    break
+                }
+                a += 1
             }
-            a += 1
-        }
-        var date = new Date(d["now"]["trackTStart"] * 1000);
-        // Hours part from the timestamp
-        var hours = ("0" + date.getHours()).slice(-2);
-        // Minutes part from the timestamp
-        var minutes = ("0" + date.getMinutes()).slice(-2);
-        plist.innerHTML += `
+            var date = new Date(d["now"]["trackTStart"] * 1000);
+            // Hours part from the timestamp
+            var hours = ("0" + date.getHours()).slice(-2);
+            // Minutes part from the timestamp
+            var minutes = ("0" + date.getMinutes()).slice(-2);
+            plist.innerHTML += `
     <li class="timeline-item success list-group-item-warning timeline-now">
     <div class="margin-left-15">
         <img class="imgtimeline" src="` + d["now"]["trackCover"] + `" />
@@ -141,14 +140,14 @@ socket.on('event', function(d) {
 </li>
 `;
 
-        a = 0
-        for (let e of req["IncommingItems"]) {
-            var date = new Date(e["trackTStart"] * 1000);
-            // Hours part from the timestamp
-            var hours = ("0" + date.getHours()).slice(-2);
-            // Minutes part from the timestamp
-            var minutes = ("0" + date.getMinutes()).slice(-2);
-            plist.innerHTML += `
+            a = 0
+            for (let e of req["IncommingItems"]) {
+                var date = new Date(e["trackTStart"] * 1000);
+                // Hours part from the timestamp
+                var hours = ("0" + date.getHours()).slice(-2);
+                // Minutes part from the timestamp
+                var minutes = ("0" + date.getMinutes()).slice(-2);
+                plist.innerHTML += `
         <li class="timeline-item success list-group-item-warning">
         <div class="margin-left-15">
             <img class="imgtimeline" src="` + e["trackCover"] + `" />
@@ -163,20 +162,48 @@ socket.on('event', function(d) {
         </div>
     </li>
     `
-            if (a == 35) {
-                break
+                if (a == 35) {
+                    break
+                }
+                a += 1
             }
-            a += 1
+
+            if (scroll == false) {
+                scroll = true;
+                setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
+            }
+
         }
 
-        if (scroll == false) {
-            scroll = true;
-            setTimeout(() => { document.querySelector('#playlistbdiv').scrollTop = document.querySelector('.timeline-now').offsetTop - 300 }, 500);
-        }
+    });
+
+
+
+    epgprogress()
+    eventprogress()
+    checkoffset();
+    displayFav();
+    bpm();
 
     }
 
-});
+    reqbasic.send();
+
+}
+
+
+reqsocket.send();
+
+
+function trignewEvent() {
+    document.querySelector(".imglargeplayer").setAttribute("src", eventradios["now"]["trackCover"])
+    document.querySelector(".largeplayer-tit").innerHTML = eventradios["now"]["trackTitle"]
+    document.querySelector(".largeplayer-art").innerHTML = eventradios["now"]["trackArtist"]
+    document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
+    document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
+    document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
+}
+
 
 function epgprogress() {
     if (radiolistening != null) {
@@ -201,7 +228,7 @@ function epgprogress() {
                 if (stopTime != document.querySelector(".epgstop").innerHTML) document.querySelector(".epgstop").innerHTML = stopTime;
                 if (eventradios["epg"]["tit"] != document.querySelector(".epgtit").innerHTML) document.querySelector(".epgtit").innerHTML = eventradios["epg"]["tit"];
 
-            } catch (e) {}
+            } catch (e) { }
 
         } else {
             try {
@@ -209,18 +236,18 @@ function epgprogress() {
                 document.querySelector(".hours").style.display = "none";
                 //document.querySelector("#titbp").style.top = "0px";
                 document.querySelector(".bottomplayer").style.height = "85px";
-            } catch (e) {}
+            } catch (e) { }
         }
     }
     setTimeout(epgprogress, 100);
 }
-epgprogress()
+
 
 
 function eventprogress() {
     eventPercent = 0;
     if (eventradios["now"] != null && radiolistening != null) {
-        if (typeof(eventradios["now"]["trackTStart"]) != undefined && id3tag == true && eventradios["now"]["Type"] != "MediaMask") {
+        if (typeof (eventradios["now"]["trackTStart"]) != undefined && id3tag == true && eventradios["now"]["Type"] != "MediaMask") {
             document.querySelector(".pbar").style.opacity = 1;
 
             now = Math.floor(Date.now() / 1000)
@@ -253,7 +280,7 @@ function eventprogress() {
 
     setTimeout(eventprogress, 1);
 }
-eventprogress()
+
 
 
 function checkoffset() {
@@ -264,7 +291,7 @@ function checkoffset() {
     }
     setTimeout(checkoffset, 10);
 }
-checkoffset();
+
 
 
 
@@ -286,7 +313,7 @@ function displayFav() {
         try {
             // document.querySelector("#favicon").setAttribute("href", eventradios["now"]["trackCover"]);
             document.title = radio["smallTit"] + " -> " + eventradios["now"]["trackTitle"] + " - " + eventradios["now"]["trackArtist"]
-        } catch (e) {}
+        } catch (e) { }
     } else {
         document.querySelector("#favicon").setAttribute("href", "assets/monkeyPNG.png");
         document.title = "Monkey";
@@ -294,7 +321,7 @@ function displayFav() {
     setTimeout(displayFav, 100);
 }
 
-displayFav();
+
 
 //Déclaration de fonction de cookies
 
@@ -333,7 +360,6 @@ function getCookie(name) {
 
 
 function bpm() {
-    eventElapsed += 0.0117;
+    eventElapsed += 0.013;
     setTimeout(bpm, 10)
 }
-bpm();

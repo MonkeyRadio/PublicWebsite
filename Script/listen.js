@@ -123,6 +123,7 @@ function playHLS(lnk) {
                         eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
                         eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
                         eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
+                        eventradios["now"]["late"] = parseInt(tag["late"]);
                         eventradios["now"]["provider"] = "id3";
                         eventElapsed = parseInt(Math.round(new Date().getTime()/1000) - eventradios["now"]["trackTStart"]);
                         log("HLS.JS Meta File New Metadata => Meta:")
