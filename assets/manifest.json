@@ -1,7 +1,7 @@
 {
     "name": "Monkey Radio",
     "short_name": "Monkey",
-    "description": "Monkey Radio Player for the monkeys",
+    "description": "Monkey Radio Player",
     "theme_color": "#9d5762",
     "background_color": "#1e1e1e",
     "display": "standalone",
