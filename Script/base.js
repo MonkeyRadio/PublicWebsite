@@ -70,3 +70,45 @@ document.addEventListener("VueLoadAPI", () => {
 
 
 
+
+
+monkeyFSPlay = (idLine) => {
+
+    meta = livyLine[idLine].meta;
+
+    type = null;
+
+    if (meta.itemType != undefined) { type = meta.itemType }
+
+    fsv.attachItem(document.querySelector("video"), () => {
+        fsv.initVid(meta.url, type, () => {
+
+            if (livyLine[idLine].opts != undefined) {
+                fsv.addOpts(livyLine[idLine].opts);
+            }
+
+            fsv.addMetaData(
+                {
+                    title: meta.title,
+                    subTit: meta.subTit,
+                    desc: meta.desc,
+                    coverMain: meta.coverMain,
+                    coverSec: meta.coverSec
+                }, () => {
+                    fsv.autoLoad((e) => {
+
+                        if (meta.mediaData != undefined) {
+                            fsv.item.mediaDataQuery = meta.mediaData;
+                        }
+                        fsv.item.idLine = idLine;
+
+                    });
+                });
+        }, (err) => {
+
+            vuetify.fsPlayer.err.dial.msg = err;
+            vuetify.fsPlayer.err.dial.act = true;
+
+        });
+    });
+}

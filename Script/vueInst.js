@@ -30,6 +30,51 @@ vuetify = new Vue({
     },
     data: () => ({
 
+
+        // FS Player
+
+        fsPlayer: {
+            err: {
+                msg: "",
+                dial: {
+                    act : false,
+                    title : "Une Erreur est survenue",
+                    msg : "",
+                    ok : "OK"
+                }
+            },
+            txt: {
+                live: "Direct"
+            },
+            metadata : {
+                title: "",
+                subTit: "",
+                desc: "",
+                episodeNum: "",
+                seasonNum: "",
+                channelTit: "",
+                coverMain: "",
+                background: "",
+                coverSec: ""
+            },
+            mediaData : {
+                active: false,
+                title: "",
+                artist: "",
+                cover: ""
+            },
+            shown: true,
+            pBar: 0,
+            iconType: "mdi-circle",
+            type: "Direct",
+            playButton: "mdi-play",
+            fullScreenIcon: "mdi-fullscreen",
+            volIcon: "mdi-volume-high",
+            vol: 50,
+            duration: "",
+            currentTime: ""
+        },
+
         nav: false,
 
         navigation: [
@@ -51,7 +96,7 @@ vuetify = new Vue({
                 trackArtist: "ORELSAN"
             },
             epg: {
-                
+
             }
 
         }

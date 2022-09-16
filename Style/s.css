@@ -10,3 +10,14 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+.fsBottom {
+    background-color: var(--main-bg);
+    width: 100vw;
+    height: 65px;
+    position: fixed;
+    bottom: 0px;
+    cursor: pointer;
+    transition: bottom .3s;
+    margin-left: 56px;
+}

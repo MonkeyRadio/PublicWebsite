@@ -127,10 +127,12 @@
                         <div>
                             <v-row v-ripple style="cursor:pointer;">
                                 <v-col cols="auto" class="align-center px-0 py-0">
-                                    <img :src="radioEvents.now.trackCover" draggable="false" style="height: 68px;" class="d-flex ns" alt="">
+                                    <img :src="radioEvents.now.trackCover" draggable="false" style="height: 68px;"
+                                        class="d-flex ns" alt="">
                                 </v-col>
                                 <v-col cols="auto" class="pe-0" style="max-width: 10vw; min-width: 7vw;">
-                                    <v-list-item-title class="bold ns">{{radioEvents.now.trackTitle}}</v-list-item-title>
+                                    <v-list-item-title class="bold ns">{{radioEvents.now.trackTitle}}
+                                    </v-list-item-title>
                                     <v-list-item-subtitle class="bold ns">{{radioEvents.now.trackArtist}}
                                     </v-list-item-subtitle>
                                 </v-col>
@@ -178,11 +180,74 @@
                         </v-row>
                     </v-toolbar>
 
-
-
                 </v-card>
             </v-dialog>
 
+
+
+            <div class="fsBottom ns" style="bottom: -65px;">
+
+
+                <v-progress-linear class="pabs" color="var(--mainColor)" :value="fsPlayer.pBar" onclick="fsDragShow()">
+                </v-progress-linear>
+
+                <v-row class="mt-0">
+
+                    <v-col class="d-none d-lg-flex align-center justify-center" onclick="fsDragShow()">
+                        <v-icon class="d-flex justify-center primaryT" color="var(--mainColor)">
+                            {{fsPlayer.iconType}}
+                        </v-icon>
+                        <p class="pfitC d-flex mb-0 ms-1" style="color: var(--mainColor)">{{fsPlayer.type}}
+                        </p>
+                    </v-col>
+
+                    <v-col class="col-12 col-lg-6 pt-0 pb-0 ms-3">
+
+                        <v-row class="mt-0 ms-0">
+                            <v-col cols="auto" class="d-flex align-center" onclick="fsDragShow()">
+                                <img draggable="false" :src="fsPlayer.metadata.coverMain"
+                                    style="height: 95%; width: auto; border-radius: 2px;" alt="">
+                            </v-col>
+
+                            <v-col cols="auto" onclick="fsDragShow()">
+
+                                <v-row>
+                                    <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0 d-flex align-center">
+                                        <p class="pFit">{{fsPlayer.metadata.subTit}}</p>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row class="mt-0">
+                                    <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0">
+                                        <p class="pFit" style="color: grey;">{{fsPlayer.metadata.title}}</p>
+                                    </v-col>
+                                </v-row>
+
+                            </v-col>
+
+
+                            <v-col class="d-flex justify-end align-center" style="margin-right: 24px;">
+
+                                <v-col onclick="fsDragShow()"></v-col>
+
+                                <v-btn onclick="fsv.destroy()" icon>
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+
+                                <v-btn icon class="ms-2 fsPlayButton">
+                                    <v-icon>{{fsPlayer.playButton}}</v-icon>
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+
+
+                    </v-col>
+
+                    <v-col class="d-none d-lg-flex" onclick="fsDragShow()"></v-col>
+
+                </v-row>
+
+            </div>
 
         </v-app>
 
@@ -203,6 +268,11 @@
     <script src="Script/vueInst.js"></script>
     <script src="Script/theme.js"></script>
     <script src="Script/base.js"></script>
+
+    <!-- FS PLAYER -->
+    <script src="scripts/fsPlayer/fsPlayer.js"></script>
+    <script src="scripts/fsPlayer/fsPlayerDrag.js"></script>
+    <script src="scripts/fsPlayer/fsMenuMask.js"></script>
 </body>
 
 </html>
