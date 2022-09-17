@@ -138,8 +138,6 @@ class AutoDiffPlayer {
             CI.lat = position.coords.latitude;
             CI.lon = position.coords.longitude;
 
-            CI.pos = true;
-
         });
 
         var reg = this.media[this.selectedMed].main_media
@@ -166,6 +164,8 @@ class AutoDiffPlayer {
                 if ((d < da || da == -1) && !isNaN(d)) {
                     da = d;
                     reg = e;
+
+                    CI.pos = true;
                 }
 
             }
@@ -174,6 +174,8 @@ class AutoDiffPlayer {
 
         if (da > CI.config.maxDistanceRegion) {
             reg = this.media[this.selectedMed].main_media
+
+            CI.pos = false;
         }
 
 
