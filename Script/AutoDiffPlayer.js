@@ -19,10 +19,14 @@ class AutoDiffPlayer {
 
         var CI = this;
 
+        this.pos = false;
+
         navigator.geolocation.getCurrentPosition((position) => {
 
             CI.lat = position.coords.latitude;
             CI.lon = position.coords.longitude;
+
+            CI.pos = true;
 
         });
     }
@@ -134,6 +138,8 @@ class AutoDiffPlayer {
             CI.lat = position.coords.latitude;
             CI.lon = position.coords.longitude;
 
+            CI.pos = false;
+
         });
 
         var reg = this.media[this.selectedMed].main_media
@@ -157,7 +163,7 @@ class AutoDiffPlayer {
 
                 const d = Math.round(R * c / 1000); // in Kmetres
 
-                if ((d < da || da == -1 ) && !isNaN(d)) {
+                if ((d < da || da == -1) && !isNaN(d)) {
                     da = d;
                     reg = e;
                 }
@@ -166,11 +172,11 @@ class AutoDiffPlayer {
 
         })
 
-        if(da > CI.config.maxDistanceRegion){
+        if (da > CI.config.maxDistanceRegion) {
             reg = this.media[this.selectedMed].main_media
         }
 
-        
+
 
         if (f == true) {
             this.currentRegion, this.nextRegion = reg;
@@ -179,7 +185,11 @@ class AutoDiffPlayer {
             this.nextRegion = reg;
         }
 
-        setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
+        if (CI.pos == false || !this.media[this.selectedMed].regionSwitch) {
+            setTimeout(() => { this.selectRegion() }, 1000);
+        } else {
+            setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
+        }
     }
 
 
