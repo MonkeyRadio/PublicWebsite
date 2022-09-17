@@ -69,22 +69,35 @@ document.addEventListener("VueLoadAPI", () => {
 })
 
 
+monkeyLine = {
+    live1_HLS_Premium : {
+        meta : {
+            url: "https://fr-grav1.monkeyradio.fr/diffusion/prod/Monkey_AutoDiff_premium",
+            itemType: "AutoDiff"
+        }
+    }
+}
+
+
+fsv = new fsPlayer();
 
 
 
 monkeyFSPlay = (idLine) => {
 
-    meta = livyLine[idLine].meta;
+    fsB(true)
+
+    meta = monkeyLine[idLine].meta;
 
     type = null;
 
     if (meta.itemType != undefined) { type = meta.itemType }
 
-    fsv.attachItem(document.querySelector("video"), () => {
+    fsv.attachItem(document.querySelector("audio"), () => {
         fsv.initVid(meta.url, type, () => {
 
-            if (livyLine[idLine].opts != undefined) {
-                fsv.addOpts(livyLine[idLine].opts);
+            if (monkeyLine[idLine].opts != undefined) {
+                fsv.addOpts(monkeyLine[idLine].opts);
             }
 
             fsv.addMetaData(
@@ -111,4 +124,10 @@ monkeyFSPlay = (idLine) => {
 
         });
     });
+}
+
+
+
+monkeyLIVEPlay = () => {
+    monkeyFSPlay("live1_HLS_Premium");
 }

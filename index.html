@@ -125,7 +125,7 @@
 
                     <v-col class="d-none d-lg-flex justify-center">
                         <div>
-                            <v-row v-ripple style="cursor:pointer;">
+                            <v-row v-ripple style="cursor:pointer;" onclick="monkeyLIVEPlay()">
                                 <v-col cols="auto" class="align-center px-0 py-0">
                                     <img :src="radioEvents.now.trackCover" draggable="false" style="height: 68px;"
                                         class="d-flex ns" alt="">
@@ -146,7 +146,7 @@
 
                     <v-col class="d-flex col-auto d-lg-none align-center justify-end">
 
-                        <v-btn icon class="d-block d-lg-none">
+                        <v-btn icon class="d-block d-lg-none" onclick="monkeyLIVEPlay()">
                             <v-icon size="40">mdi-play-circle-outline</v-icon>
                         </v-btn>
 
@@ -230,7 +230,7 @@
 
                                 <v-col onclick="fsDragShow()"></v-col>
 
-                                <v-btn onclick="fsv.destroy()" icon>
+                                <v-btn onclick="fsv.destroy(); fsB(false)" icon>
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
 
@@ -267,12 +267,13 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="Script/vueInst.js"></script>
     <script src="Script/theme.js"></script>
-    <script src="Script/base.js"></script>
 
     <!-- FS PLAYER -->
-    <script src="scripts/fsPlayer/fsPlayer.js"></script>
-    <script src="scripts/fsPlayer/fsPlayerDrag.js"></script>
-    <script src="scripts/fsPlayer/fsMenuMask.js"></script>
+    <script src="Script/AutoDiffPlayer.js"></script>
+    <script src="Script/fsPlayer.js"></script>
+    <script src="Script/fsMask.js"></script>
+
+    <script src="Script/base.js"></script>
 </body>
 
 </html>
