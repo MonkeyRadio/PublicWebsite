@@ -138,7 +138,7 @@ class AutoDiffPlayer {
             CI.lat = position.coords.latitude;
             CI.lon = position.coords.longitude;
 
-            CI.pos = false;
+            CI.pos = true;
 
         });
 
