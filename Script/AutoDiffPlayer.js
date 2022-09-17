@@ -179,6 +179,11 @@ class AutoDiffPlayer {
         }
 
 
+        if (this.pos == false || !this.media[this.selectedMed].regionSwitch) {
+            setTimeout(() => { this.selectRegion() }, 1000);
+        } else {
+            setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
+        }
 
         if (f == true) {
             this.currentRegion, this.nextRegion = reg;
@@ -187,11 +192,6 @@ class AutoDiffPlayer {
             this.nextRegion = reg;
         }
 
-        if (CI.pos == false || !this.media[this.selectedMed].regionSwitch) {
-            setTimeout(() => { this.selectRegion() }, 1000);
-        } else {
-            setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
-        }
     }
 
 
