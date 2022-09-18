@@ -6,7 +6,7 @@ class AutoDiffPlayer {
         this.selectedMed = "";
         this.currentRegion = "";
         this.nextRegion = "";
-        this.config = { regionSwitchDelay: 900000 };
+        this.config = { regionSwitchDelay: 300000, maxDistanceRegion: 50 };
         this.#control = [];
 
         this.hls;
