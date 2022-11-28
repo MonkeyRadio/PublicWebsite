@@ -20,15 +20,6 @@ class AutoDiffPlayer {
         var CI = this;
 
         this.pos = false;
-
-        navigator.geolocation.getCurrentPosition((position) => {
-
-            CI.lat = position.coords.latitude;
-            CI.lon = position.coords.longitude;
-
-            CI.pos = true;
-
-        });
     }
 
     loadSource(url) {
@@ -97,10 +88,19 @@ class AutoDiffPlayer {
                     }
 
                     if (CI.selectedMed == "") {
+
                         CI.selectedMed = CI.preferredMedia;
                     }
                     CI.#control.push("loadSRC")
 
+                }
+            });
+
+            navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+                if (result.state === "prompt") {
+                    vuetify.locPrompt = true;
+                } else {
+                    CI.selectRegion(true);
                 }
             });
 
@@ -133,20 +133,33 @@ class AutoDiffPlayer {
 
         var CI = this;
 
-        navigator.geolocation.getCurrentPosition((position) => {
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
 
-            CI.lat = position.coords.latitude;
-            CI.lon = position.coords.longitude;
+            if (result.state === 'granted') {
+
+                navigator.geolocation.getCurrentPosition((position) => {
+    
+                    CI.lat = position.coords.latitude;
+                    CI.lon = position.coords.longitude;
+                    CI.pos = true;
+                });
+    
+            } else if (!CI.pos) {
+                CI.lat = 0;
+                CI.lon = 0;
+                CI.pos = false;
+            }
 
         });
 
-        var reg = this.media[this.selectedMed].main_media
+
+        var reg = this.media[this.selectedMed].main_media;
 
         var da = -1;
 
         Object.keys(CI.media[CI.selectedMed].media).forEach(e => {
 
-            if (CI.media[CI.selectedMed].media[e].location[0] != 0 && CI.media[CI.selectedMed].media[e].location[1] != 0) {
+            if (CI.media[CI.selectedMed].media[e].location[0] != 0 && CI.media[CI.selectedMed].media[e].location[1] != 0 && CI.pos) {
 
                 const R = 6371e3; // metres
                 const φ1 = CI.lat * Math.PI / 180; // φ, λ in radians
@@ -178,18 +191,17 @@ class AutoDiffPlayer {
             CI.pos = false;
         }
 
-
-        if (this.pos == false || !this.media[this.selectedMed].regionSwitch) {
-            setTimeout(() => { this.selectRegion() }, 1000);
-        } else {
-            setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
-        }
-
         if (f == true) {
             this.currentRegion, this.nextRegion = reg;
             return reg;
         } else {
             this.nextRegion = reg;
+        }
+
+        if (this.pos == false || !this.media[this.selectedMed].regionSwitch) {
+            setTimeout(() => { this.selectRegion() }, 1000);
+        } else {
+            setTimeout(() => { this.selectRegion() }, this.config.regionSwitchDelay);
         }
 
     }
@@ -225,6 +237,7 @@ class AutoDiffPlayer {
             if (reg == null) {
                 var reg = this.selectRegion(true);
                 var me = media.media[reg];
+                this.selectRegion();
             } else {
                 var me = media.media[reg];
             }
@@ -236,6 +249,8 @@ class AutoDiffPlayer {
         switch (me.package) {
 
             case "hls":
+
+            if (Hls.isSupported()) {
 
                 this.hls = new Hls();
                 this.hls.config.startLevel = -1;
@@ -286,7 +301,12 @@ class AutoDiffPlayer {
                 })
                 break;
 
+        } else {
+            CI.DomItem = me.url;
+            CI.canPlay();
         }
+
+    }
 
 
     }

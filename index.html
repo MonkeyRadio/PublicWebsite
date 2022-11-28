@@ -127,13 +127,13 @@
                         <div>
                             <v-row v-ripple style="cursor:pointer;" onclick="monkeyLIVEPlay()">
                                 <v-col cols="auto" class="align-center px-0 py-0">
-                                    <img :src="radioEvents.now.trackCover" draggable="false" style="height: 68px;"
+                                    <img :src="radioEvents.epg.epgCover" draggable="false" style="height: 68px;"
                                         class="d-flex ns" alt="">
                                 </v-col>
                                 <v-col cols="auto" class="pe-0" style="max-width: 10vw; min-width: 7vw;">
-                                    <v-list-item-title class="bold ns">{{radioEvents.now.trackTitle}}
+                                    <v-list-item-title class="bold ns justify-center d-flex">{{radioEvents.epg.epgTitle}}
                                     </v-list-item-title>
-                                    <v-list-item-subtitle class="bold ns">{{radioEvents.now.trackArtist}}
+                                    <v-list-item-subtitle class="bold ns justify-center d-flex">{{radioEvents.epg.epgStartReadable}}H -> {{radioEvents.epg.epgStopReadable}}H
                                     </v-list-item-subtitle>
                                 </v-col>
                                 <v-col cols="auto" class="d-flex align-center">
@@ -188,45 +188,48 @@
             <div class="fsBottom ns" style="bottom: -65px;">
 
 
-                <v-progress-linear class="pabs" color="var(--mainColor)" :value="fsPlayer.pBar" onclick="fsDragShow()">
+                <v-progress-linear class="pabs" color="var(--primary)" :value="fsPlayer.pBar" onclick="fsDragShow()">
                 </v-progress-linear>
 
                 <v-row class="mt-0">
 
                     <v-col class="d-none d-lg-flex align-center justify-center" onclick="fsDragShow()">
-                        <v-icon class="d-flex justify-center primaryT" color="var(--mainColor)">
+                        <v-icon class="d-flex justify-center primaryT" color="var(--primary)">
                             {{fsPlayer.iconType}}
                         </v-icon>
-                        <p class="pfitC d-flex mb-0 ms-1" style="color: var(--mainColor)">{{fsPlayer.type}}
+                        <p class="pfitC d-flex mb-0 ms-1" style="color: var(--primary)">{{fsPlayer.type}}
                         </p>
                     </v-col>
 
                     <v-col class="col-12 col-lg-6 pt-0 pb-0 ms-3">
 
                         <v-row class="mt-0 ms-0">
-                            <v-col cols="auto" class="d-flex align-center" onclick="fsDragShow()">
-                                <img draggable="false" :src="fsPlayer.metadata.coverMain"
-                                    style="height: 95%; width: auto; border-radius: 2px;" alt="">
+
+                            <v-col class="d-none d-lg-block"></v-col>
+
+                            <v-col cols="auto" class="d-flex align-center pt-0" onclick="fsDragShow()">
+                                <img draggable="false" :src="fsPlayer.mediaData.cover"
+                                    style="height: 55px; width: auto; border-radius: 5px;" alt="">
                             </v-col>
 
                             <v-col cols="auto" onclick="fsDragShow()">
 
                                 <v-row>
                                     <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0 d-flex align-center">
-                                        <p class="pFit">{{fsPlayer.metadata.subTit}}</p>
+                                        <p class="pFit">{{fsPlayer.mediaData.title}}</p>
                                     </v-col>
                                 </v-row>
 
                                 <v-row class="mt-0">
                                     <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0">
-                                        <p class="pFit" style="color: grey;">{{fsPlayer.metadata.title}}</p>
+                                        <p class="pFit" style="color: grey;">{{fsPlayer.mediaData.artist}}</p>
                                     </v-col>
                                 </v-row>
 
                             </v-col>
 
 
-                            <v-col class="d-flex justify-end align-center" style="margin-right: 24px;">
+                            <v-col class="d-flex d-lg-none justify-end align-center pt-0" style="margin-right: 24px;">
 
                                 <v-col onclick="fsDragShow()"></v-col>
 
@@ -238,16 +241,71 @@
                                     <v-icon>{{fsPlayer.playButton}}</v-icon>
                                 </v-btn>
                             </v-col>
+
+                            <v-col class="d-none d-lg-block"></v-col>
                         </v-row>
 
 
                     </v-col>
 
-                    <v-col class="d-none d-lg-flex" onclick="fsDragShow()"></v-col>
+                    <v-col class="d-none d-lg-flex justify-center" onclick="fsDragShow()">
+
+                        <v-col cols="auto" class="d-none d-lg-flex fsVolCol">
+
+                        </v-col>
+
+                        <v-btn class="d-flex justify-center" onclick="fsv.destroy(); fsB(false)" icon>
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+
+                        <v-btn class="d-flex justify-center ms-2 fsPlayButton" icon>
+                            <v-icon>{{fsPlayer.playButton}}</v-icon>
+                        </v-btn>
+                    </v-col>
+                    </v-col>
 
                 </v-row>
 
             </div>
+            <v-dialog v-model="locPrompt" max-width="600" persistent>
+                <v-card>
+                    <v-card-title class="text-h5">
+                        Géolocalisation
+                    </v-card-title>
+
+                    <v-card-text class="mt-3">
+                        Utilisez le suivi flux auto pour profiter de votre radio au plus près de chez vous ! <br>
+                        Pour profiter d'une experience 100% Monkey, veuillez activer la géolocalisation...
+                        <br><br>
+                        ps : ce n'est pas pour vous pister promis :)
+                    </v-card-text>
+
+                    <v-card-actions class="d-none d-lg-flex">
+                        <v-spacer></v-spacer>
+
+                        <v-btn color="green darken-1" text @click="locPrompt = false">
+                            Non, desactiver le flux auto
+                        </v-btn>
+
+                        <v-btn color="green darken-1" text @click="locPrompt = false" onclick="locPrompt();">
+                            Activer la géolocalisation
+                        </v-btn>
+                    </v-card-actions>
+
+                    <v-card-actions class="d-flex d-lg-none">
+
+                        <v-spacer></v-spacer>
+
+                        <v-btn color="green darken-1" text @click="locPrompt = false">
+                            Non
+                        </v-btn>
+
+                        <v-btn color="green darken-1" text @click="locPrompt = false" onclick="locPrompt();">
+                            Ok
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
         </v-app>
 

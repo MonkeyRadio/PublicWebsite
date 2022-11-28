@@ -21,11 +21,13 @@ const fsWa = () => {
 document.addEventListener("VueLoadAPI", () => {
     fsWa();
 
-    document.querySelector(".fsPlayButton").addEventListener("click", () =>{
-        if(document.querySelector("audio").paused){
-            document.querySelector("audio").play()
-        }else{
-            document.querySelector("audio").pause();
-        }
+    document.querySelectorAll(".fsPlayButton").forEach(e => {
+        e.addEventListener("click", () =>{
+            if(document.querySelector("audio").paused){
+                document.querySelector("audio").play()
+            }else{
+                document.querySelector("audio").pause();
+            }
+        })
     })
 })

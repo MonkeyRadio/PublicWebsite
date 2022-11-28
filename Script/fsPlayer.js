@@ -6,8 +6,21 @@ class fsPlayer {
 
     constructor(viditem = null) {
 
+        let fs = this;
+
         if (viditem != null) this.attachItem(viditem)
         this.item = {};
+        this.mediaEvent = {};
+        this.mediaEvent.onPlay = () => { };
+        this.mediaEvent.onPause = () => { };
+        this.mediaEvent.onStop = () => { };
+        this.mediaEvent.onSeekBackward = () => { };
+        this.mediaEvent.onSeekForward = () => { };
+        this.mediaEvent.onSeekTo = () => { };
+        this.mediaEvent.onPreviousTrack = () => { };
+        this.mediaEvent.onNextTrack = () => { };
+        this.mediaEvent.onSkipAd = () => { };
+        this.mediaEvent.onHangUp = () => { };
 
         // ERROR Code
 
@@ -18,6 +31,32 @@ class fsPlayer {
             "3": { code: 'fsE3', fatal: true, msg: "Cannot Load before init" },
             "4": { code: 'fsE4', fatal: true, msg: "Unable to play because no one player can play this stuff" },
             "5": { code: 'fsE5', fatal: true, msg: "Cannot play without metadata" }
+        }
+
+        const actionHandlers = [
+            [
+                'play',
+                () => {
+                    navigator.mediaSession.playbackState = "playing";
+                }
+            ],
+            [
+                'pause',
+                () => {
+                    navigator.mediaSession.playbackState = "paused";
+                }
+            ],
+            [
+                'stop',
+                () => {
+                }
+            ],
+        ]
+
+        for (const [action, handler] of actionHandlers) {
+            try {
+                navigator.mediaSession.setActionHandler(action, handler);
+            } catch (e) { }
         }
 
     }
@@ -196,6 +235,27 @@ class fsPlayer {
 
         }
 
+        if ('mediaSession' in navigator) {
+            if (this.item.mediaData.title != undefined) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: this.item.mediaData.title,
+                    artist: this.item.mediaData.artist,
+                    artwork: [{ src: this.item.mediaData.cover }]
+                });
+            } else if (this.item.metadata.title != undefined) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: this.item.metadata.title,
+                    artist: this.item.metadata.subTit,
+                    artwork: [{ src: this.item.metadata.coverMain }]
+                });
+            } else {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: "Untitled",
+                    artist: "",
+                    artwork: [{ src: '' }]
+                });
+            }
+        }
 
         callback(this.item.player);
 
@@ -206,6 +266,19 @@ class fsPlayer {
         this.item.mediaData.title = meta.title;
         this.item.mediaData.artist = meta.artist;
         this.item.mediaData.cover = meta.cover;
+        vuetify.fsPlayer.mediaData.title = meta.title;
+        vuetify.fsPlayer.mediaData.artist = meta.artist;
+        vuetify.fsPlayer.mediaData.cover = meta.cover;
+        try{
+            vuetify.fsPlayer.mediaData.timeStart = meta.timeStart,
+            vuetify.fsPlayer.mediaData.timeEnd = meta.timeEnd,
+            vuetify.fsPlayer.mediaData.duration = meta.duration
+            } catch (e) {}
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata.artist = meta.artist;
+            navigator.mediaSession.metadata.title = meta.title;
+            navigator.mediaSession.metadata.artwork[0].src = meta.cover;
+        }
     }
 
 
@@ -363,7 +436,7 @@ class fsPlayer {
 
 
         adp.canPlay = (t) => {
-            if(t != null){
+            if (t != null) {
                 classItm.DOMitem.currentTime = t;
             }
             classItm.DOMitem.play().then(t => {
@@ -376,6 +449,13 @@ class fsPlayer {
                     video: true
                 };
                 if (pl.videoHeight == 0) opt.video = false;
+
+                var getLatency = () => {
+                    classItm.item.liveLatency = classItm.DOMitem.duration - classItm.DOMitem.currentTime;
+                    if (classItm.DOMitem != null) setTimeout(getLatency, 500);
+                }
+
+                getLatency();
 
 
                 loaded({ status: "good", api: adp, options: opt });

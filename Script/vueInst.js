@@ -61,7 +61,10 @@ vuetify = new Vue({
                 active: false,
                 title: "",
                 artist: "",
-                cover: ""
+                cover: "",
+                timeStart : 0,
+                timeEnd : 0,
+                duration: 0,
             },
             shown: true,
             pBar: 0,
@@ -91,15 +94,17 @@ vuetify = new Vue({
         radioEvents: {
             
             now: {
-                trackCover: "https://i.scdn.co/image/ab67616d00001e0258ba1ea637001f9a15e55a92",
-                trackTitle: "Ensemble",
-                trackArtist: "ORELSAN"
+                trackCover: "",
+                trackTitle: "",
+                trackArtist: ""
             },
             epg: {
 
             }
 
-        }
+        },
+
+        locPrompt: false,
 
     })
 })
