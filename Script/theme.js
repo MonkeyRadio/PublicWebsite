@@ -3,7 +3,7 @@ function saveTheme(){
 
     // Load StyleSheet that correspond to the theme
 
-    if(vuetify.$vuetify.theme.dark) document.getElementById("ColorModeSheet").setAttribute("href", "style/Dark.css"); else document.getElementById("ColorModeSheet").setAttribute("href", "style/Light.css");
+    if(vuetify.$vuetify.theme.dark) document.getElementById("ColorModeSheet").setAttribute("href", "Style/Dark.css"); else document.getElementById("ColorModeSheet").setAttribute("href", "Style/Light.css");
 
 }
 

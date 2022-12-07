@@ -42,7 +42,7 @@ document.addEventListener("VueLoadAPI", () => {
 
                 monkeyLine.live1_HLS_Premium = {
                     meta: {
-                        url: "https://fr-grav1.monkeyradio.fr/diffusion/prod/Monkey_AutoDiff_premium",
+                        url: "https://audio.monkeyradio.fr/diffusion/prod/Monkey_AutoDiff_premium",
                         itemType: "AutoDiff",
                         metadata: {
                           title: data.smallTit,
@@ -159,8 +159,6 @@ monkeyFSPlay = (idLine) => {
     });
 }
 
-
-
 monkeyLIVEPlay = () => {
     monkeyFSPlay("live1_HLS_Premium");
 }
@@ -168,6 +166,16 @@ monkeyLIVEPlay = () => {
 monkeyFSGetMediaData = (ti = false) => {
 
     var ti = ti;
+
+    if (fsv.item.mediaDataQuery == undefined || fsv.item.mediaDataQuery == undefined)
+        return false;
+
+    if (fsv.item.mediaData.lastQueryTime != undefined && fsv.item.mediaData.lastQueryTime + 5000 > Date.now() && ti == true) {
+        setTimeout(monkeyFSGetMediaData, 300, true);
+        return false;
+    }
+
+    fsv.item.mediaData.lastQueryTime = Date.now();
 
     // TextTracks MediaData
 

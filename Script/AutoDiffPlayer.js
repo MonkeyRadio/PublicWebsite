@@ -206,7 +206,6 @@ class AutoDiffPlayer {
 
     }
 
-
     #checkRegion(CI) {
 
         if (CI.currentRegion != CI.nextRegion) {
@@ -219,13 +218,11 @@ class AutoDiffPlayer {
         setTimeout(() => { CI.#checkRegion(CI) }, 150)
     }
 
-
     destroy() {
-        this.hls.destroy();
         this.DomItem.src = "";
         this.DomItem.pause();
+        this.hls.destroy();
     }
-
 
     #play(reg = null, currentTime = null) {
 

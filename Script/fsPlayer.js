@@ -38,17 +38,22 @@ class fsPlayer {
                 'play',
                 () => {
                     navigator.mediaSession.playbackState = "playing";
+                    fs.DOMitem.play();
                 }
             ],
             [
                 'pause',
                 () => {
                     navigator.mediaSession.playbackState = "paused";
+                    fs.DOMitem.pause();
                 }
             ],
             [
                 'stop',
                 () => {
+                    fs.DOMitem.pause();
+                    fsB(false);
+                    fs.destroy();
                 }
             ],
         ]
@@ -64,13 +69,19 @@ class fsPlayer {
     destroy() {
         try {
             var classItm = this;
+            navigator.mediaSession.playbackState = "none";
+            navigator.mediaSession = null;
+            navigator.mediaSession.metadata = null;
             classItm.DOMitem.pause();
         } catch (e) { }
 
         try {
+            var classItm = this;
             classItm.item.usedPlayer.api.destroy();
 
             classItm.DOMitem.src = "";
+
+            delete(classItm.item.usedPlayer);
 
             classItm.item = {};
         } catch (e) { }
