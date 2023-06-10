@@ -47,7 +47,6 @@ function listen() {
 }
 
 
-
 function playHLS(lnk) {
     // HLS Stock
     try {
@@ -143,16 +142,16 @@ function playHLS(lnk) {
 
 
 
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                audio.play();
+            hls.on(Hls.Events.MANIFEST_PARSED, async function() {
+                await audio.play();
                 listenPlayed();
                 log("HLS.JS Loading Complete starting Playing...")
             });
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
             audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', function() {
-                audio.play();
+            audio.addEventListener('loadedmetadata', async function() {
+                await audio.play();
                 listenPlayed();
                 log("HLS.html5 Loading Complete starting Playing...")
             });
@@ -261,7 +260,12 @@ function listenPlayed() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "block"
     });
-    loadingModal.hide();
+    setTimeout(() => {
+        loadingModal.hide();
+        updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+        setMediaSessionHandler();
+        navigator.mediaSession.playbackState = "playing";
+    }, 500);
 }
 
 function ListenStopped() {
@@ -279,18 +283,6 @@ function ListenStopped() {
         e.style.display = "none"
     });
 }
-
-function verifpaused() {
-    if (!audio.paused) {
-        listenPlayed();
-    } else if (!listenloading) {
-        killListen();
-        ListenStopped();
-    }
-    setTimeout(verifpaused, 500);
-}
-
-verifpaused()
 
 function getQuality() {
     try {

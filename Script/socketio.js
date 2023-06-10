@@ -73,6 +73,9 @@ reqsocket.onload = function () {
         eventradiosSock = d;
         eventradiosSock["now"]["provider"] = "sock";
         eventradiosSock["epg"]["provider"] = "sock";
+        try {
+            updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+        } catch (e) {}
 
         if (id3tag == false) {
             eventradios = JSON.parse(JSON.stringify(eventradiosSock));
