@@ -21,6 +21,27 @@ SocketURL = "";
 SocketDir = "";
 BasicAPIURL = "";
 
+const loadingModalIt = {
+    modal: new bootstrap.Modal(document.querySelector(".listen-loading")),
+    value: false,
+    show : function () {
+        this.value = true;
+        setTimeout(() => {
+            if (this.value)
+                this.modal.show();
+        }, 1000);
+    },
+    hide: function () {
+        this.value = false;
+        this.modal.hide();
+        setTimeout(() => {
+            if (!this.value)
+            this.modal.hide();
+        }, 500);
+    }
+}
+
+loadingModalIt.show();
 
 var reqsocket = new XMLHttpRequest();
 reqsocket.open("GET", cdnURL + "?request=Service/Socket-API/0", true);
@@ -66,6 +87,7 @@ reqsocket.onload = function () {
                 document.querySelector(".btnplayerlarge").style.display = "block";
                 document.querySelector(".btnplayermini").style.display = "block";
             }, 500);
+            loadingModalIt.hide();
         }
     });
 
@@ -196,13 +218,17 @@ reqsocket.send();
 
 
 function trignewEvent() {
-    document.querySelector(".imglargeplayer").setAttribute("src", eventradios["now"]["trackCover"])
-    document.querySelector(".largeplayer-tit").innerHTML = eventradios["now"]["trackTitle"]
-    document.querySelector(".largeplayer-art").innerHTML = eventradios["now"]["trackArtist"]
-    document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
-    document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
-    document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
-    updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+    if (eventradios["now"]["trackCover"] != document.querySelector(".imglargeplayer").getAttribute("src")
+        || eventradios["now"]["trackTitle"] != document.querySelector(".largeplayer-tit").innerHTML
+        || eventradios["now"]["trackArtist"] != document.querySelector(".largeplayer-art").innerHTML) {
+        document.querySelector(".imglargeplayer").setAttribute("src", eventradios["now"]["trackCover"])
+        document.querySelector(".largeplayer-tit").innerHTML = eventradios["now"]["trackTitle"]
+        document.querySelector(".largeplayer-art").innerHTML = eventradios["now"]["trackArtist"]
+        document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
+        document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
+        document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
+        updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+    }
 }
 
 

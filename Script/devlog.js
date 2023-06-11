@@ -20,3 +20,11 @@ function log(a) {
         console.log(a)
     }
 }
+
+function superlog(a) {
+    if (window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1" || window.location.hostname.split(".")[0] == "192") {
+        console.log(a);
+        document.querySelector(".devlogdiv").innerHTML += "<p>" + a + "</p>";
+        devlogz.toggle();
+    }
+}

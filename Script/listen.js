@@ -1,16 +1,18 @@
-const loadingModal = new bootstrap.Modal(document.querySelector(".listen-loading"));
 const listenparamModal = new bootstrap.Modal(document.querySelector(".listen-param"));
 const listenErrormModal = new bootstrap.Modal(document.querySelector(".listen-error"));
-listening = false;
-linkSelected = 0;
-listenloading = false;
+let listening = false;
+let linkSelected = 0;
+let listenloading = false;
+let computedAudioDuration = 0;
+
+
 
 function killListen() {
     ListenStopped();
-    try { player.stop(); } catch (e) {}
-    try { player.detachAudioElement(); } catch (e) {}
-    try { delete player; } catch (e) {}
-    try { hls.destroy(); } catch (e) {}
+    try { player.stop(); } catch (e) { }
+    try { player.detachAudioElement(); } catch (e) { }
+    try { delete player; } catch (e) { }
+    try { hls.destroy(); } catch (e) { }
     audio.pause();
     audio.setAttribute("src", "");
     listening = false;
@@ -26,10 +28,16 @@ function listen() {
         log("Listen() Stop triggered");
         killListen();
     } else {
+        document.querySelectorAll(".play").forEach(e => {
+            e.style.display = "none"
+        });
+        document.querySelectorAll(".stop").forEach(e => {
+            e.style.display = "block"
+        });
         log("Listen() Play triggered");
         listenloading = true;
         listening = true;
-        loadingModal.show();
+        loadingModalIt.show();
         listenErrormModal.hide();
         lnk = link[linkSelected];
         switch (lnk["type"]) {
@@ -43,6 +51,38 @@ function listen() {
                 playMP3IceMeta(lnk);
                 break;
         }
+    }
+}
+
+
+function pollMetadata(latency) {
+    var req = new XMLHttpRequest();
+    req.open("GET", BasicAPIURL + "?origin=MonkeyWeb_hls&cur=" + Math.round(latency));
+    req.send();
+
+    req.onreadystatechange = function () {
+        if (req.readyState == 4 && req.status == 200) {
+            id3tag = true;
+            tag = JSON.parse(this.responseText).current;
+            eventradios["now"]["Type"] = tag["Type"];
+            eventradios["now"]["trackArtist"] = tag["trackArtist"];
+            eventradios["now"]["trackTitle"] = tag["trackTitle"];
+            eventradios["now"]["trackCover"] = tag["trackCover"];
+            eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
+            eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
+            eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
+            eventradios["now"]["late"] = parseInt(tag["late"]);
+            eventradios["now"]["provider"] = "id3";
+            eventElapsed = parseInt(Math.round(new Date().getTime() / 1000) - eventradios["now"]["trackTStart"]);
+            log("HLS.JS Meta File New Metadata => Meta:")
+            log(tag)
+            log("Parsed MetaData :")
+            log(eventradios["now"])
+            setTimeout(trignewEvent, 100);
+        } else if (req.readyState == 4 && req.status != 200) {
+            id3tag = false;
+        }
+
     }
 }
 
@@ -66,7 +106,7 @@ function playHLS(lnk) {
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 }
             }, 3000)
-            hls.on(Hls.Events.ERROR, function(event, data) {
+            hls.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal) {
                     switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
@@ -88,15 +128,15 @@ function playHLS(lnk) {
                 var errorDetails = data.details;
                 var errorFatal = data.fatal;
                 if (errorDetails == "bufferStalledError") {
-                    loadingModal.show();
+                    loadingModalIt.show();
                 }
                 if (errorDetails == "levelLoadError" || errorDetails == "manifestLoadError" || errorDetails == "manifestParsingError") {
                     log("HLS.JS Error : " + errorDetails)
-                    loadingModal.show();
+                    loadingModalIt.show();
                     hls.destroy();
                     setTimeout(() => { playHLS(link[linkSelected]) }, 600);
                 } else if (listening == true && audio.paused) {
-                    loadingModal.show();
+                    loadingModalIt.show();
                     log(errorType + errorDetails + errorFatal)
                     listening = false;
                     ListenStopped()
@@ -105,44 +145,14 @@ function playHLS(lnk) {
             });
             hls.on(Hls.Events.FRAG_LOADED, () => {
 
-                loadingModal.hide();
+                loadingModalIt.hide();
             })
 
-            hls.on(Hls.Events.FRAG_CHANGED, function(event, data) {
-                var req = new XMLHttpRequest();
-                req.open("GET", BasicAPIURL+"?origin=MonkeyWeb_hls&cur="+Math.round(hls.latency));
-                req.send();
-
-                req.onreadystatechange = function() {
-                    if (req.readyState == 4 && req.status == 200) {
-                        id3tag = true;
-                        tag = JSON.parse(this.responseText).current;
-                        eventradios["now"]["Type"] = tag["Type"];
-                        eventradios["now"]["trackArtist"] = tag["trackArtist"];
-                        eventradios["now"]["trackTitle"] = tag["trackTitle"];
-                        eventradios["now"]["trackCover"] = tag["trackCover"];
-                        eventradios["now"]["trackTDur"] = parseInt(tag["trackTDur"]);
-                        eventradios["now"]["trackTStart"] = parseInt(tag["trackTStart"]);
-                        eventradios["now"]["trackTStop"] = parseInt(tag["trackTStop"]);
-                        eventradios["now"]["late"] = parseInt(tag["late"]);
-                        eventradios["now"]["provider"] = "id3";
-                        eventElapsed = parseInt(Math.round(new Date().getTime()/1000) - eventradios["now"]["trackTStart"]);
-                        log("HLS.JS Meta File New Metadata => Meta:")
-                        log(tag)
-                        log("Parsed MetaData :")
-                        log(eventradios["now"])
-                        setTimeout(trignewEvent, 100);
-                    } else if (req.readyState == 4 && req.status != 200) {
-                        id3tag = false;
-                    }
-
-                }
-
+            hls.on(Hls.Events.FRAG_CHANGED, function (event, data) {
+                pollMetadata(audio.duration - audio.currentTime + 3);
             })
 
-
-
-            hls.on(Hls.Events.MANIFEST_PARSED, async function() {
+            hls.on(Hls.Events.MANIFEST_PARSED, async function () {
                 await audio.play();
                 listenPlayed();
                 log("HLS.JS Loading Complete starting Playing...")
@@ -150,23 +160,36 @@ function playHLS(lnk) {
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
             audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', async function() {
+            audio.addEventListener('loadedmetadata', async function () {
                 await audio.play();
+                computedAudioDuration = audio.currentTime;
                 await listenPlayed();
                 log("HLS.html5 Loading Complete starting Playing...")
             });
+            audio.addEventListener("progress", () => {
+                pollMetadata(computedAudioDuration - audio.currentTime + 7);
+            })
         } else {
             // Not compatible
-            loadingModal.hide();
+            loadingModalIt.hide();
             dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
             return false;
         }
     } catch (e) {
-        loadingModal.hide();
+        loadingModalIt.hide();
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (HLS) n'est pas compatible avec votre appareil :(</h6>" })
         log(e)
     }
 }
+
+function computeAudioDuration () {
+    if (audio.currentTime > computedAudioDuration)
+        computedAudioDuration = audio.currentTime;
+    else
+        computedAudioDuration += 1;
+    setTimeout(computeAudioDuration, 1000);
+}
+computeAudioDuration();
 
 function playMP3(lnk) {
     log("Start Listening MP3 HTML5 URL : " + lnk["link"]);
@@ -176,7 +199,7 @@ function playMP3(lnk) {
         log("Listening now MP3");
         listenPlayed();
     } catch (e) {
-        loadingModal.hide();
+        loadingModalIt.hide();
         dispListenError({ "msg": "<h6>Le format de diffusion choisi (MP3) n'est pas compatible avec votre appareil :(</h6>" })
         log("MP3 HTML5 Error " + e)
     }
@@ -233,9 +256,9 @@ function playMP3IceMeta(lnk) {
 
 }
 
-audio.addEventListener("error", function(e) {
+audio.addEventListener("error", function (e) {
     if (listening == true && audio.paused) {
-        loadingModal.hide();
+        loadingModalIt.hide();
         dispListenError({ "msg": "<h6>Impossible de démarrer la lecture :(</h6>" })
         log(JSON.stringify(e, ["message", "arguments", "type", "name"]))
         listening = false;
@@ -260,8 +283,7 @@ async function listenPlayed() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "block"
     });
-    await new Promise(r => setTimeout(r, 300));
-    loadingModal.hide();
+    loadingModalIt.hide();
     await updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
     setMediaSessionHandler();
     navigator.mediaSession.playbackState = "playing";
@@ -271,7 +293,7 @@ function ListenStopped() {
     listenloading = false;
     id3tag = false;
     setTimeout(() => {
-        loadingModal.hide();
+        loadingModalIt.hide();
         eventradios = JSON.parse(JSON.stringify(eventradiosSock));
         trignewEvent();
     }, 500);
@@ -286,7 +308,7 @@ function ListenStopped() {
 function getQuality() {
     try {
         document.querySelector(".quality-disp").innerHTML = Math.floor(hls.levels[hls.currentLevel]["bitrate"] / 1000) + " Kb";
-    } catch (e) {}
+    } catch (e) { }
     setTimeout(getQuality, 100);
 }
 getQuality();
