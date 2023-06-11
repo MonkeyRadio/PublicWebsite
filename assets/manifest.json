@@ -9,12 +9,12 @@
     "start_url": "https://www.monkeyradio.fr/",
     "orientation": "portrait",
     "icons": [{
-            "src": "https://www.monkeyradio.fr/assets/monkeyPNG.png",
-            "sizes": "1080x1080",
+            "src": "/assets/monkeyPNG.png",
+            "sizes": "512x512",
             "type": "image/png"
         },
         {
-            "src": "https://www.monkeyradio.fr/assets/monkeyICO.ico",
+            "src": "/assets/monkeyICO.ico",
             "sizes": "256x256",
             "type": "image/ico"
         }
