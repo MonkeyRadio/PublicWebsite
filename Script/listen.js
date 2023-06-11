@@ -152,7 +152,7 @@ function playHLS(lnk) {
             audio.src = lnk["link"];
             audio.addEventListener('loadedmetadata', async function() {
                 await audio.play();
-                listenPlayed();
+                await listenPlayed();
                 log("HLS.html5 Loading Complete starting Playing...")
             });
         } else {
@@ -252,7 +252,7 @@ function dispListenError(err) {
     listenErrormModal.show();
 }
 
-function listenPlayed() {
+async function listenPlayed() {
     listenloading = false;
     document.querySelectorAll(".play").forEach(e => {
         e.style.display = "none"
@@ -260,12 +260,11 @@ function listenPlayed() {
     document.querySelectorAll(".stop").forEach(e => {
         e.style.display = "block"
     });
-    setTimeout(() => {
-        loadingModal.hide();
-        updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
-        setMediaSessionHandler();
-        navigator.mediaSession.playbackState = "playing";
-    }, 500);
+    await new Promise(r => setTimeout(r, 300));
+    loadingModal.hide();
+    await updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+    setMediaSessionHandler();
+    navigator.mediaSession.playbackState = "playing";
 }
 
 function ListenStopped() {

@@ -73,9 +73,6 @@ reqsocket.onload = function () {
         eventradiosSock = d;
         eventradiosSock["now"]["provider"] = "sock";
         eventradiosSock["epg"]["provider"] = "sock";
-        try {
-            updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
-        } catch (e) {}
 
         if (id3tag == false) {
             eventradios = JSON.parse(JSON.stringify(eventradiosSock));
@@ -205,6 +202,7 @@ function trignewEvent() {
     document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
     document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
     document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
+    updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
 }
 
 

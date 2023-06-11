@@ -16,16 +16,17 @@ function setMediaSession (title, artist, album, artwork) {
         ]
 }
 
-function forceUpdateSession()
+async function forceUpdateSession()
 {
     if ("mediaSession" in navigator) {
         setMediaSession("Monkey", "MonkeyRadio", "MonkeyRadio", "assets/monkeyPNG.png");
+        await new Promise(r => setTimeout(r, 500));
         setMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
         log("Media Session Force Updated");
     }
 }
 
-function updateMediaSession(title, artist, album, artwork) {
+async function updateMediaSession(title, artist, album, artwork) {
     if ("mediaSession" in navigator && !navigator.mediaSession.metadata) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: title,
@@ -47,7 +48,6 @@ function updateMediaSession(title, artist, album, artwork) {
         log("Media Session Created");
     } else if ("mediaSession" in navigator) {
         setMediaSession(title, artist, album, artwork);
-        setTimeout(forceUpdateSession, 500);
         log("Media Session Updated");
     }
 }
