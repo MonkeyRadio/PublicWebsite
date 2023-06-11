@@ -44,6 +44,16 @@ async function setMediaSession(title, artist, album, artwork) {
     navigator.mediaSession.metadata.artist = artist;
     navigator.mediaSession.metadata.artwork = [
         {
+            src: image256.url,
+            sizes: `${image256.sizes.x}x${image256.sizes.y}`,
+            type: image256.type,
+        },
+        {
+            src: artwork,
+            sizes: `200x200`,
+            type: "image/png"
+        },
+        {
             src: image64.url,
             sizes: `${image64.sizes.x}x${image64.sizes.y}`,
             type: image64.type,
@@ -52,16 +62,6 @@ async function setMediaSession(title, artist, album, artwork) {
             src: image128.url,
             sizes: `${image128.sizes.x}x${image128.sizes.y}`,
             type: image128.type,
-        },
-        {
-            src: artwork,
-            sizes: `200x200`,
-            type: "image/png"
-        },
-        {
-            src: image256.url,
-            sizes: `${image256.sizes.x}x${image256.sizes.y}`,
-            type: image256.type,
         },
         {
             src: image512.url,
@@ -95,6 +95,11 @@ async function updateMediaSession(title, artist, album, artwork) {
             album: album,
             artwork: [
                 {
+                    src: image256.url,
+                    sizes: `${image256.sizes.x}x${image256.sizes.y}`,
+                    type: image256.type,
+                },
+                {
                     src: image64.url,
                     sizes: `${image64.sizes.x}x${image64.sizes.y}`,
                     type: image64.type,
@@ -108,11 +113,6 @@ async function updateMediaSession(title, artist, album, artwork) {
                     src: artwork,
                     sizes: `200x200`,
                     type: "image/png"
-                },
-                {
-                    src: image256.url,
-                    sizes: `${image256.sizes.x}x${image256.sizes.y}`,
-                    type: image256.type,
                 },
                 {
                     src: image512.url,
