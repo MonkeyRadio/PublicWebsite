@@ -227,7 +227,8 @@ function trignewEvent() {
         document.querySelector(".player_cover").setAttribute("src", eventradios["now"]["trackCover"])
         document.querySelector(".player_title").innerHTML = eventradios["now"]["trackTitle"]
         document.querySelector(".player_artist").innerHTML = eventradios["now"]["trackArtist"]
-        updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
+        if (listening)
+            updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
     }
 }
 

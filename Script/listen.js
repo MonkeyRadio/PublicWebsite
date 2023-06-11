@@ -26,6 +26,7 @@ function listen() {
     //Check If Playing
     if (listening == true) {
         log("Listen() Stop triggered");
+        destroyMediaSession();
         killListen();
     } else {
         document.querySelectorAll(".play").forEach(e => {
@@ -149,7 +150,8 @@ function playHLS(lnk) {
             })
 
             hls.on(Hls.Events.FRAG_CHANGED, function (event, data) {
-                pollMetadata(audio.duration - audio.currentTime + 3);
+                if (audio.currentTime > 0)
+                    pollMetadata(audio.duration - audio.currentTime + 3);
             })
 
             hls.on(Hls.Events.MANIFEST_PARSED, async function () {
@@ -160,15 +162,7 @@ function playHLS(lnk) {
         } else if (!!audio.canPlayType && (audio.canPlayType('application/vnd.apple.mpegURL') != '' || audio.canPlayType('audio/mpegurl') != '')) {
             log("HLS Stock")
             audio.src = lnk["link"];
-            audio.addEventListener('loadedmetadata', async function () {
-                await audio.play();
-                computedAudioDuration = audio.currentTime;
-                await listenPlayed();
-                log("HLS.html5 Loading Complete starting Playing...")
-            });
-            audio.addEventListener("progress", () => {
-                pollMetadata(computedAudioDuration - audio.currentTime + 7);
-            })
+            audio.load();
         } else {
             // Not compatible
             loadingModalIt.hide();
@@ -181,6 +175,17 @@ function playHLS(lnk) {
         log(e)
     }
 }
+
+audio.addEventListener('loadedmetadata', async function () {
+    await audio.play();
+    await listenPlayed();
+    computedAudioDuration = audio.currentTime;
+    log("HLS.html5 Loading Complete starting Playing...")
+});
+audio.addEventListener("progress", () => {
+    if (audio.currentTime > 0)
+        pollMetadata(computedAudioDuration - audio.currentTime + 7);
+})
 
 function computeAudioDuration () {
     if (audio.currentTime > computedAudioDuration)
@@ -286,7 +291,6 @@ async function listenPlayed() {
     loadingModalIt.hide();
     await updateMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
     setMediaSessionHandler();
-    navigator.mediaSession.playbackState = "playing";
 }
 
 function ListenStopped() {
