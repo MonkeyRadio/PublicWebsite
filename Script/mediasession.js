@@ -44,29 +44,9 @@ async function setMediaSession(title, artist, album, artwork) {
     navigator.mediaSession.metadata.artist = artist;
     navigator.mediaSession.metadata.artwork = [
         {
-            src: image256.url,
-            sizes: `${image256.sizes.x}x${image256.sizes.y}`,
-            type: image256.type,
-        },
-        {
             src: artwork,
             sizes: `200x200`,
             type: "image/png"
-        },
-        {
-            src: image64.url,
-            sizes: `${image64.sizes.x}x${image64.sizes.y}`,
-            type: image64.type,
-        },
-        {
-            src: image128.url,
-            sizes: `${image128.sizes.x}x${image128.sizes.y}`,
-            type: image128.type,
-        },
-        {
-            src: image512.url,
-            sizes: `${image512.sizes.x}x${image512.sizes.y}`,
-            type: image512.type,
         }
     ]
 }
@@ -74,57 +54,29 @@ async function setMediaSession(title, artist, album, artwork) {
 async function forceUpdateSession() {
     if ("mediaSession" in navigator) {
         setMediaSession("Monkey", "MonkeyRadio", "MonkeyRadio", "assets/monkeyPNG.png");
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 1500));
         await setMediaSession(eventradios.now.trackTitle, eventradios.now.trackArtist, "MonkeyRadio", eventradios.now.trackCover);
         log("Media Session Force Updated");
     }
 }
 
-
 async function updateMediaSession(title, artist, album, artwork) {
     superlog("MediaSession");
-    if ("mediaSession" in navigator && !navigator.mediaSession.metadata) {
+    if ("mediaSession" in navigator) {
         navigator.mediaSession.playbackState = "playing";
-        let image64 = await convertImage(artwork, 64, 64);
-        let image128 = await convertImage(artwork, 128, 128);
-        let image256 = await convertImage(artwork, 256, 256);
-        let image512 = await convertImage(artwork, 512, 512);
         navigator.mediaSession.metadata = new MediaMetadata({
             title: title,
             artist: artist,
             album: album,
             artwork: [
                 {
-                    src: image256.url,
-                    sizes: `${image256.sizes.x}x${image256.sizes.y}`,
-                    type: image256.type,
-                },
-                {
-                    src: image64.url,
-                    sizes: `${image64.sizes.x}x${image64.sizes.y}`,
-                    type: image64.type,
-                },
-                {
-                    src: image128.url,
-                    sizes: `${image128.sizes.x}x${image128.sizes.y}`,
-                    type: image128.type,
-                },
-                {
                     src: artwork,
                     sizes: `200x200`,
                     type: "image/png"
-                },
-                {
-                    src: image512.url,
-                    sizes: `${image512.sizes.x}x${image512.sizes.y}`,
-                    type: image512.type,
                 }
             ],
         });
         log("Media Session Created");
-    } else if ("mediaSession" in navigator) {
-        setMediaSession(title, artist, album, artwork);
-        log("Media Session Updated");
     }
 }
 
