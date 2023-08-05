@@ -28,9 +28,7 @@ export default defineNuxtPlugin((app) => {
     // Add the custom iconset
     icons: {
       defaultSet: "custom",
-      aliases,
       sets: {
-        custom,
       },
     },
   });

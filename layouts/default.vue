@@ -15,7 +15,7 @@
           </VCardActions>
         </VCard>
       </VDialog>
-      <Loading v-model="loading" />
+      <LoadingDialog v-model="loading" />
     </VApp>
   </div>
 </template>
