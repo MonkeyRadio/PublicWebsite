@@ -8,16 +8,15 @@ const description =
 const image = "https://monkeyradio.fr/large-icon.png";
 const url = "https://monkeyradio.fr";
 
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   vite: {
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: '@use "@/assets/scss/_vars.scss" as *;',
-        }
-      }
-    }
+        },
+      },
+    },
   },
   // import styles
   css: ["@/assets/main.scss"],
@@ -28,21 +27,21 @@ export default defineNuxtConfig({
     terser: {
       terserOptions: {
         compress: {
-          drop_console: true
-        }
-      }
+          drop_console: true,
+        },
+      },
     },
-    transpile: ["vuetify"]
+    transpile: ["vuetify"],
   } as any,
   modules: [
     "@kevinmarrec/nuxt-pwa",
-    async (options, nuxt) => {
+    (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) =>
         // @ts-ignore
-        config.plugins.push(vuetify())
+        config.plugins.push(vuetify()),
       );
     },
-    '@pinia/nuxt',
+    "@pinia/nuxt",
   ],
 
   app: {
@@ -136,14 +135,13 @@ export default defineNuxtConfig({
       name: shortTitle,
       author: "Monkey",
       theme_color: "#9d5762",
-      description: description,
+      description,
     },
     manifest: {
       name: shortTitle,
       short_name: shortTitle,
       theme_color: "#9d5762",
-      description: description,
+      description,
     },
   },
-
 });

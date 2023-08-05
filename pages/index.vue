@@ -1,6 +1,4 @@
-<template>
-  
-</template>
+<template></template>
 
 <script setup lang="ts">
 useHead({
@@ -8,11 +6,8 @@ useHead({
   meta: [
     {
       name: "description",
-      content: "Monkey Radio"
-    }
-  ]
-})
-
-const router = useRouter();
-
+      content: "Monkey Radio",
+    },
+  ],
+});
 </script>

@@ -2,7 +2,7 @@
   <div>
     <VApp>
       <VMain>
-        <LayoutsHeaderDefault/>
+        <LayoutsHeaderDefault />
         <slot />
       </VMain>
       <VDialog v-model="networkError" width="auto" persistent>
