@@ -98,212 +98,25 @@
             <v-app-bar elevation="3" app color="primary">
 
                 <v-row>
-
-                    <v-col cols="auto" class="d-flex d-lg-none">
-                        <v-app-bar-nav-icon @click="nav = true"></v-app-bar-nav-icon>
-                    </v-col>
-
                     <v-col class="col align-center">
-
                         <h1 class="d-none d-sm-flex ns" style="cursor:pointer">Monkey Radio</h1>
-                        <h1 class="d-flex d-sm-none ns" style="cursor:pointer">Monkey</h1>
-
-
                     </v-col>
-
-
-                    <v-col class="d-none d-lg-flex col-auto align-center">
-
-
-                        <v-tabs background-color="primary">
-                            <v-tabs-slider color="white"></v-tabs-slider>
-                            <v-tab class="me-3" v-for="item in navigation">{{item.title}}</v-tab>
-                        </v-tabs>
-
-                    </v-col>
-
-
-                    <v-col class="d-none d-lg-flex justify-end">
-                        <div>
-                            <v-row v-ripple style="cursor:pointer;" onclick="monkeyLIVEPlay()">
-                                <v-col cols="auto" class="align-center px-0 py-0">
-                                    <img :src="radioEvents.epg.epgCover" draggable="false" style="height: 68px;"
-                                        class="d-flex ns" alt="">
-                                </v-col>
-                                <v-col cols="auto" class="pe-0" style="max-width: 10vw; min-width: 7vw;">
-                                    <v-list-item-title class="bold ns justify-center d-flex">{{radioEvents.epg.epgTitle}}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle class="bold ns justify-center d-flex">{{radioEvents.epg.epgStartReadable}}H -> {{radioEvents.epg.epgStopReadable}}H
-                                    </v-list-item-subtitle>
-                                </v-col>
-                                <v-col cols="auto" class="d-flex align-center">
-                                    <v-icon size="40">mdi-play-circle-outline</v-icon>
-                                </v-col>
-                            </v-row>
-                        </div>
-                    </v-col>
-
-
-                    <v-col class="d-flex col-auto d-lg-none align-center justify-end">
-
-                        <v-btn icon class="d-block d-lg-none" onclick="monkeyLIVEPlay()">
-                            <v-icon size="40">mdi-play-circle-outline</v-icon>
-                        </v-btn>
-
-                    </v-col>
-
                 </v-row>
-
             </v-app-bar>
 
 
-            <v-dialog v-model="nav" fullscreen transition="dialog-top-transition">
-                <v-card>
-                    <v-toolbar dark color="primary">
-                        <v-row>
-                            <v-col cols="auto">
-                                <v-btn icon dark @click="nav = false">
-                                    <v-icon>mdi-close</v-icon>
-                                </v-btn>
-                            </v-col>
-
-                            <v-col class="d-flex justify-center">
-                                <h1 class="d-flex">Monkey</h1>
-                            </v-col>
-
-                            <v-col cols="auto" style="pointer-events: none; opacity: 0;">
-                                <v-btn icon dark @click="nav = false">
-                                    <v-icon>mdi-close</v-icon>
-                                </v-btn>
-                            </v-col>
-
-                        </v-row>
-                    </v-toolbar>
-
-                </v-card>
-            </v-dialog>
-
-
-
-            <div class="fsBottom ns" style="bottom: -65px;">
-
-
-                <v-progress-linear class="pabs" color="var(--primary)" :value="fsPlayer.pBar" onclick="fsDragShow()">
-                </v-progress-linear>
-
-                <v-row class="mt-0">
-
-                    <v-col class="d-none d-lg-flex align-center justify-center" onclick="fsDragShow()">
-                        <v-icon class="d-flex justify-center primaryT" color="var(--primary)">
-                            {{fsPlayer.iconType}}
-                        </v-icon>
-                        <p class="pfitC d-flex mb-0 ms-1" style="color: var(--primary)">{{fsPlayer.type}}
-                        </p>
-                    </v-col>
-
-                    <v-col class="col-12 col-lg-6 pt-0 pb-0 ms-3">
-
-                        <v-row class="mt-0 ms-0">
-
-                            <v-col class="d-none d-lg-block"></v-col>
-
-                            <v-col cols="auto" class="d-flex align-center pt-0" onclick="fsDragShow()">
-                                <img draggable="false" :src="fsPlayer.mediaData.cover"
-                                    style="height: 55px; width: auto; border-radius: 5px;" alt="">
-                            </v-col>
-
-                            <v-col cols="auto" onclick="fsDragShow()">
-
-                                <v-row>
-                                    <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0 d-flex align-center">
-                                        <p class="pFit">{{fsPlayer.mediaData.title}}</p>
-                                    </v-col>
-                                </v-row>
-
-                                <v-row class="mt-0">
-                                    <v-col cols="auto" class="ps-0 pe-0 pt-0 pb-0">
-                                        <p class="pFit" style="color: grey;">{{fsPlayer.mediaData.artist}}</p>
-                                    </v-col>
-                                </v-row>
-
-                            </v-col>
-
-
-                            <v-col class="d-flex d-lg-none justify-end align-center pt-0" style="margin-right: 24px;">
-
-                                <v-col onclick="fsDragShow()"></v-col>
-
-                                <v-btn onclick="fsv.destroy(); fsB(false)" icon>
-                                    <v-icon>mdi-close</v-icon>
-                                </v-btn>
-
-                                <v-btn icon class="ms-2 fsPlayButton">
-                                    <v-icon>{{fsPlayer.playButton}}</v-icon>
-                                </v-btn>
-                            </v-col>
-
-                            <v-col class="d-none d-lg-block"></v-col>
-                        </v-row>
-
-
-                    </v-col>
-
-                    <v-col class="d-none d-lg-flex justify-center" onclick="fsDragShow()">
-
-                        <v-col cols="auto" class="d-none d-lg-flex fsVolCol">
-
-                        </v-col>
-
-                        <v-btn class="d-flex justify-center" onclick="fsv.destroy(); fsB(false)" icon>
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-
-                        <v-btn class="d-flex justify-center ms-2 fsPlayButton" icon>
-                            <v-icon>{{fsPlayer.playButton}}</v-icon>
-                        </v-btn>
-                    </v-col>
-                    </v-col>
-
-                </v-row>
-
-            </div>
-            <v-dialog v-model="locPrompt" max-width="600" persistent>
+            <v-dialog v-model="stopDev" max-width="600" persistent>
                 <v-card>
                     <v-card-title class="text-h5">
-                        Géolocalisation
+                        Fin du support de cette version
                     </v-card-title>
 
                     <v-card-text class="mt-3">
-                        Utilisez le suivi flux auto pour profiter de votre radio au plus près de chez vous ! <br>
-                        Pour profiter d'une experience 100% Monkey, veuillez activer la géolocalisation...
-                        <br><br>
-                        ps : ce n'est pas pour vous pister promis :)
+                        La version dev de Monkey Radio arrive à sa fin, la version finale est en cours de développement.
+                        <br/>
+                        <br/>
+                        Rendez-vous sur la version de production de Monkey Radio : <a href="https://monkeyradio.fr">https://monkeyradio.fr</a>
                     </v-card-text>
-
-                    <v-card-actions class="d-none d-lg-flex">
-                        <v-spacer></v-spacer>
-
-                        <v-btn color="green darken-1" text @click="locPrompt = false">
-                            Non, desactiver le flux auto
-                        </v-btn>
-
-                        <v-btn color="green darken-1" text @click="locPrompt = false" onclick="locPrompt();">
-                            Activer la géolocalisation
-                        </v-btn>
-                    </v-card-actions>
-
-                    <v-card-actions class="d-flex d-lg-none">
-
-                        <v-spacer></v-spacer>
-
-                        <v-btn color="green darken-1" text @click="locPrompt = false">
-                            Non
-                        </v-btn>
-
-                        <v-btn color="green darken-1" text @click="locPrompt = false" onclick="locPrompt();">
-                            Ok
-                        </v-btn>
-                    </v-card-actions>
                 </v-card>
             </v-dialog>
 
@@ -323,15 +136,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.2.1/hls.min.js"
         integrity="sha512-Pz8EFXS+i+7OkM6UbM76gAKW8OE/JFzKvSM8CzKQuE27AOuUfnmvt9SQFhjVyudkJB7ESNYivCQwvAzyP4pnyQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="Script/vueInst.js"></script>
+    <script src="Script/vueInst.js?v=2"></script>
     <script src="Script/theme.js"></script>
-
-    <!-- FS PLAYER -->
-    <script src="Script/AutoDiffPlayer.js"></script>
-    <script src="Script/fsPlayer.js"></script>
-    <script src="Script/fsMask.js"></script>
-
-    <script src="Script/base.js"></script>
 </body>
 
 </html>

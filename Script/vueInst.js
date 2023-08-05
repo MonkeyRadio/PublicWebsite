@@ -25,6 +25,9 @@ vuetify = new Vue({
         this.$vuetify.theme.dark = true;
         document.dispatchEvent(VueLoad);
         setTimeout(() => { document.dispatchEvent(VueLoadAPI) }, 50);
+        document.querySelector(".loadingSplash").style.opacity = 0;
+        setTimeout(() => { document.querySelector(".loadingSplash").style.display = "none"; }, 300)
+        document.querySelector("#app").style.display = "";
     },
     methods: {
     },
@@ -33,20 +36,22 @@ vuetify = new Vue({
 
         // FS Player
 
+        stopDev: true,
+
         fsPlayer: {
             err: {
                 msg: "",
                 dial: {
-                    act : false,
-                    title : "Une Erreur est survenue",
-                    msg : "",
-                    ok : "OK"
+                    act: false,
+                    title: "Une Erreur est survenue",
+                    msg: "",
+                    ok: "OK"
                 }
             },
             txt: {
                 live: "Direct"
             },
-            metadata : {
+            metadata: {
                 title: "",
                 subTit: "",
                 desc: "",
@@ -57,13 +62,13 @@ vuetify = new Vue({
                 background: "",
                 coverSec: ""
             },
-            mediaData : {
+            mediaData: {
                 active: false,
                 title: "",
                 artist: "",
                 cover: "",
-                timeStart : 0,
-                timeEnd : 0,
+                timeStart: 0,
+                timeEnd: 0,
                 duration: 0,
             },
             shown: true,
@@ -92,7 +97,7 @@ vuetify = new Vue({
         ],
 
         radioEvents: {
-            
+
             now: {
                 trackCover: "",
                 trackTitle: "",
