@@ -13,12 +13,17 @@
     "@iconify/vue": "^4.1.1",
     "@kevinmarrec/nuxt-pwa": "^0.17.0",
     "@nuxtjs/google-fonts": "^3.0.0",
-    "sass": "^1.62.0",
+    "sass": "^1.64.2",
     "vuetify": "^3.1.15"
   },
   "dependencies": {
-    "nuxt": "latest",
+    "@pinia/nuxt": "^0.4.11",
+    "nuxt": "^3.6.5",
+    "pinia": "^2.1.6",
     "socket.io-client": "^4.6.2",
     "vite-plugin-vuetify": "^1.0.2"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

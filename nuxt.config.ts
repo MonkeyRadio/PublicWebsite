@@ -10,6 +10,15 @@ const url = "https://monkeyradio.fr";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/scss/_vars.scss" as *;',
+        }
+      }
+    }
+  },
   // import styles
   css: ["@/assets/main.scss"],
   // enable takeover mode
@@ -33,6 +42,7 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify())
       );
     },
+    '@pinia/nuxt',
   ],
 
   app: {
