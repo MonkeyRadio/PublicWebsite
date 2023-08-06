@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLiveMetaStore } from "@/stores/liveMetaStore";
-import { getCurrentShow, getCurrentTrack } from '@/services/api'
+import { getCurrentShow, getCurrentTrack } from "@/services/api";
 
 const LiveMetaStore = useLiveMetaStore();
 
