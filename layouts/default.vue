@@ -21,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { api } from "@/services/api";
+
 const retry = () => {
   window.location.reload();
 };
