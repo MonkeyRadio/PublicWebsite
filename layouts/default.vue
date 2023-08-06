@@ -2,6 +2,7 @@
   <div>
     <VApp>
       <VMain>
+        <LayoutsHeaderDefault />
         <slot />
       </VMain>
       <VDialog v-model="networkError" width="auto" persistent>
@@ -14,7 +15,7 @@
           </VCardActions>
         </VCard>
       </VDialog>
-      <Loading :model="loading" />
+      <LoadingDialog v-model="loading" />
     </VApp>
   </div>
 </template>
@@ -29,12 +30,12 @@ const loading = ref(false);
 
 onNuxtReady(async () => {
   loading.value = true;
-  const router = useRouter();
 
   try {
     await api.ping();
     loading.value = false;
   } catch (error: any) {
+    loading.value = false;
     networkError.value = true;
   }
 });

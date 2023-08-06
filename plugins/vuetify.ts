@@ -12,11 +12,11 @@ export default defineNuxtPlugin((app) => {
         dark: {
           dark: true,
           colors: {
-            primary: '#9d5762',
-            secondary: '#ff8c00',
-            accent: '#9c27b0'
-          }
-        }
+            primary: "#9d5762",
+            secondary: "#ff8c00",
+            accent: "#9c27b0",
+          },
+        },
       },
       // add color variations
       //   variations: {
@@ -28,9 +28,7 @@ export default defineNuxtPlugin((app) => {
     // Add the custom iconset
     icons: {
       defaultSet: "custom",
-      aliases,
       sets: {
-        custom,
       },
     },
   });
