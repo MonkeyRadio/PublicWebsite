@@ -70,20 +70,23 @@ onMounted(() => {
   .show-summary {
     display: flex;
     padding-bottom: 50px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
 
     .show-image {
       background-size: cover;
       background-position: center;
       transition: all 0.3s;
-      width: 300px;
-      height: 300px;
+      flex: 1 1 260px;
+      height: 260px;
+      max-width: 260px;
       border-radius: 30px;
-      margin-right: 25px;
     }
 
     .show-side {
-      max-width: 50%;
-
+      flex: 1 1 260px;
       padding: 25px 0px;
 
       * {
@@ -100,11 +103,29 @@ onMounted(() => {
       .show-desc {
         margin-top: 15px;
         margin-left: 2px;
-        height: 140px;
+        max-height: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .card {
+    padding: 50px 20px;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .card {
+    padding: 50px 10px;
   }
 }
 </style>

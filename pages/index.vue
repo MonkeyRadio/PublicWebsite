@@ -53,7 +53,20 @@ onMounted(async () => {
   flex-wrap: wrap;
 
   .show-card {
-    max-width: 45%;
+    width: 100%;
+    max-width: 800px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .home-container {
+    padding: 40px 30px;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .home-container {
+    padding: 40px 10px;
   }
 }
 </style>

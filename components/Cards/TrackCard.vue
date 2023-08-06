@@ -23,12 +23,14 @@ const getCssImageBackground = computed(() => {
 <style lang="scss" scoped>
 .track-container {
   background-color: $primary-dimmed;
-  border-radius: 2px;
+  border-radius: 5px;
   display: flex;
   height: 80px;
   align-items: center;
   width: fit-content;
   padding-right: 10px;
+  min-width: 350px;
+  max-width: 100%;
 
   .track-cover {
     background-size: cover;
@@ -36,14 +38,25 @@ const getCssImageBackground = computed(() => {
     transition: all 0.3s;
     width: 80px;
     height: 80px;
-    border-radius: 2px;
+    border-radius: 5px 0px 0px 5px;
     margin-right: 10px;
   }
 
   .track-information {
+    width: calc(100% - 90px);
+
     * {
       margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .track-container {
+    min-width: unset;
   }
 }
 </style>
