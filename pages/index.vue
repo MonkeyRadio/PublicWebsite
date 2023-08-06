@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLiveMetaStore } from "@/stores/liveMetaStore";
+import { getCurrentShow, getCurrentTrack } from '@/services/api'
 
 const LiveMetaStore = useLiveMetaStore();
 
@@ -13,23 +14,28 @@ useHead({
   ],
 });
 
-onMounted(() => {
-  // For model only
+async function refreshCardShow() {
+  const currentShow = await getCurrentShow();
+  const currentTrack = await getCurrentTrack();
   LiveMetaStore.setShow({
-    title: "NRJ Extravadance",
-    description:
-      "Le plus grand club du monde c'est NRJ Extravadance tout l'été ! Avec tous les plus gros hits Dance et les mix des plus grands DJ mondiaux : Tiësto, Martin Garrix, Armin Van Burren, Afrojack, Dimitri Vegas...",
-    image: "https://cdn-profiles.tunein.com/p338733/images/logog.png?t=160130",
+    title: currentShow.epgTitle,
+    description: currentShow.epgDesc,
+    image: currentShow.epgCover,
     ts: {
-      start: 1691262000000,
-      end: 1691294400000,
+      start: currentShow.epgStart * 1000,
+      end: currentShow.epgStop * 1000,
     },
   });
   LiveMetaStore.setTrack({
-    title: "Love Tonight (David Guetta Remix Edit)",
-    artist: "Shouse",
-    cover: "https://i.scdn.co/image/ab67616d00001e0228eec1bed4fe754299ea1e96",
+    title: currentTrack.trackTitle,
+    artist: currentTrack.trackArtist,
+    cover: currentTrack.trackCover,
   });
+}
+
+onMounted(async () => {
+  refreshCardShow();
+  setInterval(refreshCardShow, 10000);
 });
 </script>
 
