@@ -24,7 +24,7 @@ withDefaults(
 }
 
 .progress {
-  width: 10%;
+  max-width: 100%;
   height: 10px;
   border-radius: 7px;
   background: v-bind(activeColor);
