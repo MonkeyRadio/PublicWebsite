@@ -19,7 +19,9 @@ async function refreshCardShow() {
   const currentTrack = await getCurrentTrack();
   LiveMetaStore.setShow({
     title: currentShow.epgTitle,
-    description: currentShow.epgDesc,
+    description: `Les DJ superstars mixent dans l’émission référence du clubbing et de la dance présenté par Thibault : un DJ différent prendra les commandes de l’antenne pour des sets exclusifs.
+
+Retrouvez également Thibault dans La Story NRJ Extravadance : votre podcast NRJ où vous découvrez les meilleures anecdotes de vos DJ’s préférés.`,
     image: currentShow.epgCover,
     ts: {
       start: currentShow.epgStart * 1000,
@@ -53,7 +55,20 @@ onMounted(async () => {
   flex-wrap: wrap;
 
   .show-card {
-    max-width: 45%;
+    width: 100%;
+    max-width: 800px;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .home-container {
+    padding: 40px 30px;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .home-container {
+    padding: 40px 10px;
   }
 }
 </style>
