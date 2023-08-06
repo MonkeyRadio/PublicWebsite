@@ -41,13 +41,19 @@ onMounted(() => {
             <h5>{{ getTimeStart }}h</h5>
             <h5>{{ getTimeStop }}h</h5>
           </div>
-          <ProgressRoundedBar :value="percentageElapsed" active-color="var(--primary)"></ProgressRoundedBar>
+          <ProgressRoundedBar
+            :value="percentageElapsed"
+            active-color="var(--primary)"
+          ></ProgressRoundedBar>
         </div>
         <p class="show-desc">{{ LiveMetaStore.show.description }}</p>
       </div>
     </div>
-    <CardsTrackCard :title="LiveMetaStore.track.title" :artist="LiveMetaStore.track.artist"
-      :cover="LiveMetaStore.track.cover"></CardsTrackCard>
+    <CardsTrackCard
+      :title="LiveMetaStore.track.title"
+      :artist="LiveMetaStore.track.artist"
+      :cover="LiveMetaStore.track.cover"
+    ></CardsTrackCard>
   </div>
 </template>
 
