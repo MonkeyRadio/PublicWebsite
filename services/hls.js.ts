@@ -138,12 +138,13 @@ export default class Hlsjs {
   }
 
   updateMediaSession(media: Media) {
-    if (!navigator.mediaSession.metadata || (
-      navigator.mediaSession.metadata.title != media.title ||
-      navigator.mediaSession.metadata.artist != media.artist ||
-      navigator.mediaSession.metadata.album != media.album ||
-      navigator.mediaSession.metadata.artwork[0].src != media.artwork
-    ))
+    if (
+      !navigator.mediaSession.metadata ||
+      navigator.mediaSession.metadata.title !== media.title ||
+      navigator.mediaSession.metadata.artist !== media.artist ||
+      navigator.mediaSession.metadata.album !== media.album ||
+      navigator.mediaSession.metadata.artwork[0].src !== media.artwork
+    )
       navigator.mediaSession.metadata = new MediaMetadata({
         title: media.title,
         artist: media.artist,
