@@ -10,15 +10,41 @@ const volumePrependIcon = computed(() => {
   if (playerStore.volume <= 70) return "mdi-volume-medium";
   return "mdi-volume-high";
 });
+
+defineProps<{
+  fired: boolean;
+}>();
+
+const volume = computed({
+  get() {
+    return playerStore.volume;
+  },
+  set(value) {
+    playerStore.setVolume(value);
+  },
+});
+
+const percentageElapsed = ref(0);
+
+function getPercentageElapsed() {
+  const elapsed = new Date().getTime() - playerStore.track.ts.start;
+  return (elapsed * 100) / playerStore.track.ts.duration;
+}
+
+onMounted(() => {
+  setInterval(() => {
+    percentageElapsed.value = getPercentageElapsed();
+  }, 200);
+});
 </script>
 
 <template>
-  <div class="bottom-player bottom-player-opened" @click="console.log('CLICKED')">
+  <div
+    :class="{ 'bottom-player': true, 'bottom-player-opened': fired }"
+    @click="console.log('CLICKED')"
+  >
     <div class="bottom-player-progress-bar">
-      <ProgressThinBar
-        :value="playerStore.progressed"
-        active-color="var(--primary)"
-      ></ProgressThinBar>
+      <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)"></ProgressThinBar>
     </div>
     <div class="bottom-player-container">
       <div class="show-summary">
@@ -40,17 +66,17 @@ const volumePrependIcon = computed(() => {
       <div class="actions">
         <div class="actions-container" @click.stop>
           <v-slider
-            v-model="playerStore.volume"
+            v-model="volume"
             class="volume-slider"
             :prepend-icon="volumePrependIcon"
             hide-details
-            @click:prepend="playerStore.volume = 0"
+            @click:prepend="volume = 0"
           ></v-slider>
           <v-btn icon variant="text" @click="playerStore.playPause">
             <v-icon v-if="playerStore.state.playing">mdi-pause</v-icon>
             <v-icon v-else>mdi-play</v-icon>
           </v-btn>
-          <v-btn icon="mdi-close" variant="text"></v-btn>
+          <v-btn icon="mdi-close" variant="text" @click="stopStuff"></v-btn>
         </div>
       </div>
     </div>

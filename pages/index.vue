@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { useLiveMetaStore } from "@/stores/liveMetaStore";
-import { usePlayerStore } from "@/stores/playerStore";
-import { getCurrentShow, getCurrentTrack } from "@/services/api";
-
-const LiveMetaStore = useLiveMetaStore();
-const playerStore = usePlayerStore();
-
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [
@@ -16,43 +9,9 @@ useHead({
   ],
 });
 
-async function refreshCardShow() {
-  const currentShow = await getCurrentShow();
-  const currentTrack = await getCurrentTrack();
-  LiveMetaStore.setShow({
-    title: currentShow.epgTitle,
-    description: currentShow.epgDesc,
-    image: currentShow.epgCover,
-    ts: {
-      start: currentShow.epgStart * 1000,
-      end: currentShow.epgStop * 1000,
-    },
-  });
-  LiveMetaStore.setTrack({
-    title: currentTrack.trackTitle,
-    artist: currentTrack.trackArtist,
-    cover: currentTrack.trackCover,
-  });
-  playerStore.setMetadata({
-    progressed:
-      ((new Date().getTime() - currentTrack.trackTStart * 1000) * 100) /
-      (currentTrack.trackTDur * 1000),
-    show: {
-      name: currentShow.epgTitle,
-      subName: currentShow.epgHosts,
-      picture: currentShow.epgCover,
-    },
-    track: {
-      title: currentTrack.trackTitle,
-      artist: currentTrack.trackArtist,
-      picture: currentTrack.trackCover,
-    },
-  });
-}
-
 onMounted(() => {
-  refreshCardShow();
-  setInterval(refreshCardShow, 10000);
+  liveCardRefresh();
+  setInterval(liveCardRefresh, 10000);
 });
 </script>
 
