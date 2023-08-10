@@ -54,7 +54,7 @@ export async function playNewStuff(
   player.setDestroyEvent(onStopStuff);
   player.setMetadataUrl(metadataFetchUrl, setTrackMetadata);
   player.setShow(stuffMetadata);
-  await player.load(opt.url);
+  await player.load(opt.url, opt.type);
   PlayerStore.getAudioRef().play();
   PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
   PlayerStore.setShow({
