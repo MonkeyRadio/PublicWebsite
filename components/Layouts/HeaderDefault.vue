@@ -12,7 +12,7 @@ import { brandConfig } from "@/constants/brandConfig";
       />
       <h1 class="brand-name">{{ brandConfig.brandName }}</h1>
     </div>
-    <ButtonsLinkAnimatedWithIcon text="Live" class="live-button">
+    <ButtonsLinkAnimatedWithIcon text="Live" class="live-button" @click="playLive">
       <path d="M15 12.3301L9 16.6603L9 8L15 12.3301Z" fill="currentColor" />
     </ButtonsLinkAnimatedWithIcon>
   </div>

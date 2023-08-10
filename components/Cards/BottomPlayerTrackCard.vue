@@ -15,7 +15,7 @@ const getCssImageBackground = computed(() => {
     <div class="track-cover" :style="getCssImageBackground"></div>
     <div class="track-information">
       <p class="track-title">{{ title }}</p>
-      <p clss="track-artist">{{ artist }}</p>
+      <p class="track-artist">{{ artist }}</p>
     </div>
   </div>
 </template>
@@ -44,6 +44,10 @@ const getCssImageBackground = computed(() => {
   .track-information {
     width: fit-content;
     max-width: calc(100% - 70px);
+
+    .track-artist {
+      color: gray;
+    }
 
     * {
       margin: 0;

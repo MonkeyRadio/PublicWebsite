@@ -48,3 +48,32 @@ export const getCurrentTrack = async (): Promise<Track> => {
   } = await $fetch(`${apiURL}/?cur`);
   return dataTrack.current;
 };
+
+export const getMetadataWithEncodedDelay = async (url: string, delay: number): Promise<Track> => {
+  let decodedUrl = url;
+  if (decodedUrl.includes("${delay}"))
+    decodedUrl = decodedUrl.replaceAll("${delay}", delay.toString());
+  const dataTrack: {
+    current: Track;
+  } = await $fetch(`${apiURL}${decodedUrl}`);
+  return dataTrack.current;
+}
+
+export type Onair = {
+  tit: string;
+  cover: string;
+  DiffLinkPath: string;
+  radioUrl: string;
+  smallTit: string;
+  DiffLinkType: "hls" | "ice";
+  AutoDiffLinkPath: string
+  IceDiffLinkPath: string;
+  WebDisTit: string;
+  LiveMetadataURL: string
+}
+
+export const getRadioConfig = async (): Promise<{
+  onair: Onair;
+}> => {
+  return $fetch(`${apiURL}/?onair`);
+}
