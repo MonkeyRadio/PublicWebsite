@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VApp>
+    <VApp :class="{ transition: true, 'padding-for-bottom-player': playerStore.fired }">
       <VMain>
         <LayoutsHeaderDefault />
         <slot />
@@ -46,3 +46,13 @@ onNuxtReady(async () => {
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.transition {
+  transition: all 0.3s;
+}
+
+.padding-for-bottom-player {
+  padding-bottom: $bottom_player_height;
+}
+</style>
