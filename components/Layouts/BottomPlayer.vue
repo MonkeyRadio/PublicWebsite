@@ -84,8 +84,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-$bottom_player_height: 90px;
-
 .bottom-player {
   position: fixed;
   bottom: 0;
