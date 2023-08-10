@@ -16,7 +16,7 @@
         </VCard>
       </VDialog>
       <LoadingDialog v-model="loading" />
-      <LayoutsBottomPlayer/>
+      <LayoutsBottomPlayer />
     </VApp>
   </div>
 </template>

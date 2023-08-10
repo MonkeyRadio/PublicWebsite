@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLiveMetaStore } from "@/stores/liveMetaStore";
-import { usePlayerStore } from '@/stores/playerStore';
+import { usePlayerStore } from "@/stores/playerStore";
 import { getCurrentShow, getCurrentTrack } from "@/services/api";
 
 const LiveMetaStore = useLiveMetaStore();
@@ -34,21 +34,23 @@ async function refreshCardShow() {
     cover: currentTrack.trackCover,
   });
   playerStore.setMetadata({
-    progressed: (new Date().getTime() - (currentTrack.trackTStart * 1000)) * 100 / (currentTrack.trackTDur * 1000),
+    progressed:
+      ((new Date().getTime() - currentTrack.trackTStart * 1000) * 100) /
+      (currentTrack.trackTDur * 1000),
     show: {
       name: currentShow.epgTitle,
       subName: currentShow.epgHosts,
-      picture: currentShow.epgCover
+      picture: currentShow.epgCover,
     },
     track: {
       title: currentTrack.trackTitle,
       artist: currentTrack.trackArtist,
-      picture: currentTrack.trackCover
-    }
-  })
+      picture: currentTrack.trackCover,
+    },
+  });
 }
 
-onMounted(async () => {
+onMounted(() => {
   refreshCardShow();
   setInterval(refreshCardShow, 10000);
 });
