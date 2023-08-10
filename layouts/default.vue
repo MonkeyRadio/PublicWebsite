@@ -1,7 +1,8 @@
 <template>
   <div>
-    <VApp>
+    <VApp :class="{ transition: true, 'padding-for-bottom-player': playerStore.fired }">
       <VMain>
+        <LayoutsHeaderDefault />
         <slot />
       </VMain>
       <VDialog v-model="networkError" width="auto" persistent>
@@ -14,12 +15,18 @@
           </VCardActions>
         </VCard>
       </VDialog>
-      <Loading :model="loading" />
+      <LoadingDialog v-model="loading" />
+      <LayoutsBottomPlayer :fired="playerStore.fired" />
     </VApp>
   </div>
 </template>
 
 <script setup lang="ts">
+import { api } from "@/services/api";
+import { usePlayerStore } from "@/stores/playerStore";
+
+const playerStore = usePlayerStore();
+
 const retry = () => {
   window.location.reload();
 };
@@ -29,13 +36,23 @@ const loading = ref(false);
 
 onNuxtReady(async () => {
   loading.value = true;
-  const router = useRouter();
 
   try {
     await api.ping();
     loading.value = false;
   } catch (error: any) {
+    loading.value = false;
     networkError.value = true;
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.transition {
+  transition: all 0.3s;
+}
+
+.padding-for-bottom-player {
+  padding-bottom: $bottom_player_height;
+}
+</style>
