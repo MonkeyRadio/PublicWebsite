@@ -70,7 +70,7 @@ onMounted(() => {
             class="volume-slider"
             :prepend-icon="volumePrependIcon"
             hide-details
-            @click:prepend="playerStore.volume = 0"
+            @click:prepend="volume = 0"
           ></v-slider>
           <v-btn icon variant="text" @click="playerStore.playPause">
             <v-icon v-if="playerStore.state.playing">mdi-pause</v-icon>

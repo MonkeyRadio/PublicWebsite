@@ -84,9 +84,11 @@ export const usePlayerStore = defineStore("player", {
     },
     playing() {
       this.state.playing = true;
+      navigator.mediaSession.playbackState = "playing";
     },
     pausing() {
       this.state.playing = false;
+      navigator.mediaSession.playbackState = "paused";
     },
     play() {
       this.getAudioRef().play();

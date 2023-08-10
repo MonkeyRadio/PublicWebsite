@@ -1,8 +1,9 @@
 import hls from '@/services/hls.js'
 import { usePlayerStore } from '@/stores/playerStore'
+import { useRadioConfig } from '@/stores/radioConfig'
 import type { Track } from '@/services/api'
 
-type stuffMeta = {
+export type stuffMeta = {
     title: string;
     subTitle: string;
     picture: string;
@@ -10,8 +11,9 @@ type stuffMeta = {
 
 let player: hls | undefined = undefined;
 
-function setTrackMetadata (track: Track) {
+function setTrackMetadata(track: Track) {
     const PlayerStore = usePlayerStore();
+    const radioConfig = useRadioConfig();
     PlayerStore.setTrack({
         title: track.trackTitle,
         artist: track.trackArtist,
@@ -22,6 +24,21 @@ function setTrackMetadata (track: Track) {
             end: track.trackTStop * 1000,
         }
     });
+    if (player)
+        player.updateMediaSession({
+            title: track.trackTitle,
+            artist: track.trackArtist,
+            album: radioConfig.title,
+            artwork: track.trackCover
+        })
+}
+
+function onStopStuff() {
+    const PlayerStore = usePlayerStore();
+    PlayerStore.fired = false;
+    PlayerStore.getAudioRef().pause();
+    PlayerStore.getAudioRef().src = "";
+    PlayerStore.getAudioRef().load();
 }
 
 export async function playNewStuff(opt: {
@@ -30,7 +47,9 @@ export async function playNewStuff(opt: {
 }, metadataFetchUrl: string, stuffMetadata: stuffMeta) {
     const PlayerStore = usePlayerStore();
     player = new hls(PlayerStore.getAudioRef());
+    player.setDestroyEvent(onStopStuff);
     player.setMetadataUrl(metadataFetchUrl, setTrackMetadata);
+    player.setShow(stuffMetadata);
     await player.load(opt.url);
     PlayerStore.getAudioRef().play();
     PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
@@ -48,8 +67,5 @@ export async function stopStuff() {
         player.destroy();
         player = undefined;
     }
-    PlayerStore.fired = false;
-    PlayerStore.getAudioRef().pause();
-    PlayerStore.getAudioRef().src = "";
-    PlayerStore.getAudioRef().load();
+    onStopStuff()
 }
