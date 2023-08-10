@@ -17,6 +17,7 @@ export default class Hlsjs {
   private show: stuffMeta | undefined = undefined;
   private onDestroy: (() => void) | null = null;
   private hlsReady = false;
+  private bootActions = false;
 
   constructor(private media: HTMLAudioElement) {
     if (Hls.isSupported()) this.hlsReady = true;
@@ -35,11 +36,15 @@ export default class Hlsjs {
   private _onManifestParsed(resolve: () => void = () => {}) {
     if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+        if (this.bootActions) return;
+        this.bootActions = true;
         this.createMediaSession();
         resolve();
       });
     else
       this.media.oncanplay = () => {
+        if (this.bootActions) return;
+        this.bootActions = true;
         this.createMediaSession();
         resolve();
       };
