@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { usePlayerStore } from "@/stores/playerStore";
-
-const playerStore = usePlayerStore();
-
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [

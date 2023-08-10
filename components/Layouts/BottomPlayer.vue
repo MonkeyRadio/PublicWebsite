@@ -12,23 +12,23 @@ const volumePrependIcon = computed(() => {
 });
 
 defineProps<{
-  fired: boolean
-}>()
+  fired: boolean;
+}>();
 
 const volume = computed({
   get() {
-    return playerStore.volume
+    return playerStore.volume;
   },
   set(value) {
     playerStore.setVolume(value);
-  }
+  },
 });
 
 const percentageElapsed = ref(0);
 
 function getPercentageElapsed() {
-  const elapsed = new Date().getTime() - playerStore.track.ts.start
-  return elapsed * 100 / playerStore.track.ts.duration;
+  const elapsed = new Date().getTime() - playerStore.track.ts.start;
+  return (elapsed * 100) / playerStore.track.ts.duration;
 }
 
 onMounted(() => {
@@ -39,12 +39,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="{'bottom-player' : true, 'bottom-player-opened': fired}" @click="console.log('CLICKED')">
+  <div
+    :class="{ 'bottom-player': true, 'bottom-player-opened': fired }"
+    @click="console.log('CLICKED')"
+  >
     <div class="bottom-player-progress-bar">
-      <ProgressThinBar
-        :value="percentageElapsed"
-        active-color="var(--primary)"
-      ></ProgressThinBar>
+      <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)"></ProgressThinBar>
     </div>
     <div class="bottom-player-container">
       <div class="show-summary">

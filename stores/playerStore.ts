@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
-import type { Ref } from 'vue';
-import { ref } from 'vue';
+import type { Ref } from "vue";
 
 type State = {
   playing: boolean;
@@ -11,7 +10,7 @@ type Show = {
   name: string;
   subName: string;
   picture: string;
-}
+};
 
 type Track = {
   title: string;
@@ -21,11 +20,11 @@ type Track = {
     start: number;
     duration: number;
     end: number;
-  }
-}
+  };
+};
 
 type PlayerStoreState = {
-  fired: boolean
+  fired: boolean;
   show: Show;
   track: Track;
   volume: number;
@@ -51,12 +50,12 @@ export const usePlayerStore = defineStore("player", {
           start: 0,
           duration: 0,
           end: 0,
-        }
+        },
       },
       volume: 50,
       state: {
         playing: false,
-        ref: undefined
+        ref: undefined,
       },
     };
   },
@@ -99,6 +98,6 @@ export const usePlayerStore = defineStore("player", {
     setVolume(volume: number) {
       this.volume = volume;
       this.getAudioRef().volume = this.volume / 100;
-    }
+    },
   },
 });

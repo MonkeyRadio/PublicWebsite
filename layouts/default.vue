@@ -16,14 +16,14 @@
         </VCard>
       </VDialog>
       <LoadingDialog v-model="loading" />
-      <LayoutsBottomPlayer :fired="playerStore.fired"/>
+      <LayoutsBottomPlayer :fired="playerStore.fired" />
     </VApp>
   </div>
 </template>
 
 <script setup lang="ts">
 import { api } from "@/services/api";
-import { usePlayerStore } from '@/stores/playerStore'
+import { usePlayerStore } from "@/stores/playerStore";
 
 const playerStore = usePlayerStore();
 
