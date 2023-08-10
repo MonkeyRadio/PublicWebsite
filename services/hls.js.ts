@@ -16,31 +16,61 @@ export default class Hlsjs {
   private onMetadataUpdated: ((track: Track) => void) | null = null;
   private show: stuffMeta | undefined = undefined;
   private onDestroy: (() => void) | null = null;
+  private hlsReady = false;
 
-  constructor(private video: HTMLAudioElement) {
+  constructor(private media: HTMLAudioElement) {
+    if (Hls.isSupported()) this.hlsReady = true;
     this.hls = new Hls();
-    this.hls.attachMedia(video);
+    this.hls.attachMedia(media);
   }
 
-  load(url: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.hls?.loadSource(url);
+  private _loadSource(url: string, _type: "hls" | "ice") {
+    if (this.hlsReady && this.hls) this.hls?.loadSource(url);
+    else {
+      this.media.src = url;
+      this.media.load();
+    }
+  }
+
+  private _onManifestParsed(resolve: () => void = () => {}) {
+    if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
         this.createMediaSession();
         resolve();
       });
+    else
+      this.media.oncanplay = () => {
+        this.createMediaSession();
+        resolve();
+      };
+  }
+
+  private _onError(reject: (reason?: any) => void = () => {}) {
+    if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.ERROR, (_event, data) => {
         reject(data);
       });
+    else
+      this.media.onerror = (event) => {
+        reject(event);
+      };
+  }
+
+  load(url: string, type: "hls" | "ice"): Promise<void> {
+    if (type === "ice") this.hlsReady = false;
+    return new Promise((resolve, reject) => {
+      this._loadSource(url, type);
+      this._onManifestParsed(resolve);
+      this._onError(reject);
     });
   }
 
   play() {
-    this.video.play();
+    this.media.play();
   }
 
   pause() {
-    this.video.pause();
+    this.media.pause();
   }
 
   destroy() {
@@ -55,13 +85,24 @@ export default class Hlsjs {
     if (this.onMetadataUpdated) this.onMetadataUpdated(track);
   }
 
+  private _onFragChanged() {
+    if (this.hlsReady && this.hls)
+      this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
+        if (!this.hls?.media) return;
+        const latency = this.hls?.media?.duration - this.hls?.media?.currentTime;
+        this.fetchMetadata(Math.round(latency));
+      });
+    else
+      this.media.ontimeupdate = () => {
+        if (!this.media) return;
+        const latency = this.media.duration - this.media.currentTime;
+        this.fetchMetadata(Math.round(latency));
+      };
+  }
+
   setMetadataUrl(url: string, onMetadataUpdated?: (track: Track) => void) {
     this.metadataUrl = url;
-    this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
-      if (!this.hls?.media) return;
-      const latency = this.hls?.media?.duration - this.hls?.media?.currentTime;
-      this.fetchMetadata(Math.round(latency));
-    });
+    this._onFragChanged();
     if (onMetadataUpdated) this.onMetadataUpdated = onMetadataUpdated;
   }
 
@@ -79,11 +120,11 @@ export default class Hlsjs {
     try {
       navigator.mediaSession.setActionHandler("play", () => {
         navigator.mediaSession.playbackState = "playing";
-        this.video.play();
+        this.media.play();
       });
       navigator.mediaSession.setActionHandler("pause", () => {
         navigator.mediaSession.playbackState = "paused";
-        this.video.pause();
+        this.media.pause();
       });
       navigator.mediaSession.setActionHandler("stop", () => {
         this.destroy();
