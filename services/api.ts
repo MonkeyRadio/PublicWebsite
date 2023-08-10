@@ -38,7 +38,7 @@ export type Track = {
   trackCover: string;
   trackTDur: number;
   trackTStart: number;
-  trackTSTop: number;
+  trackTStop: number;
   trackTitle: string;
 };
 
