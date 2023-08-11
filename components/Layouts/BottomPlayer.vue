@@ -73,8 +73,14 @@ onMounted(() => {
             hide-details
             @click:prepend="volume = 0"
           ></v-slider>
-          <v-btn icon variant="text" @click="playerStore.playPause">
-            <v-icon v-if="playerStore.state.playing">mdi-pause</v-icon>
+          <v-progress-circular
+            v-if="playerStore.state.loading && playerStore.state.playing"
+            indeterminate
+          ></v-progress-circular>
+          <v-btn v-else icon variant="text" @click="playerStore.playPause">
+            <v-icon v-if="playerStore.state.playing && !playerStore.state.loading"
+              >mdi-pause</v-icon
+            >
             <v-icon v-else>mdi-play</v-icon>
           </v-btn>
           <v-btn icon="mdi-close" variant="text" @click="stopStuff"></v-btn>
@@ -157,6 +163,7 @@ onMounted(() => {
         cursor: initial;
 
         .volume-slider {
+          padding-right: 15px;
           @media only screen and (max-width: 1024px) {
             display: none;
           }

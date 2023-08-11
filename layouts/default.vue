@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { api } from "@/services/api";
 import { usePlayerStore } from "@/stores/playerStore";
-import { useUiStore } from '@/stores/uiStore';
+import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
 const uiStore = useUiStore();

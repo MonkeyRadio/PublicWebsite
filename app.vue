@@ -3,7 +3,15 @@
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <audio ref="audioPlayer" @play="playerStore.playing" @pause="playerStore.pausing"></audio>
+    <audio
+      ref="audioPlayer"
+      @play="playerStore.playing"
+      @pause="playerStore.pausing"
+      @waiting="playerStore.state.loading = true"
+      @loadstart="playerStore.state.loading = true"
+      @playing="playerStore.state.loading = false"
+      @loadeddata="playerStore.state.loading = false"
+    ></audio>
   </div>
 </template>
 
@@ -12,11 +20,10 @@ import type { Ref } from "vue";
 import { ref, onMounted } from "vue";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useRadioConfig } from "@/stores/radioConfig";
-import { useUiStore } from '@/stores/uiStore'
+import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
 const radioConfig = useRadioConfig();
-const uiStore = useUiStore();
 
 const audioPlayer: Ref<HTMLAudioElement | null> = ref(null);
 

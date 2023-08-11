@@ -1,7 +1,7 @@
 import Hls from "@/services/hls.js";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useRadioConfig } from "@/stores/radioConfig";
-import { useUiStore } from '@/stores/uiStore';
+import { useUiStore } from "@/stores/uiStore";
 import type { Track } from "@/services/api";
 
 export type stuffMeta = {
@@ -62,13 +62,16 @@ export async function playNewStuff(
     subName: stuffMetadata.subTitle,
     picture: stuffMetadata.picture,
   });
-  PlayerStore.getAudioRef().play();
-  PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
   player.setShow(stuffMetadata);
   try {
     await player.load(opt.url, opt.type);
+    PlayerStore.getAudioRef().play();
+    PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
   } catch (e) {
-    uiStore.newError("Lecture impossible", "Une erreur est survenue lors de la récupération de ce contenu sur nos serveurs !");
+    uiStore.newError(
+      "Lecture impossible",
+      "Une erreur est survenue lors de la récupération de ce contenu sur nos serveurs !",
+    );
     PlayerStore.fired = false;
   }
 }
