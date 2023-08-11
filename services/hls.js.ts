@@ -2,6 +2,7 @@ import Hls from "hls.js";
 import type { Track } from "@/services/api";
 import { getMetadataWithEncodedDelay } from "@/services/api";
 import { stuffMeta } from "composables/playNewStuff";
+import { usePlayerStore } from "@/stores/playerStore";
 type Media = {
   title: string;
   artist: string;
@@ -59,9 +60,17 @@ export default class Hlsjs {
       };
   }
 
+  private _recoverOnNetworkError(hls: Hlsjs) {
+    if (hls.hlsReady && hls.hls) {
+      hls.hls.recoverMediaError();
+      if (usePlayerStore().state.playing) hls.media.play();
+    }
+  }
+
   private _onError(reject: (reason?: any) => void = () => {}) {
     if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) this._recoverOnNetworkError(this);
         reject(data);
       });
     else

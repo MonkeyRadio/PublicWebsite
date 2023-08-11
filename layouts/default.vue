@@ -15,8 +15,9 @@
           </VCardActions>
         </VCard>
       </VDialog>
-      <LoadingDialog v-model="loading" />
+      <LoadingDialog v-model="uiStore.loader" />
       <LayoutsBottomPlayer :fired="playerStore.fired" />
+      <ModalsErrorModal />
     </VApp>
   </div>
 </template>
@@ -24,24 +25,23 @@
 <script setup lang="ts">
 import { api } from "@/services/api";
 import { usePlayerStore } from "@/stores/playerStore";
+import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
+const uiStore = useUiStore();
 
 const retry = () => {
   window.location.reload();
 };
 
 const networkError = ref(false);
-const loading = ref(false);
 
 onNuxtReady(async () => {
-  loading.value = true;
-
   try {
     await api.ping();
-    loading.value = false;
+    uiStore.finishLoad();
   } catch (error: any) {
-    loading.value = false;
+    uiStore.finishLoad();
     networkError.value = true;
   }
 });
