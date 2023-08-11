@@ -49,6 +49,7 @@ export async function playNewStuff(
   metadataFetchUrl: string,
   stuffMetadata: stuffMeta,
 ) {
+  stopStuff();
   const PlayerStore = usePlayerStore();
   player = new Hls(PlayerStore.getAudioRef());
   player.setDestroyEvent(onStopStuff);
