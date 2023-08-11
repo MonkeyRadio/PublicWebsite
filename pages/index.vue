@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useUiStore } from "@/stores/uiStore";
+
+const uiStore = useUiStore();
+
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [
@@ -9,8 +13,10 @@ useHead({
   ],
 });
 
-onMounted(() => {
-  liveCardRefresh();
+onMounted(async () => {
+  uiStore.load();
+  await liveCardRefresh();
+  uiStore.finishLoad();
   setInterval(liveCardRefresh, 10000);
 });
 </script>

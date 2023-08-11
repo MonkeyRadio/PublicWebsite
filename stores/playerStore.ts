@@ -4,6 +4,7 @@ import type { Ref } from "vue";
 type State = {
   playing: boolean;
   ref: Ref<HTMLAudioElement> | undefined;
+  loading: boolean;
 };
 
 type Show = {
@@ -56,6 +57,7 @@ export const usePlayerStore = defineStore("player", {
       state: {
         playing: false,
         ref: undefined,
+        loading: false,
       },
     };
   },
