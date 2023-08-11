@@ -2,7 +2,6 @@ import Hls from "hls.js";
 import type { Track } from "@/services/api";
 import { getMetadataWithEncodedDelay } from "@/services/api";
 import { stuffMeta } from "composables/playNewStuff";
-
 type Media = {
   title: string;
   artist: string;
@@ -18,6 +17,9 @@ export default class Hlsjs {
   private onDestroy: (() => void) | null = null;
   private hlsReady = false;
   private bootActions = false;
+  private computedDuration = 0;
+  private computedDurationIntervalId: NodeJS.Timer | null = null;
+  private latency = -1;
 
   constructor(private media: HTMLAudioElement) {
     if (Hls.isSupported()) this.hlsReady = true;
@@ -33,7 +35,14 @@ export default class Hlsjs {
     }
   }
 
-  private _onManifestParsed(resolve: () => void = () => {}) {
+  private computeDuration(hls: Hlsjs) {
+    if (hls.media.currentTime > hls.computedDuration)
+      hls.computedDuration = hls.media.currentTime + 6;
+    else
+      hls.computedDuration += 1;
+  }
+
+  private _onManifestParsed(resolve: () => void = () => { }) {
     if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
         if (this.bootActions) return;
@@ -45,12 +54,13 @@ export default class Hlsjs {
       this.media.oncanplay = () => {
         if (this.bootActions) return;
         this.bootActions = true;
+        this.computedDurationIntervalId = setInterval(this.computeDuration, 1000, this);
         this.createMediaSession();
         resolve();
       };
   }
 
-  private _onError(reject: (reason?: any) => void = () => {}) {
+  private _onError(reject: (reason?: any) => void = () => { }) {
     if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.ERROR, (_event, data) => {
         reject(data);
@@ -83,6 +93,9 @@ export default class Hlsjs {
     navigator.mediaSession.playbackState = "none";
     if (this.hls) this.hls.destroy();
     if (this.onDestroy) this.onDestroy();
+    if (this.computedDurationIntervalId) {
+      clearInterval(this.computedDurationIntervalId);
+    }
   }
 
   private async fetchMetadata(latency: number) {
@@ -95,13 +108,18 @@ export default class Hlsjs {
       this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
         if (!this.hls?.media) return;
         const latency = this.hls?.media?.duration - this.hls?.media?.currentTime;
-        this.fetchMetadata(Math.round(latency));
+        if (this.latency === -1 || this.latency > latency +1 || this.latency < latency +1)
+          this.latency = latency
+        this.fetchMetadata(Math.round(this.latency));
       });
     else
       this.media.ontimeupdate = () => {
         if (!this.media) return;
-        const latency = this.media.duration - this.media.currentTime;
-        this.fetchMetadata(Math.round(latency));
+        const mediaDuration = (this.computedDuration > 0) ? this.computedDuration : this.media.duration;
+        const latency = Math.ceil(mediaDuration - this.media.currentTime);
+        if (this.latency === -1 || this.latency > latency +1 || this.latency < latency +1)
+          this.latency = latency
+        this.fetchMetadata(Math.round(this.latency));
       };
   }
 
@@ -134,7 +152,7 @@ export default class Hlsjs {
       navigator.mediaSession.setActionHandler("stop", () => {
         this.destroy();
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   updateMediaSession(media: Media) {
