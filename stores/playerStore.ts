@@ -26,6 +26,7 @@ type Track = {
 
 type PlayerStoreState = {
   fired: boolean;
+  fullscreen: boolean;
   show: Show;
   track: Track;
   volume: number;
@@ -38,6 +39,7 @@ export const usePlayerStore = defineStore("player", {
   state(): PlayerStoreState {
     return {
       fired: false,
+      fullscreen: false,
       show: {
         name: "",
         picture: "",

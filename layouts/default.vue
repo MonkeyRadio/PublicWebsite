@@ -5,6 +5,7 @@
         <LayoutsHeaderDefault />
         <slot />
       </VMain>
+      <PlayerFullScreen />
       <VDialog v-model="networkError" width="auto" persistent>
         <VCard>
           <VCardText>

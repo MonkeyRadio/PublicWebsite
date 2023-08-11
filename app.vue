@@ -20,7 +20,6 @@ import type { Ref } from "vue";
 import { ref, onMounted } from "vue";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useRadioConfig } from "@/stores/radioConfig";
-import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
 const radioConfig = useRadioConfig();

@@ -42,6 +42,7 @@ onMounted(() => {
 <template>
   <div
     :class="{ 'bottom-player': true, 'bottom-player-opened': fired }"
+    @click="playerStore.fullscreen = true"
   >
     <div class="bottom-player-progress-bar">
       <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)"></ProgressThinBar>
@@ -160,6 +161,10 @@ onMounted(() => {
         display: flex;
         align-items: center;
         cursor: initial;
+
+        @media only screen and (max-width: 1024px) {
+          width: fit-content;
+        }
 
         .volume-slider {
           padding-right: 15px;
