@@ -19,6 +19,7 @@
     "@mdi/font": "^7.2.96",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/google-fonts": "^3.0.0",
+    "@types/color-thief-node": "^1.0.2",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.10.0",
