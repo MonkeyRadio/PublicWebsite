@@ -1,6 +1,7 @@
 import Hls from "@/services/hls.js";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useRadioConfig } from "@/stores/radioConfig";
+import { useUiStore } from '@/stores/uiStore';
 import type { Track } from "@/services/api";
 
 export type stuffMeta = {
@@ -51,19 +52,25 @@ export async function playNewStuff(
 ) {
   stopStuff();
   const PlayerStore = usePlayerStore();
+  const uiStore = useUiStore();
+  PlayerStore.fired = true;
   player = new Hls(PlayerStore.getAudioRef());
   player.setDestroyEvent(onStopStuff);
   player.setMetadataUrl(metadataFetchUrl, setTrackMetadata);
-  player.setShow(stuffMetadata);
-  await player.load(opt.url, opt.type);
-  PlayerStore.getAudioRef().play();
-  PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
   PlayerStore.setShow({
     name: stuffMetadata.title,
     subName: stuffMetadata.subTitle,
     picture: stuffMetadata.picture,
   });
-  PlayerStore.fired = true;
+  PlayerStore.getAudioRef().play();
+  PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
+  player.setShow(stuffMetadata);
+  try {
+    await player.load(opt.url, opt.type);
+  } catch (e) {
+    uiStore.newError("Lecture impossible", "Une erreur est survenue lors de la récupération de ce contenu sur nos serveurs !");
+    PlayerStore.fired = false;
+  }
 }
 
 export function stopStuff() {
