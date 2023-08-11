@@ -42,7 +42,6 @@ onMounted(() => {
 <template>
   <div
     :class="{ 'bottom-player': true, 'bottom-player-opened': fired }"
-    @click="console.log('CLICKED')"
   >
     <div class="bottom-player-progress-bar">
       <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)"></ProgressThinBar>
