@@ -33,7 +33,7 @@ function getPercentageElapsed() {
 
 onMounted(() => {
   setInterval(() => {
-    if (!playerStore.state.playing) return;
+    if (!playerStore.state.playing || playerStore.state.loading) return;
     percentageElapsed.value = getPercentageElapsed();
   }, 200);
 });
