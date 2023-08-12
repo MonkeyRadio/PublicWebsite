@@ -5,6 +5,8 @@ type State = {
   playing: boolean;
   ref: Ref<HTMLAudioElement> | undefined;
   loading: boolean;
+  delay: number;
+  uhd: boolean;
 };
 
 type Show = {
@@ -60,6 +62,8 @@ export const usePlayerStore = defineStore("player", {
         playing: false,
         ref: undefined,
         loading: false,
+        delay: 0,
+        uhd: true,
       },
     };
   },

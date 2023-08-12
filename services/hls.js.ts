@@ -107,6 +107,7 @@ export default class Hlsjs {
   }
 
   private async fetchMetadata(latency: number) {
+    usePlayerStore().state.delay = latency;
     const track = await getMetadataWithEncodedDelay(this.metadataUrl, latency);
     if (this.onMetadataUpdated) this.onMetadataUpdated(track);
   }
