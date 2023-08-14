@@ -12,6 +12,10 @@ type Media = {
 
 export default class Hlsjs {
   private hls: Hls | null = null;
+  private type: "hls" | "ice" = "hls";
+  private url = "";
+  private hqUrl = "";
+  private isHQ = false;
   private metadataUrl = "";
   private onMetadataUpdated: ((track: Track) => void) | null = null;
   private show: stuffMeta | undefined = undefined;
@@ -22,10 +26,14 @@ export default class Hlsjs {
   private computedDurationIntervalId: NodeJS.Timer | null = null;
   private latency = -1;
 
-  constructor(private media: HTMLAudioElement) {
+  private _construct() {
     if (Hls.isSupported()) this.hlsReady = true;
     this.hls = new Hls();
-    this.hls.attachMedia(media);
+    this.hls.attachMedia(this.media);
+  }
+
+  constructor(private media: HTMLAudioElement) {
+    this._construct();
   }
 
   private _loadSource(url: string, _type: "hls" | "ice") {
@@ -79,11 +87,37 @@ export default class Hlsjs {
       };
   }
 
-  load(url: string, type: "hls" | "ice"): Promise<void> {
+  load(url: string, type: "hls" | "ice", hqUrl?: string): Promise<void> {
+    this.url = url;
+    this.type = type;
+    if (hqUrl) this.hqUrl = hqUrl;
     if (type === "ice") this.hlsReady = false;
     return new Promise((resolve, reject) => {
       this._loadSource(url, type);
       this._onManifestParsed(resolve);
+      this._onError(reject);
+    });
+  }
+
+  switchQuality(isHQ?: boolean): Promise<void> {
+    if (this.hqUrl === "") return new Promise(() => {});
+    if (this.hls) this.hls.destroy();
+    this._construct();
+    if (this.computedDurationIntervalId) {
+      clearInterval(this.computedDurationIntervalId);
+    }
+    navigator.mediaSession.metadata = null;
+    navigator.mediaSession.playbackState = "none";
+    this.bootActions = false;
+    if (isHQ === undefined) isHQ = !this.isHQ;
+    else this.isHQ = isHQ;
+    return new Promise((_resolve, reject) => {
+      this._loadSource(isHQ ? this.hqUrl : this.url, this.type);
+      this._onManifestParsed(async () => {
+        await this.media.play();
+        this.media.currentTime -= this.latency - 4;
+        this._onFragChanged();
+      });
       this._onError(reject);
     });
   }

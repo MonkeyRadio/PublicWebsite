@@ -7,6 +7,7 @@ export function playLive() {
     {
       type: radioConfig.Live.type,
       url: radioConfig.Live.url,
+      urlHQ: radioConfig.Live.HQUrl,
     },
     radioConfig.Live.metadataUrl,
     {

@@ -26,8 +26,9 @@ function toLive() {
 }
 
 function switchQuality() {
-  if (!playerStore.state.ref) return;
+  if (!playerStore.state.hlsjsInstance) return;
   playerStore.state.uhd = !playerStore.state.uhd;
+  playerStore.state.hlsjsInstance.switchQuality(playerStore.state.uhd);
 }
 </script>
 
@@ -38,10 +39,10 @@ function switchQuality() {
         :class="{ btn: true, 'btn-disabled': !playerStore.state.uhd }"
         icon
         variant="text"
-        disabled
+        :disabled="!playerStore.qualitySwitchable"
         @click="switchQuality"
       >
-        <v-icon>mdi-ultra-high-definition</v-icon>
+        <v-icon>mdi-high-definition</v-icon>
       </v-btn>
       <v-btn class="btn" :disabled="!seekable.backward" icon variant="text" @click="backward">
         <v-icon>mdi-rewind-10</v-icon>
