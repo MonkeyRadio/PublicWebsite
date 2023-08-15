@@ -1,9 +1,12 @@
 import { defineStore } from "pinia";
 import type { Ref } from "vue";
+import type Hlsjs from "@/services/hls.js";
+import { usePlayerStorage } from "@/localStorage/playerPreferences";
 
 type State = {
   playing: boolean;
   ref: Ref<HTMLAudioElement> | undefined;
+  hlsjsInstance: Hlsjs | undefined;
   loading: boolean;
   delay: number;
   uhd: boolean;
@@ -29,6 +32,7 @@ type Track = {
 type PlayerStoreState = {
   fired: boolean;
   fullscreen: boolean;
+  qualitySwitchable: boolean;
   show: Show;
   track: Track;
   volume: number;
@@ -42,6 +46,7 @@ export const usePlayerStore = defineStore("player", {
     return {
       fired: false,
       fullscreen: false,
+      qualitySwitchable: false,
       show: {
         name: "",
         picture: "",
@@ -61,16 +66,26 @@ export const usePlayerStore = defineStore("player", {
       state: {
         playing: false,
         ref: undefined,
+        hlsjsInstance: undefined,
         loading: false,
         delay: 0,
-        uhd: true,
+        uhd: false,
       },
     };
   },
   actions: {
+    reset() {
+      const saveAudioRef = this.state.ref;
+      const saveAudioVolume = this.volume;
+      this.$reset();
+      this.state.ref = saveAudioRef;
+      this.volume = saveAudioVolume;
+    },
     bindAudioRef(ref: Ref<HTMLAudioElement>) {
       // @ts-ignore
       this.state.ref = ref;
+      const playerPreferences = usePlayerStorage();
+      this.volume = playerPreferences.get("volume");
     },
     getAudioRef(): HTMLAudioElement {
       return this.state.ref as HTMLAudioElement;
@@ -104,8 +119,10 @@ export const usePlayerStore = defineStore("player", {
       this.getAudioRef().pause();
     },
     setVolume(volume: number) {
+      const playerPreferences = usePlayerStorage();
       this.volume = volume;
       this.getAudioRef().volume = this.volume / 100;
+      playerPreferences.set("volume", volume);
     },
   },
 });

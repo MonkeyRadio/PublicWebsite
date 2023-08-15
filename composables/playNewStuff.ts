@@ -36,7 +36,7 @@ function setTrackMetadata(track: Track) {
 
 function onStopStuff() {
   const PlayerStore = usePlayerStore();
-  PlayerStore.fired = false;
+  PlayerStore.reset();
   PlayerStore.getAudioRef().pause();
   PlayerStore.getAudioRef().src = "";
   PlayerStore.getAudioRef().load();
@@ -46,6 +46,7 @@ export async function playNewStuff(
   opt: {
     type: "hls" | "ice";
     url: string;
+    urlHQ?: string;
   },
   metadataFetchUrl: string,
   stuffMetadata: stuffMeta,
@@ -62,9 +63,11 @@ export async function playNewStuff(
     subName: stuffMetadata.subTitle,
     picture: stuffMetadata.picture,
   });
+  PlayerStore.state.hlsjsInstance = player;
   player.setShow(stuffMetadata);
   try {
-    await player.load(opt.url, opt.type);
+    await player.load(opt.url, opt.type, opt.urlHQ);
+    if (opt.urlHQ) PlayerStore.qualitySwitchable = true;
     PlayerStore.getAudioRef().play();
     PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
   } catch (e) {

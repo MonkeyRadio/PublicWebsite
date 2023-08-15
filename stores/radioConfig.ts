@@ -6,6 +6,7 @@ type Config = {
   picture: string;
   Live: {
     url: string;
+    HQUrl: string;
     type: "hls" | "ice";
     metadataUrl: string;
   };
@@ -21,6 +22,7 @@ export const useRadioConfig = defineStore("radioConfig", {
       picture: "",
       Live: {
         url: "",
+        HQUrl: "",
         type: "hls",
         metadataUrl: "",
       },
@@ -35,7 +37,8 @@ export const useRadioConfig = defineStore("radioConfig", {
       this.title = config.onair.tit;
       this.picture = config.onair.cover;
       this.Live = {
-        url: config.onair.DiffLinkPath,
+        url: config.onair.LiveLinkPathSQ,
+        HQUrl: config.onair.LiveLinkPathHQ,
         type: config.onair.DiffLinkType,
         metadataUrl: config.onair.LiveMetadataURL,
       };

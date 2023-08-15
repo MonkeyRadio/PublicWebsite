@@ -70,6 +70,8 @@ export type Onair = {
   IceDiffLinkPath: string;
   WebDisTit: string;
   LiveMetadataURL: string;
+  LiveLinkPathSQ: string;
+  LiveLinkPathHQ: string;
 };
 
 export const getRadioConfig = (): Promise<{
