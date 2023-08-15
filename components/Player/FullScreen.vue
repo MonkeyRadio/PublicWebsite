@@ -128,6 +128,12 @@ onMounted(() => {
 
       h4 {
         margin: 2px 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
 
       .track-artist {
