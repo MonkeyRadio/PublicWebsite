@@ -3,6 +3,8 @@ import type { Track } from "@/services/api";
 import { getMetadataWithEncodedDelay } from "@/services/api";
 import { stuffMeta } from "composables/playNewStuff";
 import { usePlayerStore } from "@/stores/playerStore";
+import { usePlayerStorage } from "@/localStorage/playerPreferences";
+
 type Media = {
   title: string;
   artist: string;
@@ -92,6 +94,12 @@ export default class Hlsjs {
     this.type = type;
     if (hqUrl) this.hqUrl = hqUrl;
     if (type === "ice") this.hlsReady = false;
+    const playerStorage = usePlayerStorage();
+    if (playerStorage.get("HQ") && hqUrl) {
+      const playerStore = usePlayerStore();
+      playerStore.state.uhd = true;
+      url = hqUrl;
+    }
     return new Promise((resolve, reject) => {
       this._loadSource(url, type);
       this._onManifestParsed(resolve);
@@ -115,7 +123,10 @@ export default class Hlsjs {
       this._loadSource(isHQ ? this.hqUrl : this.url, this.type);
       this._onManifestParsed(async () => {
         await this.media.play();
-        this.media.currentTime -= this.latency - 4;
+        if (this.hlsReady) this.media.currentTime -= this.latency - 6;
+        else {
+          this.computedDuration = 0;
+        }
         this._onFragChanged();
       });
       this._onError(reject);

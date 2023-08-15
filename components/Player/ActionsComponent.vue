@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { usePlayerStore } from "@/stores/playerStore";
+import { usePlayerStorage } from "@/localStorage/playerPreferences";
 
 const playerStore = usePlayerStore();
+const playerStorage = usePlayerStorage();
 
 const seekable = computed(() => {
   return {
@@ -29,6 +31,7 @@ function switchQuality() {
   if (!playerStore.state.hlsjsInstance) return;
   playerStore.state.uhd = !playerStore.state.uhd;
   playerStore.state.hlsjsInstance.switchQuality(playerStore.state.uhd);
+  playerStorage.set("HQ", playerStore.state.uhd);
 }
 </script>
 
