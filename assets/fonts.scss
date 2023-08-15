@@ -1,3 +1,23 @@
+@font-face {
+  font-family: "Itim";
+  src: url("fonts/Itim-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ABeeZee-Regular";
+  src: url("fonts/ABeeZee-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ABeeZee-Italic";
+  src: url("fonts/ABeeZee-Italic.ttf") format("truetype");
+}
+
+$font-main: "Itim", sans-serif;
+$font-secondary: "AbeeZee-Regular", sans-serif;
+$font-tertiary: "AbeeZee-Italic", sans-serif;
+
+
 html {
   font-size: 100%;
 }
@@ -19,6 +39,15 @@ h5 {
   margin: 3rem 0 1.38rem;
   font-weight: 400;
   line-height: 1.3;
+  font-family: $font-secondary;
+}
+
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5 {
+  font-family: $font-secondary !important;
 }
 
 h1 {
@@ -46,22 +75,3 @@ small,
 .text_small {
   font-size: 0.8rem;
 }
-
-@font-face {
-  font-family: "Itim";
-  src: url("fonts/Itim-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "ABeeZee-Regular";
-  src: url("fonts/ABeeZee-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "ABeeZee-Italic";
-  src: url("fonts/ABeeZee-Italic.ttf") format("truetype");
-}
-
-$font-main: "Itim", sans-serif;
-$font-secondary: "AbeeZee-Regular", sans-serif;
-$font-tertiary: "AbeeZee-Italic", sans-serif;
