@@ -5,13 +5,6 @@ import { usePlayerStorage } from "@/localStorage/playerPreferences";
 const playerStore = usePlayerStore();
 const playerStorage = usePlayerStorage();
 
-const seekable = computed(() => {
-  return {
-    forward: playerStore.state.delay > 10,
-    backward: playerStore.state.ref && playerStore.state.ref.currentTime > 10,
-  };
-});
-
 function backward() {
   if (!playerStore.state.ref) return;
   playerStore.state.ref.currentTime -= 10;
@@ -24,7 +17,7 @@ function forward() {
 
 function toLive() {
   if (!playerStore.state.ref) return;
-  playerStore.state.ref.currentTime += playerStore.state.delay - 3;
+  playerStore.state.ref.currentTime = playerStore.getAudioRef().buffered.end(0);
 }
 
 function switchQuality() {
@@ -47,7 +40,13 @@ function switchQuality() {
       >
         <v-icon>mdi-high-definition</v-icon>
       </v-btn>
-      <v-btn class="btn" :disabled="!seekable.backward" icon variant="text" @click="backward">
+      <v-btn
+        class="btn"
+        :disabled="!playerStore.state.seekable.backward"
+        icon
+        variant="text"
+        @click="backward"
+      >
         <v-icon>mdi-rewind-10</v-icon>
       </v-btn>
       <v-progress-circular
@@ -59,10 +58,22 @@ function switchQuality() {
         <v-icon v-if="playerStore.state.playing && !playerStore.state.loading">mdi-pause</v-icon>
         <v-icon v-else>mdi-play</v-icon>
       </v-btn>
-      <v-btn class="btn" :disabled="!seekable.forward" icon variant="text" @click="forward">
+      <v-btn
+        class="btn"
+        :disabled="!playerStore.state.seekable.forward"
+        icon
+        variant="text"
+        @click="forward"
+      >
         <v-icon>mdi-fast-forward-10</v-icon>
       </v-btn>
-      <v-btn class="btn" :disabled="!seekable.forward" icon variant="text" @click="toLive">
+      <v-btn
+        class="btn"
+        :disabled="!playerStore.state.seekable.forward"
+        icon
+        variant="text"
+        @click="toLive"
+      >
         Live
       </v-btn>
     </div>

@@ -10,6 +10,10 @@ type State = {
   loading: boolean;
   delay: number;
   uhd: boolean;
+  seekable: {
+    backward: boolean;
+    forward: boolean;
+  };
 };
 
 type Show = {
@@ -70,6 +74,10 @@ export const usePlayerStore = defineStore("player", {
         loading: false,
         delay: 0,
         uhd: false,
+        seekable: {
+          backward: false,
+          forward: false,
+        },
       },
     };
   },

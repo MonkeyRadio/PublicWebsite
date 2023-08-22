@@ -24,13 +24,13 @@ export default class Hlsjs {
   private onDestroy: (() => void) | null = null;
   private hlsReady = false;
   private bootActions = false;
-  private computedDuration = 0;
-  private computedDurationIntervalId: NodeJS.Timer | null = null;
   private latency = -1;
 
   private _construct() {
     if (Hls.isSupported()) this.hlsReady = true;
     this.hls = new Hls();
+    this.hls.config.startLevel = -1;
+    this.hls.config.liveSyncDurationCount = 3;
     this.hls.attachMedia(this.media);
   }
 
@@ -46,12 +46,6 @@ export default class Hlsjs {
     }
   }
 
-  private computeDuration(hls: Hlsjs) {
-    if (hls.media.currentTime > hls.computedDuration)
-      hls.computedDuration = hls.media.currentTime + 6;
-    else hls.computedDuration += 1;
-  }
-
   private _onManifestParsed(resolve: () => void = () => {}) {
     if (this.hlsReady && this.hls)
       this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -64,7 +58,6 @@ export default class Hlsjs {
       this.media.oncanplay = () => {
         if (this.bootActions) return;
         this.bootActions = true;
-        this.computedDurationIntervalId = setInterval(this.computeDuration, 1000, this);
         this.createMediaSession();
         resolve();
       };
@@ -111,9 +104,6 @@ export default class Hlsjs {
     if (this.hqUrl === "") return new Promise(() => {});
     if (this.hls) this.hls.destroy();
     this._construct();
-    if (this.computedDurationIntervalId) {
-      clearInterval(this.computedDurationIntervalId);
-    }
     navigator.mediaSession.metadata = null;
     navigator.mediaSession.playbackState = "none";
     this.bootActions = false;
@@ -123,10 +113,6 @@ export default class Hlsjs {
       this._loadSource(isHQ ? this.hqUrl : this.url, this.type);
       this._onManifestParsed(async () => {
         await this.media.play();
-        if (this.hlsReady) this.media.currentTime -= this.latency - 6;
-        else {
-          this.computedDuration = 0;
-        }
         this._onFragChanged();
       });
       this._onError(reject);
@@ -146,9 +132,6 @@ export default class Hlsjs {
     navigator.mediaSession.playbackState = "none";
     if (this.hls) this.hls.destroy();
     if (this.onDestroy) this.onDestroy();
-    if (this.computedDurationIntervalId) {
-      clearInterval(this.computedDurationIntervalId);
-    }
   }
 
   private async fetchMetadata(latency: number) {
@@ -157,25 +140,62 @@ export default class Hlsjs {
     if (this.onMetadataUpdated) this.onMetadataUpdated(track);
   }
 
+  private updateSeekingPossibilities() {
+    try {
+      const playerStore = usePlayerStore();
+      playerStore.state.seekable.backward = this.media.currentTime > 10;
+      playerStore.state.seekable.forward = this.media.seekable.end(0) >= this.media.currentTime + 5;
+    } catch (e) {}
+  }
+
+  private _refreshMetadata(increaseLatency = 0) {
+    try {
+      let latency = 0;
+      if (this.hlsReady && this.hls) {
+        latency = this.hls.latency;
+        if (this.hls.playingDate) {
+          latency = (new Date().getTime() - this.hls.playingDate.getTime()) / 1000;
+        }
+      } else {
+        const computedDuration = this.media.buffered.end(0);
+        latency = Math.ceil(computedDuration - this.media.currentTime);
+      }
+      if (
+        isNaN(this.latency) ||
+        this.latency === -1 ||
+        this.latency > latency + 1 ||
+        this.latency < latency + 1
+      )
+        this.latency = latency;
+      this.fetchMetadata(this.latency + increaseLatency);
+    } catch (e) {}
+  }
+
   private _onFragChanged() {
-    if (this.hlsReady && this.hls)
+    if (this.hlsReady && this.hls) {
       this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
-        if (!this.hls?.media) return;
-        const latency = this.hls?.media?.duration - this.hls?.media?.currentTime;
-        if (this.latency === -1 || this.latency > latency + 1 || this.latency < latency + 1)
-          this.latency = latency;
-        this.fetchMetadata(Math.round(this.latency));
+        this._refreshMetadata();
       });
-    else
-      this.media.ontimeupdate = () => {
-        if (!this.media) return;
-        const mediaDuration =
-          this.computedDuration > 0 ? this.computedDuration : this.media.duration;
-        const latency = Math.ceil(mediaDuration - this.media.currentTime);
-        if (this.latency === -1 || this.latency > latency + 1 || this.latency < latency + 1)
-          this.latency = latency;
-        this.fetchMetadata(Math.round(this.latency));
+      this.media.onseeking = () => {
+        this.updateSeekingPossibilities();
       };
+      this.media.onplay = () => {
+        this.updateSeekingPossibilities();
+        this._refreshMetadata();
+      };
+    } else {
+      this.media.onstalled = () => {
+        this._refreshMetadata(4);
+      };
+      this.media.onseeking = () => {
+        this._refreshMetadata(4);
+        this.updateSeekingPossibilities();
+      };
+      this.media.onplay = () => {
+        this._refreshMetadata(4);
+        this.updateSeekingPossibilities();
+      };
+    }
   }
 
   setMetadataUrl(url: string, onMetadataUpdated?: (track: Track) => void) {
