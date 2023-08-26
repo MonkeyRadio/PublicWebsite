@@ -237,7 +237,7 @@ export default class Hlsjs {
       navigator.mediaSession.metadata.artist !== media.artist ||
       navigator.mediaSession.metadata.album !== media.album ||
       navigator.mediaSession.metadata.artwork[0].src !== media.artwork
-    )
+    ) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: media.title,
         artist: media.artist,
@@ -245,11 +245,12 @@ export default class Hlsjs {
         artwork: [
           {
             src: media.artwork,
-            sizes: `200x200`,
+            sizes: `800x800`,
             type: "image/png",
           },
         ],
       });
+    }
   }
 
   setDestroyEvent(event: () => void) {

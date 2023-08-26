@@ -74,6 +74,12 @@ onMounted(() => {
           <div class="summary">
             <h4 class="track-title">{{ playerStore.track.title }}</h4>
             <h4 class="track-artist">{{ playerStore.track.artist }}</h4>
+            <h6
+              v-if="playerStore.track.album !== null && playerStore.track.year !== null"
+              class="track-album"
+            >
+              {{ playerStore.track.album }} • {{ playerStore.track.year }}
+            </h6>
           </div>
         </div>
         <div class="track-timing-container">
@@ -136,8 +142,19 @@ onMounted(() => {
         -webkit-box-orient: vertical;
       }
 
-      .track-artist {
+      .track-artist,
+      .track-album {
         color: rgb(196, 196, 196);
+      }
+
+      .track-album {
+        margin: 4px 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
     }
   }
