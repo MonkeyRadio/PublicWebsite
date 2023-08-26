@@ -40,6 +40,9 @@ export type Track = {
   trackTStart: number;
   trackTStop: number;
   trackTitle: string;
+  trackAlbum: string;
+  trackYearRelease: number;
+  EncodedMediaKey: string;
 };
 
 export const getCurrentTrack = async (): Promise<Track> => {
@@ -78,4 +81,21 @@ export const getRadioConfig = (): Promise<{
   onair: Onair;
 }> => {
   return $fetch(`${apiURL}/?onair`);
+};
+
+export const haveMediaPicture = (encodedMediaKey: string): Promise<boolean> => {
+  const picture = new Image();
+  return new Promise((resolve, _reject) => {
+    picture.onload = () => {
+      resolve(true);
+    };
+    picture.onerror = () => {
+      resolve(false);
+    };
+    picture.src = `${apiURL}/MediaPicture?EncodedMediaKey=${encodeURIComponent(encodedMediaKey)}`;
+  });
+};
+
+export const getMediaPicture = (encodedMediaKey: string): string => {
+  return `${apiURL}/MediaPicture?EncodedMediaKey=${encodeURIComponent(encodedMediaKey)}`;
 };

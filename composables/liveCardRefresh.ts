@@ -18,5 +18,6 @@ export async function liveCardRefresh() {
     title: currentTrack.trackTitle,
     artist: currentTrack.trackArtist,
     cover: currentTrack.trackCover,
+    encodedMediaKey: currentTrack.EncodedMediaKey,
   });
 }
