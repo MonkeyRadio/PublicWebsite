@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { haveMediaPicture, getMediaPicture } from "@/services/api";
 
 type Show = {
   title: string;
@@ -14,6 +15,7 @@ type Track = {
   title: string;
   artist: string;
   cover: string;
+  encodedMediaKey: string;
 };
 
 export type LiveMeta = {
@@ -36,13 +38,23 @@ export const useLiveMetaStore = defineStore("liveMeta", {
       title: "",
       artist: "",
       cover: "",
+      encodedMediaKey: "",
     },
   }),
   actions: {
     setShow(show: Show) {
       this.show = show;
     },
-    setTrack(track: Track) {
+    async setTrack(track: Track) {
+      if (track.encodedMediaKey !== this.track.encodedMediaKey) {
+        this.track = track;
+        if (track.encodedMediaKey !== null && (await haveMediaPicture(track.encodedMediaKey))) {
+          track.cover = getMediaPicture(track.encodedMediaKey);
+        }
+      } else {
+        track.cover = this.track.cover;
+      }
+      this.track = track;
       this.track = track;
     },
   },

@@ -1,6 +1,5 @@
 import Hls from "@/services/hls.js";
 import { usePlayerStore } from "@/stores/playerStore";
-import { useRadioConfig } from "@/stores/radioConfig";
 import { useUiStore } from "@/stores/uiStore";
 import type { Track } from "@/services/api";
 
@@ -14,22 +13,35 @@ let player: Hls | undefined;
 
 function setTrackMetadata(track: Track) {
   const PlayerStore = usePlayerStore();
-  const radioConfig = useRadioConfig();
-  PlayerStore.setTrack({
-    title: track.trackTitle,
-    artist: track.trackArtist,
-    picture: track.trackCover,
-    ts: {
-      start: track.trackTStart * 1000,
-      duration: track.trackTDur * 1000,
-      end: track.trackTStop * 1000,
+  PlayerStore.setTrack(
+    {
+      title: track.trackTitle,
+      artist: track.trackArtist,
+      picture: track.trackCover,
+      ts: {
+        start: track.trackTStart * 1000,
+        duration: track.trackTDur * 1000,
+        end: track.trackTStop * 1000,
+      },
+      album: track.trackAlbum,
+      year: track.trackYearRelease,
+      encodedMediaKey: track.EncodedMediaKey,
     },
-  });
+    (track) => {
+      if (player)
+        player.updateMediaSession({
+          title: track.title,
+          artist: track.artist,
+          album: track.album,
+          artwork: track.picture,
+        });
+    },
+  );
   if (player)
     player.updateMediaSession({
       title: track.trackTitle,
       artist: track.trackArtist,
-      album: radioConfig.title,
+      album: track.trackAlbum,
       artwork: track.trackCover,
     });
 }
