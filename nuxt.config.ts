@@ -18,6 +18,11 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    prerender: {
+      routes: ['/sitemap.xml']
+    }
+  },
   // import styles
   css: ["@/assets/main.scss"],
   // enable takeover mode
