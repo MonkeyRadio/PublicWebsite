@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import type { Ref } from "vue";
 import type Hlsjs from "@/services/hls.js";
 import { usePlayerStorage } from "@/localStorage/playerPreferences";
-import { haveMediaPicture, getMediaPicture } from "@/services/api";
+import { useAPI } from "@/services/api";
 
 type State = {
   playing: boolean;
@@ -113,10 +113,11 @@ export const usePlayerStore = defineStore("player", {
       this.show = arg;
     },
     async setTrack(arg: Track, WhenGotMediaPicture?: (track: Track) => void) {
+      const api = useAPI();
       if (arg.encodedMediaKey !== this.track.encodedMediaKey) {
         this.track = arg;
-        if (arg.encodedMediaKey !== null && (await haveMediaPicture(arg.encodedMediaKey))) {
-          arg.picture = getMediaPicture(arg.encodedMediaKey);
+        if (arg.encodedMediaKey !== null && (await api.haveMediaPicture(arg.encodedMediaKey))) {
+          arg.picture = api.getMediaPicture(arg.encodedMediaKey);
           if (WhenGotMediaPicture) WhenGotMediaPicture(arg);
         }
       } else {
