@@ -21,6 +21,10 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
+p {
+  font-family: $font-main;
+}
+
 button {
   padding: 0;
   margin: 0;
