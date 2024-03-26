@@ -9,6 +9,12 @@ const image = "https://monkeyradio.fr/large-icon.png";
 const url = "https://monkeyradio.fr";
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiUrl: '',
+    },
+  },
+
   vite: {
     css: {
       preprocessorOptions: {
@@ -20,8 +26,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     prerender: {
-      routes: ['/sitemap.xml']
-    }
+      routes: ["/sitemap.xml"],
+    },
   },
   // import styles
   css: ["@/assets/main.scss"],

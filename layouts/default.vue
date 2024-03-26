@@ -24,12 +24,13 @@
 </template>
 
 <script setup lang="ts">
-import { api } from "@/services/api";
+import { useAPI } from "@/services/api";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
 const uiStore = useUiStore();
+const api = useAPI();
 
 const retry = () => {
   window.location.reload();

@@ -1,17 +1,15 @@
-const apiURL = "https://api.monkeyradio.fr";
+let apiURL = "";
 
-export const api = {
-  ping: async () => {
-    try {
-      const c = await fetch(`${apiURL}/?ping`, {
-        method: "GET",
-      });
-      if ((await c.text()) !== "pong") throw new Error("Can't ping API");
-      return true;
-    } catch (e) {
-      throw new Error("Can't ping API");
-    }
-  },
+const ping = async () => {
+  try {
+    const c = await fetch(`${apiURL}/?ping`, {
+      method: "GET",
+    });
+    if ((await c.text()) !== "pong") throw new Error("Can't ping API");
+    return true;
+  } catch (e) {
+    throw new Error("Can't ping API");
+  }
 };
 
 export type Show = {
@@ -24,7 +22,7 @@ export type Show = {
   epgTitle: string;
 };
 
-export const getCurrentShow = async (): Promise<Show> => {
+const getCurrentShow = async (): Promise<Show> => {
   const dataShow: {
     epgNow: Show;
   } = await $fetch(`${apiURL}/?epgnow`);
@@ -45,14 +43,14 @@ export type Track = {
   EncodedMediaKey: string;
 };
 
-export const getCurrentTrack = async (): Promise<Track> => {
+const getCurrentTrack = async (): Promise<Track> => {
   const dataTrack: {
     current: Track;
   } = await $fetch(`${apiURL}/?cur`);
   return dataTrack.current;
 };
 
-export const getMetadataWithEncodedDelay = async (url: string, delay: number): Promise<Track> => {
+const getMetadataWithEncodedDelay = async (url: string, delay: number): Promise<Track> => {
   let decodedUrl = url;
   const includeDelay = decodedUrl.includes("${delay}"); // eslint-disable-line
   if (includeDelay) decodedUrl = decodedUrl.replaceAll("${delay}", delay.toString()); // eslint-disable-line
@@ -77,13 +75,13 @@ export type Onair = {
   LiveLinkPathHQ: string;
 };
 
-export const getRadioConfig = (): Promise<{
+const getRadioConfig = (): Promise<{
   onair: Onair;
 }> => {
   return $fetch(`${apiURL}/?onair`);
 };
 
-export const haveMediaPicture = (encodedMediaKey: string): Promise<boolean> => {
+const haveMediaPicture = (encodedMediaKey: string): Promise<boolean> => {
   const picture = new Image();
   return new Promise((resolve, _reject) => {
     picture.onload = () => {
@@ -96,6 +94,20 @@ export const haveMediaPicture = (encodedMediaKey: string): Promise<boolean> => {
   });
 };
 
-export const getMediaPicture = (encodedMediaKey: string): string => {
+const getMediaPicture = (encodedMediaKey: string): string => {
   return `${apiURL}/MediaPicture?EncodedMediaKey=${encodeURIComponent(encodedMediaKey)}`;
+};
+
+export const useAPI = () => {
+  apiURL = useRuntimeConfig().public.apiUrl;
+
+  return {
+    ping,
+    getCurrentShow,
+    getCurrentTrack,
+    getMetadataWithEncodedDelay,
+    getRadioConfig,
+    haveMediaPicture,
+    getMediaPicture,
+  };
 };

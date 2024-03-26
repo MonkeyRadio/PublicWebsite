@@ -1,10 +1,11 @@
-import { getCurrentShow, getCurrentTrack } from "@/services/api";
+import { useAPI } from "@/services/api";
 import { useLiveMetaStore } from "@/stores/liveMetaStore";
 
 export async function liveCardRefresh() {
   const LiveMetaStore = useLiveMetaStore();
-  const currentShow = await getCurrentShow();
-  const currentTrack = await getCurrentTrack();
+  const api = useAPI();
+  const currentShow = await api.getCurrentShow();
+  const currentTrack = await api.getCurrentTrack();
   LiveMetaStore.setShow({
     title: currentShow.epgTitle,
     description: currentShow.epgDesc,

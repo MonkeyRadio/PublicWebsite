@@ -24,7 +24,7 @@ import { brandConfig } from "@/constants/brandConfig";
   align-items: center;
   justify-content: space-between;
   padding: 50px 85px;
-  font-family: "Itim", sans-serif;
+  font-family: "Nexa-Heavy", sans-serif;
 
   .brand {
     display: flex;

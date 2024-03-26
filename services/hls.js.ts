@@ -1,6 +1,6 @@
 import Hls from "hls.js";
 import type { Track } from "@/services/api";
-import { getMetadataWithEncodedDelay } from "@/services/api";
+import { useAPI } from "@/services/api";
 import { stuffMeta } from "composables/playNewStuff";
 import { usePlayerStore } from "@/stores/playerStore";
 import { usePlayerStorage } from "@/localStorage/playerPreferences";
@@ -136,7 +136,8 @@ export default class Hlsjs {
 
   private async fetchMetadata(latency: number) {
     usePlayerStore().state.delay = latency;
-    const track = await getMetadataWithEncodedDelay(this.metadataUrl, latency);
+    const api = useAPI();
+    const track = await api.getMetadataWithEncodedDelay(this.metadataUrl, latency);
     if (this.onMetadataUpdated) this.onMetadataUpdated(track);
   }
 
