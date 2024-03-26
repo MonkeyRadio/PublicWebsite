@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getRadioConfig } from "@/services/api";
+import { useAPI } from "@/services/api";
 
 type Config = {
   title: string;
@@ -33,7 +33,8 @@ export const useRadioConfig = defineStore("radioConfig", {
   },
   actions: {
     async retrieveRadioConfig() {
-      const config = await getRadioConfig();
+      const api = useAPI();
+      const config = await api.getRadioConfig();
       this.title = config.onair.tit;
       this.picture = config.onair.cover;
       this.Live = {
