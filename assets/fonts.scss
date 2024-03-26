@@ -24,8 +24,8 @@
 }
 
 $font-main: "Nexa-Heavy", sans-serif;
-$font-secondary: "AbeeZee-Regular", sans-serif;
-$font-tertiary: "AbeeZee-Italic", sans-serif;
+$font-secondary: "Nexa-Heavy", sans-serif;
+$font-tertiary: "Nexa-Light", sans-serif;
 
 html {
   font-size: 100%;
@@ -38,6 +38,7 @@ body {
 
 p {
   margin-bottom: 1rem;
+  font-family: $font-secondary;
 }
 
 h1,
@@ -77,7 +78,8 @@ h4 {
 }
 
 h5 {
-  font-size: 1.25rem;
+  font-size: 1.0rem;
+  font-family: $font-tertiary;
 }
 
 small,
