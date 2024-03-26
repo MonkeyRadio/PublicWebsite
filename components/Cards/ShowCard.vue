@@ -46,7 +46,7 @@ onMounted(() => {
             active-color="var(--primary)"
           ></ProgressRoundedBar>
         </div>
-        <h5 class="show-desc">{{ LiveMetaStore.show.description }}</h5>
+        <p class="show-desc">{{ LiveMetaStore.show.description }}</p>
       </div>
     </div>
     <CardsTrackCard
