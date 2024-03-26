@@ -13,7 +13,17 @@
   src: url("fonts/ABeeZee-Italic.ttf") format("truetype");
 }
 
-$font-main: "Itim", sans-serif;
+@font-face {
+  font-family: "Nexa-Light";
+  src: url("fonts/Nexa-Light") format("truetype");
+}
+
+@font-face {
+  font-family: "Nexa-Heavy";
+  src: url("fonts/Nexa-Heavy.ttf") format("truetype");
+}
+
+$font-main: "Nexa-Heavy", sans-serif;
 $font-secondary: "AbeeZee-Regular", sans-serif;
 $font-tertiary: "AbeeZee-Italic", sans-serif;
 
