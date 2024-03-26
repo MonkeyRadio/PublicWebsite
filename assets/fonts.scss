@@ -13,9 +13,19 @@
   src: url("fonts/ABeeZee-Italic.ttf") format("truetype");
 }
 
-$font-main: "Itim", sans-serif;
-$font-secondary: "AbeeZee-Regular", sans-serif;
-$font-tertiary: "AbeeZee-Italic", sans-serif;
+@font-face {
+  font-family: "Nexa-Light";
+  src: url("fonts/Nexa-Light") format("truetype");
+}
+
+@font-face {
+  font-family: "Nexa-Heavy";
+  src: url("fonts/Nexa-Heavy.ttf") format("truetype");
+}
+
+$font-main: "Nexa-Heavy", sans-serif;
+$font-secondary: "Nexa-Heavy", sans-serif;
+$font-tertiary: "Nexa-Light", sans-serif;
 
 html {
   font-size: 100%;
@@ -28,6 +38,7 @@ body {
 
 p {
   margin-bottom: 1rem;
+  font-family: $font-secondary;
 }
 
 h1,
@@ -67,7 +78,8 @@ h4 {
 }
 
 h5 {
-  font-size: 1.25rem;
+  font-size: 1.0rem;
+  font-family: $font-tertiary;
 }
 
 small,
