@@ -32,9 +32,9 @@ import { brandConfig } from "@/constants/brandConfig";
     user-select: none;
 
     .brand-logo {
-      width: 55px;
-      height: 55px;
-      margin-right: 35px;
+      width: 100px;
+      height: 100%;
+      margin-right: 10px;
     }
   }
 }
