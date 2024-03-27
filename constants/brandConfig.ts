@@ -1,4 +1,4 @@
 export const brandConfig = {
   brandName: "Monkey Radio",
-  brandLogo: "/large-icon.png",
+  brandLogo: "/monkey_logo_red.png",
 };
