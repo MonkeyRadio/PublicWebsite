@@ -1,9 +1,9 @@
 import { useRadioConfig } from "@/stores/radioConfig";
 
-export function playLive() {
+export async function playLive() {
   const radioConfig = useRadioConfig();
 
-  playNewStuff(
+  await playNewStuff(
     {
       type: radioConfig.Live.type,
       url: radioConfig.Live.url,
