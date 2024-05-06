@@ -68,7 +68,7 @@ const updateLiveMetadata = async () => {
 const getVideoLiveUrl = async () => {
   try {
     const { videoLiveUrl: url } = await api.newApi.radio.getByDomain();
-    if (!liveVideoUrl.value && url) videoMode.value = true;
+    if (!liveVideoUrl.value && url && playerStore.fired) videoMode.value = true;
     liveVideoUrl.value = url;
     if (!liveVideoUrl.value) videoMode.value = false;
     if (videoMode.value) updateLiveMetadata();
@@ -113,7 +113,7 @@ watch(
     } else {
       playerStore.fired = false;
       playerStore.videoMode = false;
-      playLive();
+      playLive("audio");
       playerStore.fullscreen = true;
     }
   },
@@ -292,8 +292,8 @@ watch(
 }
 
 .youtube-iframe {
-  width: calc(100% - 2.5rem);
-  max-width: 768px;
+  height: 70vh;
+  max-width: calc(100% - 3rem);
 }
 
 .aspect-ratio16-9 {
