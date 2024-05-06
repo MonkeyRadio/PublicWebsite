@@ -292,8 +292,8 @@ watch(
 }
 
 .youtube-iframe {
-  width: calc(100% - 2.5rem);
-  max-width: 768px;
+  height: 70vh;
+  max-width: calc(100% - 3rem);
 }
 
 .aspect-ratio16-9 {
