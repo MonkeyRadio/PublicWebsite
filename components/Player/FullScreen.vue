@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { useRadioConfig } from "@/stores/radioConfig";
 import { usePlayerStore } from "@/stores/playerStore";
+import { useAPI } from "@/services/api";
 
 const radioConfig = useRadioConfig();
 const playerStore = usePlayerStore();
+const api = useAPI();
 
 const percentageElapsed = ref(0);
+const liveVideoUrl = ref("");
+const videoMode = ref<boolean>(false);
 
 const opened = computed({
   get() {
@@ -49,17 +53,84 @@ function getTrackTiming() {
   else trackTimingDuration.value = new Date(duration).toISOString().slice(15, 19);
 }
 
+const updateLiveMetadata = async () => {
+  const epg = await api.getCurrentShow();
+  playerStore.track.title = epg.epgTitle;
+  playerStore.track.artist = epg.epgHosts;
+  playerStore.track.picture = epg.epgCover;
+  playerStore.track.ts = {
+    start: 0,
+    duration: 0,
+    end: 0,
+  };
+};
+
+const getVideoLiveUrl = async () => {
+  try {
+    const { videoLiveUrl: url } = await api.newApi.radio.getByDomain();
+    if (!liveVideoUrl.value && url && playerStore.fired) videoMode.value = true;
+    liveVideoUrl.value = url;
+    if (!liveVideoUrl.value) videoMode.value = false;
+    if (videoMode.value) updateLiveMetadata();
+  } catch (error) {}
+};
+
+let videoLiveUrlInterval: number;
+
+const syncElapsed = () => {
+  if (!playerStore.state.playing || playerStore.state.loading) return;
+  percentageElapsed.value = getPercentageElapsed();
+  getTrackTiming();
+};
+
+let syncElapsedInterval: number;
+
 onMounted(() => {
-  setInterval(() => {
-    if (!playerStore.state.playing || playerStore.state.loading) return;
-    percentageElapsed.value = getPercentageElapsed();
-    getTrackTiming();
-  }, 100);
+  syncElapsedInterval = window.setInterval(syncElapsed, 100);
+  videoLiveUrlInterval = window.setInterval(getVideoLiveUrl, 10000);
 });
+
+onBeforeUnmount(() => {
+  window.clearInterval(syncElapsedInterval);
+  window.clearInterval(videoLiveUrlInterval);
+});
+
+watch(
+  () => videoMode.value,
+  (value) => {
+    if (value) {
+      const radioConfig = useRadioConfig();
+      stopStuff();
+      playerStore.fired = true;
+      playerStore.setShow({
+        name: "",
+        subName: radioConfig.title,
+        picture: radioConfig.picture,
+      });
+      playerStore.videoMode = true;
+      updateLiveMetadata();
+      playerStore.fullscreen = true;
+    } else {
+      playerStore.fired = false;
+      playerStore.videoMode = false;
+      playLive("audio");
+      playerStore.fullscreen = true;
+    }
+  },
+);
+
+watch(
+  () => playerStore.fired,
+  async (value) => {
+    if (value) {
+      await getVideoLiveUrl();
+    }
+  },
+);
 </script>
 
 <template>
-  <v-dialog v-model="opened" fullscreen :scrim="false" transition="dialog-bottom-transition">
+  <v-dialog v-model="opened" eager fullscreen :scrim="false" transition="dialog-bottom-transition">
     <v-card color="primary">
       <v-toolbar dark color="primary" class="card-toolbox" @click="playerStore.fullscreen = false">
         <v-btn icon dark @click="playerStore.fullscreen = false">
@@ -69,29 +140,50 @@ onMounted(() => {
         <v-spacer></v-spacer>
       </v-toolbar>
       <div class="container-full">
-        <div class="track">
-          <CardsPictureCard :src="playerStore.track.picture" />
-          <div class="summary">
-            <h4 class="track-title">{{ playerStore.track.title }}</h4>
-            <h4 class="track-artist">{{ playerStore.track.artist }}</h4>
-            <h6
-              v-if="playerStore.track.album !== null && playerStore.track.year !== null"
-              class="track-album"
-            >
-              {{ playerStore.track.album }} • {{ playerStore.track.year }}
-            </h6>
+        <div v-if="!videoMode" class="audio-mode container-full">
+          <div class="track">
+            <CardsPictureCard :src="playerStore.track.picture" />
+            <div class="summary">
+              <h4 class="track-title">{{ playerStore.track.title }}</h4>
+              <h4 class="track-artist">{{ playerStore.track.artist }}</h4>
+              <h6
+                v-if="playerStore.track.album !== null && playerStore.track.year !== null"
+                class="track-album"
+              >
+                {{ playerStore.track.album }} • {{ playerStore.track.year }}
+              </h6>
+            </div>
+          </div>
+          <div class="track-timing-container">
+            <div class="track-timing">
+              <p>{{ trackTimingElapsed }}</p>
+              <p>{{ trackTimingDuration }}</p>
+            </div>
+            <PlayerTrackProgressBar class="bar" :value="percentageElapsed" />
+          </div>
+          <PlayerActionsComponent class="actions-component-container" />
+        </div>
+        <div v-else class="video-mode container-full">
+          <iframe
+            class="youtube-iframe"
+            :src="liveVideoUrl"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+          <div>
+            <h4 class="mt-0 mb-0">{{ playerStore.track.title }}</h4>
           </div>
         </div>
-        <div class="track-timing-container">
-          <div class="track-timing">
-            <p>{{ trackTimingElapsed }}</p>
-            <p>{{ trackTimingDuration }}</p>
-          </div>
-          <PlayerTrackProgressBar class="bar" :value="percentageElapsed" />
+        <div class="videoModeToggle">
+          <VBtn v-if="liveVideoUrl" variant="text" @click="videoMode = !videoMode">
+            <span v-if="!videoMode">Switch to video mode</span>
+            <span v-else>Switch to audio mode</span>
+          </VBtn>
         </div>
-        <PlayerActionsComponent class="actions-component-container" />
       </div>
-      <div v-if="!isIOSDevice()" class="center">
+      <div v-if="!isIOSDevice() && !videoMode" class="center">
         <v-slider
           v-model="volume"
           class="volume-slider"
@@ -196,6 +288,19 @@ onMounted(() => {
   .volume-slider {
     width: 80%;
     max-width: 300px;
+  }
+}
+
+.youtube-iframe {
+  height: 50vh;
+  width: auto;
+  max-width: calc(100% - 3rem);
+  aspect-ratio: 16/9;
+}
+
+@media only screen and (min-width: 700px) {
+  .youtube-iframe {
+    height: 70vh;
   }
 }
 </style>

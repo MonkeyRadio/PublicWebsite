@@ -38,6 +38,7 @@ type Track = {
 };
 
 type PlayerStoreState = {
+  videoMode: boolean;
   fired: boolean;
   fullscreen: boolean;
   qualitySwitchable: boolean;
@@ -52,6 +53,7 @@ type setMetadata = Omit<Omit<PlayerStoreState, "state">, "volume">;
 export const usePlayerStore = defineStore("player", {
   state(): PlayerStoreState {
     return {
+      videoMode: false,
       fired: false,
       fullscreen: false,
       qualitySwitchable: false,
