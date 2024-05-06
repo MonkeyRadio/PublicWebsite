@@ -1,3 +1,5 @@
+import newApi from "./newApi/newApi";
+
 let apiURL = "";
 
 const ping = async () => {
@@ -109,5 +111,6 @@ export const useAPI = () => {
     getRadioConfig,
     haveMediaPicture,
     getMediaPicture,
+    newApi,
   };
 };

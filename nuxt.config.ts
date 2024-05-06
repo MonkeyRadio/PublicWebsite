@@ -11,7 +11,7 @@ const url = "https://monkeyradio.fr";
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      apiUrl: '',
+      apiUrl: "",
     },
   },
 

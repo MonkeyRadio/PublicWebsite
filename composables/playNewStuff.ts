@@ -63,8 +63,12 @@ export async function playNewStuff(
   metadataFetchUrl: string,
   stuffMetadata: stuffMeta,
 ) {
-  stopStuff();
   const PlayerStore = usePlayerStore();
+  if (PlayerStore.fired) {
+    PlayerStore.fullscreen = true;
+    return;
+  }
+  stopStuff();
   const uiStore = useUiStore();
   PlayerStore.fired = true;
   player = new Hls(PlayerStore.getAudioRef());
@@ -77,6 +81,7 @@ export async function playNewStuff(
   });
   PlayerStore.state.hlsjsInstance = player;
   player.setShow(stuffMetadata);
+  PlayerStore.fullscreen = true;
   try {
     await player.load(opt.url, opt.type, opt.urlHQ);
     if (opt.urlHQ) PlayerStore.qualitySwitchable = true;
@@ -93,6 +98,8 @@ export async function playNewStuff(
 
 export function stopStuff() {
   if (player) {
+    const PlayerStore = usePlayerStore();
+    PlayerStore.videoMode = false;
     player.destroy();
     player = undefined;
   }

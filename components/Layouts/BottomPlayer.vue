@@ -33,6 +33,10 @@ function getPercentageElapsed() {
 
 onMounted(() => {
   setInterval(() => {
+    if (playerStore.videoMode) {
+      percentageElapsed.value = 100;
+      return;
+    }
     if (!playerStore.state.playing || playerStore.state.loading) return;
     percentageElapsed.value = getPercentageElapsed();
   }, 200);
@@ -64,7 +68,7 @@ onMounted(() => {
           class="track-card"
         ></CardsBottomPlayerTrackCard>
       </div>
-      <div class="actions">
+      <div v-if="!playerStore.videoMode" class="actions">
         <div class="actions-container" @click.stop>
           <v-slider
             v-model="volume"
@@ -84,7 +88,15 @@ onMounted(() => {
             <v-icon v-else>mdi-play</v-icon>
           </v-btn>
           <v-btn icon="mdi-close" variant="text" @click="stopStuff"></v-btn>
+          <v-btn
+            icon="mdi-chevron-up"
+            variant="text"
+            @click="playerStore.fullscreen = true"
+          ></v-btn>
         </div>
+      </div>
+      <div v-else class="d-flex flex-1-1 justify-end">
+        <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true"></v-btn>
       </div>
     </div>
   </div>
