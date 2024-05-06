@@ -165,7 +165,7 @@ watch(
         </div>
         <div v-else class="video-mode container-full">
           <iframe
-            class="youtube-iframe aspect-ratio16-9"
+            class="youtube-iframe"
             :src="liveVideoUrl"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -292,11 +292,15 @@ watch(
 }
 
 .youtube-iframe {
-  height: 70vh;
+  height: 50vh;
+  width: auto;
   max-width: calc(100% - 3rem);
+  aspect-ratio: 16/9;
 }
 
-.aspect-ratio16-9 {
-  aspect-ratio: 16/9;
+@media only screen and (min-width: 700px) {
+  .youtube-iframe {
+    height: 70vh;
+  }
 }
 </style>
