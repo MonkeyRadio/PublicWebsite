@@ -23,7 +23,8 @@ onMounted(async () => {
 
 <template>
   <div class="home-container">
-    <CardsShowCard class="show-card"></CardsShowCard>
+    <CardsShowCard class="show-card" />
+    <CardsEventsPromotingCard class="show-card" />
   </div>
 </template>
 
@@ -33,10 +34,11 @@ onMounted(async () => {
   width: 100%;
   padding: 40px 100px;
   flex-wrap: wrap;
+  gap: 5rem;
 
   .show-card {
-    width: 100%;
-    max-width: 800px;
+    min-width: 500px;
+    flex: 1 1 calc(50% - 5rem);
   }
 }
 
