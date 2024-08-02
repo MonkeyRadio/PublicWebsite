@@ -24,13 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAPI } from "@/services/api";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useUiStore } from "@/stores/uiStore";
 
 const playerStore = usePlayerStore();
 const uiStore = useUiStore();
-const api = useAPI();
 
 const retry = () => {
   window.location.reload();
@@ -38,12 +36,11 @@ const retry = () => {
 
 const networkError = ref(false);
 
+
 onNuxtReady(async () => {
   try {
-    await api.ping();
-    uiStore.finishLoad();
+    // uiStore.finishLoad();
   } catch (error: any) {
-    uiStore.finishLoad();
     networkError.value = true;
   }
 });

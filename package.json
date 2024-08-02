@@ -34,7 +34,10 @@
     "vuetify": "^3.5.12"
   },
   "dependencies": {
+    "@monkey-radio/api-client": "^1.0.5",
     "@pinia/nuxt": "^0.4.11",
+    "@vueuse/core": "^10.11.0",
+    "@vueuse/nuxt": "^10.11.0",
     "hls.js": "^1.4.10",
     "nuxt": "^3.6.5",
     "pinia": "^2.1.6",

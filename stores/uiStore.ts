@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useUiStore = defineStore("ui", {
   state() {
     return {
-      loader: true,
+      loader: false,
       errorModal: {
         model: false,
         title: "",

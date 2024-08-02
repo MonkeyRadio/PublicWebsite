@@ -14,9 +14,7 @@ useHead({
 });
 
 onMounted(async () => {
-  uiStore.load();
   await liveCardRefresh();
-  uiStore.finishLoad();
   setInterval(liveCardRefresh, 10000);
 });
 </script>
