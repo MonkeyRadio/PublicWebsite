@@ -6,6 +6,7 @@ import { useAPI } from "@/services/api";
 const radioConfig = useRadioConfig();
 const playerStore = usePlayerStore();
 const api = useAPI();
+const monkeyApi = useMonkeyRadioAPI();
 
 const percentageElapsed = ref(0);
 const liveVideoUrl = ref("");
@@ -67,7 +68,8 @@ const updateLiveMetadata = async () => {
 
 const getVideoLiveUrl = async () => {
   try {
-    const { videoLiveUrl: url } = await api.newApi.radio.getByDomain();
+    const domain = window.location.hostname;
+    const { videoLiveUrl: url } = await monkeyApi.radios.fromDomain(domain);
     if (!liveVideoUrl.value && url && playerStore.fired) videoMode.value = true;
     liveVideoUrl.value = url;
     if (!liveVideoUrl.value) videoMode.value = false;

@@ -32,7 +32,8 @@ function switchQuality() {
   <div>
     <div class="actions-container">
       <v-btn
-        :class="{ btn: true, 'btn-disabled': !playerStore.state.uhd }"
+        v-if="playerStore.qualitySwitchable"
+        :class="{ btn: true }"
         icon
         variant="text"
         :disabled="!playerStore.qualitySwitchable"

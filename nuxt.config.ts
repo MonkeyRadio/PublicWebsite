@@ -12,6 +12,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: "",
+      diffusionUrl: "",
     },
   },
 
@@ -53,6 +54,7 @@ export default defineNuxtConfig({
       );
     },
     "@pinia/nuxt",
+    '@vueuse/nuxt',
   ],
 
   app: {
