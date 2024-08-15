@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useUiStore } from "@/stores/uiStore";
-
-const uiStore = useUiStore();
-
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [

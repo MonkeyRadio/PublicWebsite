@@ -35,15 +35,6 @@ const retry = () => {
 };
 
 const networkError = ref(false);
-
-
-onNuxtReady(async () => {
-  try {
-    // uiStore.finishLoad();
-  } catch (error: any) {
-    networkError.value = true;
-  }
-});
 </script>
 
 <style lang="scss" scoped>

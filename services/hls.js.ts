@@ -1,4 +1,4 @@
-import Hls from "hls.js";
+import Hls, { Events, ErrorTypes } from "hls.js";
 import type { Track } from "@/services/api";
 import { useAPI } from "@/services/api";
 import { stuffMeta } from "composables/playNewStuff";
@@ -48,7 +48,7 @@ export default class Hlsjs {
 
   private _onManifestParsed(resolve: () => void = () => {}) {
     if (this.hlsReady && this.hls)
-      this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+      this.hls?.on(Events.MANIFEST_PARSED, () => {
         if (this.bootActions) return;
         this.bootActions = true;
         this.createMediaSession();
@@ -72,8 +72,8 @@ export default class Hlsjs {
 
   private _onError(reject: (reason?: any) => void = () => {}) {
     if (this.hlsReady && this.hls)
-      this.hls?.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) this._recoverOnNetworkError(this);
+      this.hls?.on(Events.ERROR, (_event, data) => {
+        if (data.type === ErrorTypes.NETWORK_ERROR) this._recoverOnNetworkError(this);
         reject(data);
       });
     else
@@ -174,7 +174,7 @@ export default class Hlsjs {
 
   private _onFragChanged() {
     if (this.hlsReady && this.hls) {
-      this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
+      this.hls?.on(Events.FRAG_CHANGED, () => {
         this._refreshMetadata();
       });
       this.media.onseeking = () => {

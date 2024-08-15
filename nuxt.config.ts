@@ -54,7 +54,7 @@ export default defineNuxtConfig({
       );
     },
     "@pinia/nuxt",
-    '@vueuse/nuxt',
+    "@vueuse/nuxt",
   ],
 
   app: {

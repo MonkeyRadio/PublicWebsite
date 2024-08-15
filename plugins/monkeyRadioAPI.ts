@@ -20,7 +20,6 @@ export const getMonkeyRadioAPI = () => {
   return monkeyRadioAPI;
 };
 
-
 export default defineNuxtPlugin((app) => {
   const monkeyradioAPI = createMonkeyRadioAPI();
 

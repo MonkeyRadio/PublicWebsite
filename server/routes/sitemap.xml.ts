@@ -5,7 +5,7 @@ import { SitemapStream, streamToPromise } from "sitemap";
 
 const BASE_URL = "https://www.monkeyradio.fr";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(() => {
   const sitemap = new SitemapStream({ hostname: BASE_URL });
 
   const staticEndpoints = getStaticEndpoints();
