@@ -22,7 +22,7 @@ defineProps<{
 
 <style lang="scss" scoped>
 p {
-  font-family: $font-main;
+  font-family: $font-primary;
 }
 
 button {

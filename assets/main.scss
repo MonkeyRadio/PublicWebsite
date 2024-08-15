@@ -8,7 +8,7 @@ $family: "Inter var", "Inter", apple-system, BlinkMacSystemFont, "Segoe UI", Rob
 @import "fonts.scss";
 
 :root {
-  font-family: $font-main;
+  font-family: $font-primary;
 }
 
 @supports (font-variation-settings: normal) {
