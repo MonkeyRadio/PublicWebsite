@@ -12,7 +12,7 @@ const getCssImageBackground = computed(() => {
 
 <template>
   <div class="track-container">
-    <div v-if="getCssImageBackground" class="track-cover" :style="getCssImageBackground"></div>
+    <div v-if="getCssImageBackground" class="track-cover" :style="getCssImageBackground" />
     <div class="track-information d-flex flex-column ga-1">
       <h6 v-if="title" class="track-title">{{ title }}</h6>
       <h6 v-if="artist" class="track-artist">{{ artist }}</h6>

@@ -9,7 +9,7 @@ const ping = async () => {
     });
     if ((await c.text()) !== "pong") throw new Error("Can't ping API");
     return true;
-  } catch (e) {
+  } catch {
     throw new Error("Can't ping API");
   }
 };
@@ -54,8 +54,8 @@ const getCurrentTrack = async (): Promise<Track> => {
 
 const getMetadataWithEncodedDelay = async (url: string, delay: number): Promise<Track> => {
   let decodedUrl = url;
-  const includeDelay = decodedUrl.includes("${delay}"); // eslint-disable-line
-  if (includeDelay) decodedUrl = decodedUrl.replaceAll("${delay}", delay.toString()); // eslint-disable-line
+  const includeDelay = decodedUrl.includes("${delay}");
+  if (includeDelay) decodedUrl = decodedUrl.replaceAll("${delay}", delay.toString());
   const dataTrack: {
     current: Track;
   } = await $fetch(`${apiURL}${decodedUrl}`);

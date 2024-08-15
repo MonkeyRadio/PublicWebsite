@@ -2,6 +2,7 @@
 import { useRadioConfig } from "@/stores/radioConfig";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useAPI } from "@/services/api";
+import isIOSDevice from "@/composables/isIOSDevice";
 
 const radioConfig = useRadioConfig();
 const playerStore = usePlayerStore();
@@ -67,14 +68,12 @@ const updateLiveMetadata = async () => {
 };
 
 const getVideoLiveUrl = async () => {
-  try {
-    const domain = window.location.hostname;
-    const { videoLiveUrl: url } = await monkeyApi.radios.fromDomain(domain);
-    if (!liveVideoUrl.value && url && playerStore.fired) videoMode.value = true;
-    liveVideoUrl.value = url;
-    if (!liveVideoUrl.value) videoMode.value = false;
-    if (videoMode.value) updateLiveMetadata();
-  } catch (error) {}
+  const domain = window.location.hostname;
+  const { videoLiveUrl: url } = await monkeyApi.radio.fromDomain(domain);
+  if (!liveVideoUrl.value && url && playerStore.fired) videoMode.value = true;
+  liveVideoUrl.value = url;
+  if (!liveVideoUrl.value) videoMode.value = false;
+  if (videoMode.value) updateLiveMetadata();
 };
 
 let videoLiveUrlInterval: number;
@@ -138,8 +137,8 @@ watch(
         <v-btn icon dark @click="playerStore.fullscreen = false">
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ radioConfig.title }}</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-toolbar-title class="font-primary">{{ radioConfig.title }}</v-toolbar-title>
+        <v-spacer />
       </v-toolbar>
       <div class="container-full">
         <div v-if="!videoMode" class="audio-mode container-full">
@@ -173,7 +172,7 @@ watch(
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
-          ></iframe>
+          />
           <div>
             <h4 class="mt-0 mb-0">{{ playerStore.track.title }}</h4>
           </div>
@@ -192,7 +191,7 @@ watch(
           :prepend-icon="volumePrependIcon"
           hide-details
           @click:prepend="volume = 0"
-        ></v-slider>
+        />
       </div>
     </v-card>
   </v-dialog>

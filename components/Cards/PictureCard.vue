@@ -11,7 +11,7 @@ const getCssImageBackground = computed(() => {
 </script>
 
 <template>
-  <div class="track-cover" :style="getCssImageBackground"></div>
+  <div class="track-cover" :style="getCssImageBackground" />
 </template>
 
 <style lang="scss" scoped>

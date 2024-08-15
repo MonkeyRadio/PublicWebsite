@@ -14,8 +14,8 @@
 }
 
 @font-face {
-  font-family: "Nexa-Light";
-  src: url("fonts/Nexa-Light") format("truetype");
+  font-family: "Nexa-ExtraLight";
+  src: url("fonts/Nexa-ExtraLight.ttf") format("truetype");
 }
 
 @font-face {
@@ -50,6 +50,19 @@ h6 {
 .text-h4,
 .text-h5 {
   font-family: $font-secondary !important;
+  font-weight: 900;
+}
+
+.font-primary {
+  font-family: $font-primary;
+}
+
+.font-secondary {
+  font-family: $font-secondary;
+}
+
+.font-tertiary {
+  font-family: $font-tertiary;
 }
 
 h1 {
@@ -80,6 +93,7 @@ h6 {
 p {
   margin-bottom: 1rem;
   font-family: $font-secondary;
+  font-weight: 600;
 }
 
 small,

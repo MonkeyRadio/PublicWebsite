@@ -1,7 +1,7 @@
-import Hls from "hls.js";
+import Hls, { Events, ErrorTypes, type ErrorData } from "hls.js";
+import type { stuffMeta } from "@/composables/playNewStuff";
 import type { Track } from "@/services/api";
 import { useAPI } from "@/services/api";
-import { stuffMeta } from "composables/playNewStuff";
 import { usePlayerStore } from "@/stores/playerStore";
 import { usePlayerStorage } from "@/localStorage/playerPreferences";
 
@@ -48,7 +48,7 @@ export default class Hlsjs {
 
   private _onManifestParsed(resolve: () => void = () => {}) {
     if (this.hlsReady && this.hls)
-      this.hls?.on(Hls.Events.MANIFEST_PARSED, () => {
+      this.hls?.on(Events.MANIFEST_PARSED, () => {
         if (this.bootActions) return;
         this.bootActions = true;
         this.createMediaSession();
@@ -70,10 +70,10 @@ export default class Hlsjs {
     }
   }
 
-  private _onError(reject: (reason?: any) => void = () => {}) {
+  private _onError(reject: (reason?: ErrorData | string | Event) => void = () => {}) {
     if (this.hlsReady && this.hls)
-      this.hls?.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) this._recoverOnNetworkError(this);
+      this.hls?.on(Events.ERROR, (_event, data) => {
+        if (data.type === ErrorTypes.NETWORK_ERROR) this._recoverOnNetworkError(this);
         reject(data);
       });
     else
@@ -142,39 +142,35 @@ export default class Hlsjs {
   }
 
   private updateSeekingPossibilities() {
-    try {
-      const playerStore = usePlayerStore();
-      playerStore.state.seekable.backward = this.media.currentTime > 10;
-      playerStore.state.seekable.forward = this.media.seekable.end(0) >= this.media.currentTime + 5;
-    } catch (e) {}
+    const playerStore = usePlayerStore();
+    playerStore.state.seekable.backward = this.media.currentTime > 10;
+    playerStore.state.seekable.forward = this.media.seekable.end(0) >= this.media.currentTime + 5;
   }
 
   private _refreshMetadata(increaseLatency = 0) {
-    try {
-      let latency = 0;
-      if (this.hlsReady && this.hls) {
-        latency = this.hls.latency;
-        if (this.hls.playingDate) {
-          latency = (new Date().getTime() - this.hls.playingDate.getTime()) / 1000;
-        }
-      } else {
-        const computedDuration = this.media.buffered.end(0);
-        latency = Math.ceil(computedDuration - this.media.currentTime);
+    let latency = 0;
+    if (this.hlsReady && this.hls) {
+      latency = this.hls.latency;
+      if (this.hls.playingDate) {
+        latency = (new Date().getTime() - this.hls.playingDate.getTime()) / 1000;
       }
-      if (
-        isNaN(this.latency) ||
-        this.latency === -1 ||
-        this.latency > latency + 1 ||
-        this.latency < latency + 1
-      )
-        this.latency = latency;
-      this.fetchMetadata(this.latency + increaseLatency);
-    } catch (e) {}
+    } else {
+      const computedDuration = this.media.buffered.end(0);
+      latency = Math.ceil(computedDuration - this.media.currentTime);
+    }
+    if (
+      isNaN(this.latency) ||
+      this.latency === -1 ||
+      this.latency > latency + 1 ||
+      this.latency < latency + 1
+    )
+      this.latency = latency;
+    return this.fetchMetadata(this.latency + increaseLatency);
   }
 
   private _onFragChanged() {
     if (this.hlsReady && this.hls) {
-      this.hls?.on(Hls.Events.FRAG_CHANGED, () => {
+      this.hls?.on(Events.FRAG_CHANGED, () => {
         this._refreshMetadata();
       });
       this.media.onseeking = () => {
@@ -216,19 +212,17 @@ export default class Hlsjs {
       artist: this.show.subTitle,
       artwork: this.show.picture,
     });
-    try {
-      navigator.mediaSession.setActionHandler("play", () => {
-        navigator.mediaSession.playbackState = "playing";
-        this.media.play();
-      });
-      navigator.mediaSession.setActionHandler("pause", () => {
-        navigator.mediaSession.playbackState = "paused";
-        this.media.pause();
-      });
-      navigator.mediaSession.setActionHandler("stop", () => {
-        this.destroy();
-      });
-    } catch (e) {}
+    navigator.mediaSession.setActionHandler("play", () => {
+      navigator.mediaSession.playbackState = "playing";
+      this.media.play();
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      navigator.mediaSession.playbackState = "paused";
+      this.media.pause();
+    });
+    navigator.mediaSession.setActionHandler("stop", () => {
+      this.destroy();
+    });
   }
 
   updateMediaSession(media: Media) {

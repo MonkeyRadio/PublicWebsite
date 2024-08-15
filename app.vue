@@ -11,7 +11,7 @@
       @loadstart="playerStore.state.loading = true"
       @playing="playerStore.state.loading = false"
       @loadeddata="playerStore.state.loading = false"
-    ></audio>
+    />
   </div>
 </template>
 

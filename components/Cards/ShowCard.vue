@@ -33,7 +33,7 @@ onMounted(() => {
 <template>
   <div class="card">
     <div class="show-summary">
-      <div class="show-image" :style="getCssImageBackground"></div>
+      <div class="show-image" :style="getCssImageBackground" />
       <div class="show-side">
         <h3 class="show-name">{{ LiveMetaStore.show.title }}</h3>
         <div class="show-progress">
@@ -41,10 +41,7 @@ onMounted(() => {
             <h5>{{ getTimeStart }}h</h5>
             <h5>{{ getTimeStop }}h</h5>
           </div>
-          <ProgressRoundedBar
-            :value="percentageElapsed"
-            active-color="var(--primary)"
-          ></ProgressRoundedBar>
+          <ProgressRoundedBar :value="percentageElapsed" active-color="var(--primary)" />
         </div>
         <p class="show-desc">{{ LiveMetaStore.show.description }}</p>
       </div>
@@ -53,7 +50,7 @@ onMounted(() => {
       :title="LiveMetaStore.track.title"
       :artist="LiveMetaStore.track.artist"
       :cover="LiveMetaStore.track.cover"
-    ></CardsTrackCard>
+    />
   </div>
 </template>
 

@@ -87,7 +87,7 @@ export async function playNewStuff(
     if (opt.urlHQ) PlayerStore.qualitySwitchable = true;
     PlayerStore.getAudioRef().play();
     PlayerStore.getAudioRef().volume = PlayerStore.volume / 100;
-  } catch (e) {
+  } catch {
     uiStore.newError(
       "Lecture impossible",
       "Une erreur est survenue lors de la récupération de ce contenu sur nos serveurs !",

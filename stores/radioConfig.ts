@@ -1,4 +1,4 @@
-import { Radio } from "@monkey-radio/api-client";
+import type { Radio } from "@monkey-radio/api-client";
 import { defineStore } from "pinia";
 import { useAPI } from "@/services/api";
 
@@ -37,12 +37,10 @@ export const useRadioConfig = defineStore("radioConfig", {
     async retrieveRadioConfig() {
       const api = useMonkeyRadioAPI();
       const domain = window.location.hostname;
-      const config = await api.radios.fromDomain(domain);
+      const config = await api.radio.fromDomain(domain);
       this.title = config.name;
       this.radio = config;
-      this.radio.id = "66033ed8a012843dc7a92949";
-      
-      
+
       const oldApi = useAPI();
       const oldRadio = await oldApi.getRadioConfig();
       this.Live.metadataUrl = oldRadio.onair.LiveMetadataURL;
