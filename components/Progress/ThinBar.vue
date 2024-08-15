@@ -12,7 +12,7 @@ withDefaults(
 
 <template>
   <div class="progress-loader">
-    <div class="progress" :style="`width: ${value}%`"></div>
+    <div class="progress" :style="`width: ${value}%`" />
   </div>
 </template>
 

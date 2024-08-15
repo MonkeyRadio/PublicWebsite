@@ -3,13 +3,13 @@ export default class LocalStorage {
     if (!localStorage.getItem(this.name)) localStorage.setItem(this.name, JSON.stringify({}));
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: object | string | number | boolean) {
     const obj = JSON.parse(localStorage.getItem(this.name) || "{}");
     obj[key] = value;
     localStorage.setItem(this.name, JSON.stringify(obj));
   }
 
-  public initialize(key: string, defaultValue: any) {
+  public initialize(key: string, defaultValue: object | string | number | boolean) {
     const obj = JSON.parse(localStorage.getItem(this.name) || "{}");
     if (!obj[key]) {
       obj[key] = defaultValue;
@@ -19,7 +19,7 @@ export default class LocalStorage {
 
   public remove(key: string) {
     const obj = JSON.parse(localStorage.getItem(this.name) || "{}");
-    delete obj[key];
+    obj[key] = undefined;
     localStorage.setItem(this.name, JSON.stringify(obj));
   }
 

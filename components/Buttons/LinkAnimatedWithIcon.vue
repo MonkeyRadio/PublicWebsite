@@ -15,7 +15,7 @@ defineProps<{
       class="h-6 w-6"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <slot></slot>
+      <slot />
     </svg>
   </button>
 </template>

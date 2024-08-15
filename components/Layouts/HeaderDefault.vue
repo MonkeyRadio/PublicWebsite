@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { brandConfig } from "@/constants/brandConfig";
+import { playLive } from "@/composables/playLive";
 </script>
 
 <template>

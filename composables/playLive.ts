@@ -14,14 +14,11 @@ export async function playLive(mode = "auto") {
     return;
   }
 
-  if (mode !== "audio") {
-    try {
-      if (!radioConfig.radio?.videoLiveUrl) throw new Error("No live url found");
-      stopStuff();
-      playerStore.fired = true;
-      playerStore.fullscreen = true;
-      return;
-    } catch (e) {}
+  if (mode !== "audio" && radioConfig.radio?.videoLiveUrl) {
+    stopStuff();
+    playerStore.fired = true;
+    playerStore.fullscreen = true;
+    return;
   }
 
   const stream = radioConfig.radio?.liveStream.find((s) => s.details === "live");

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { usePlayerStore } from "@/stores/playerStore";
+import { stopStuff } from "@/composables/playNewStuff";
 
 const playerStore = usePlayerStore();
 
@@ -49,7 +50,7 @@ onMounted(() => {
     @click="playerStore.fullscreen = true"
   >
     <div class="bottom-player-progress-bar">
-      <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)"></ProgressThinBar>
+      <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)" />
     </div>
     <div class="bottom-player-container">
       <div class="show-summary">
@@ -58,7 +59,7 @@ onMounted(() => {
           :title="playerStore.show.name"
           :cover="playerStore.show.picture"
           class="show-card"
-        ></CardsBottomPlayerTrackCard>
+        />
       </div>
       <div class="track-summary">
         <CardsBottomPlayerTrackCard
@@ -66,7 +67,7 @@ onMounted(() => {
           :title="playerStore.track.title"
           :cover="playerStore.track.picture"
           class="track-card"
-        ></CardsBottomPlayerTrackCard>
+        />
       </div>
       <div v-if="!playerStore.videoMode" class="actions">
         <div class="actions-container" @click.stop>
@@ -76,27 +77,23 @@ onMounted(() => {
             :prepend-icon="volumePrependIcon"
             hide-details
             @click:prepend="volume = 0"
-          ></v-slider>
+          />
           <v-progress-circular
             v-if="playerStore.state.loading && playerStore.state.playing"
             indeterminate
-          ></v-progress-circular>
+          />
           <v-btn v-else icon variant="text" @click="playerStore.playPause">
             <v-icon v-if="playerStore.state.playing && !playerStore.state.loading"
               >mdi-pause</v-icon
             >
             <v-icon v-else>mdi-play</v-icon>
           </v-btn>
-          <v-btn icon="mdi-close" variant="text" @click="stopStuff"></v-btn>
-          <v-btn
-            icon="mdi-chevron-up"
-            variant="text"
-            @click="playerStore.fullscreen = true"
-          ></v-btn>
+          <v-btn icon="mdi-close" variant="text" @click="stopStuff" />
+          <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true" />
         </div>
       </div>
       <div v-else class="d-flex flex-1-1 justify-end">
-        <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true"></v-btn>
+        <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true" />
       </div>
     </div>
   </div>

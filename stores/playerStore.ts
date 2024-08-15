@@ -99,8 +99,7 @@ export const usePlayerStore = defineStore("player", {
       this.volume = saveAudioVolume;
     },
     bindAudioRef(ref: Ref<HTMLAudioElement>) {
-      // @ts-ignore
-      this.state.ref = ref;
+      this.state.ref = ref.value;
       const playerPreferences = usePlayerStorage();
       this.volume = playerPreferences.get("volume");
     },

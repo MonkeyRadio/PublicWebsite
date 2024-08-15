@@ -17,7 +17,7 @@ onMounted(async () => {
 
 <template>
   <div class="home-container">
-    <CardsShowCard class="show-card"></CardsShowCard>
+    <CardsShowCard class="show-card" />
   </div>
 </template>
 

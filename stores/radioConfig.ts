@@ -37,7 +37,7 @@ export const useRadioConfig = defineStore("radioConfig", {
     async retrieveRadioConfig() {
       const api = useMonkeyRadioAPI();
       const domain = window.location.hostname;
-      const config = await api.radios.fromDomain(domain);
+      const config = await api.radio.fromDomain(domain);
       this.title = config.name;
       this.radio = config;
 

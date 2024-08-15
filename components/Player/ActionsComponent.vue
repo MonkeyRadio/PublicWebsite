@@ -54,7 +54,7 @@ function switchQuality() {
         v-if="playerStore.state.loading && playerStore.state.playing"
         class="btn"
         indeterminate
-      ></v-progress-circular>
+      />
       <v-btn v-else class="btn" icon variant="text" @click="playerStore.playPause">
         <v-icon v-if="playerStore.state.playing && !playerStore.state.loading">mdi-pause</v-icon>
         <v-icon v-else>mdi-play</v-icon>
@@ -78,7 +78,7 @@ function switchQuality() {
         Live
       </v-btn>
     </div>
-    <div class="actions-container"></div>
+    <div class="actions-container" />
   </div>
 </template>
 

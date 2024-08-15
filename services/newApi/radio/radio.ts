@@ -1,4 +1,4 @@
-import { Radio } from "./dto/Radio.dto";
+import type { Radio } from "./dto/Radio.dto";
 
 const getByDomain = async () => {
   const apiURL = useRuntimeConfig().public.apiUrl;

@@ -2,7 +2,7 @@
   <VDialog v-model="modelValue" width="auto">
     <VCard>
       <VCardText>
-        <VProgressCircular indeterminate color="primary"></VProgressCircular>
+        <VProgressCircular indeterminate color="primary" />
       </VCardText>
     </VCard>
   </VDialog>
