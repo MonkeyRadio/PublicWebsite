@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     public: {
       apiUrl: "",
       diffusionUrl: "",
+      cdnUrl: "",
     },
   },
 

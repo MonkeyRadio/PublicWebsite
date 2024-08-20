@@ -46,4 +46,9 @@ export const useRadioConfig = defineStore("radioConfig", {
       this.Live.metadataUrl = oldRadio.onair.LiveMetadataURL;
     },
   },
+  getters: {
+    liveLink(state) {
+      return state.radio?.liveStream.find((s) => s.details === "live");
+    },
+  },
 });

@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "reset": "rm -rf .nuxt node_modules .output package-lock.json && npm install",
     "preview": "nuxt preview",
@@ -21,6 +21,7 @@
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/google-fonts": "^3.0.0",
     "@types/color-thief-node": "^1.0.2",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.57.0",
@@ -37,13 +38,18 @@
     "vuetify": "^3.5.12"
   },
   "dependencies": {
-    "@monkey-radio/api-client": "^1.0.5",
+    "@monkey-radio/api-client": "^1.0.11",
     "@pinia/nuxt": "^0.4.11",
+    "@videojs-player/vue": "^1.0.0",
     "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.11.0",
+    "dayjs": "^1.11.12",
     "hls.js": "^1.4.10",
     "pinia": "^2.1.6",
     "socket.io-client": "^4.6.2",
+    "uuid": "^10.0.0",
+    "video.js": "^7.21.5",
+    "videojs-contrib-hls.js": "github:MonkeyRadio/videojs-contrib-hls.js",
     "vite-plugin-vuetify": "^1.0.2"
   },
   "overrides": {
