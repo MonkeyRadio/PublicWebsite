@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useNewPlayerStore } from "~/stores/newPlayerStore";
+
+const playerStore = useNewPlayerStore();
+
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [
@@ -18,6 +22,7 @@ onMounted(async () => {
 <template>
   <div class="home-container">
     <CardsShowCard class="show-card" />
+    <NewPlayerCore v-if="playerStore.link" />
   </div>
 </template>
 

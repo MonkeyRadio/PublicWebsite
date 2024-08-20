@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { usePlayerStore } from "@/stores/playerStore";
-import { stopStuff } from "@/composables/playNewStuff";
+import { useNewPlayerStore } from "~/stores/newPlayerStore";
 
-const playerStore = usePlayerStore();
+const playerStore = useNewPlayerStore();
+
+const now = useNow();
 
 const volumePrependIcon = computed(() => {
+  if (playerStore.muted) return "mdi-volume-mute";
   if (playerStore.volume === 0) return "mdi-volume-mute";
   if (playerStore.volume <= 35) return "mdi-volume-low";
   if (playerStore.volume <= 70) return "mdi-volume-medium";
@@ -18,29 +20,19 @@ defineProps<{
 
 const volume = computed({
   get() {
+    if (playerStore.muted) return 0;
     return playerStore.volume;
   },
   set(value) {
-    playerStore.setVolume(value);
+    if (value === 0) playerStore.muted = true;
+    else playerStore.muted = false;
+    playerStore.volume = value;
   },
 });
 
-const percentageElapsed = ref(0);
-
-function getPercentageElapsed() {
-  const elapsed = new Date().getTime() - playerStore.track.ts.start;
-  return (elapsed * 100) / playerStore.track.ts.duration;
-}
-
-onMounted(() => {
-  setInterval(() => {
-    if (playerStore.videoMode) {
-      percentageElapsed.value = 100;
-      return;
-    }
-    if (!playerStore.state.playing || playerStore.state.loading) return;
-    percentageElapsed.value = getPercentageElapsed();
-  }, 200);
+const trackElapsed = computed(() => {
+  if (playerStore.state === "playing") return playerStore.getId3TrackElapsed(now.value.getTime());
+  return playerStore.savedId3TrackElapsed;
 });
 </script>
 
@@ -50,50 +42,53 @@ onMounted(() => {
     @click="playerStore.fullscreen = true"
   >
     <div class="bottom-player-progress-bar">
-      <ProgressThinBar :value="percentageElapsed" active-color="var(--primary)" />
+      <ProgressThinBar
+        v-if="trackElapsed && playerStore.id3TrackDurationMs"
+        :value="(trackElapsed * 100) / playerStore.id3TrackDurationMs"
+        active-color="var(--primary)"
+      />
     </div>
     <div class="bottom-player-container">
       <div class="show-summary">
         <CardsBottomPlayerTrackCard
-          :artist="playerStore.show.subName"
-          :title="playerStore.show.name"
-          :cover="playerStore.show.picture"
+          v-if="playerStore.event"
+          :artist="playerStore.event.subtitle"
+          :title="playerStore.event.title"
+          :cover="playerStore.event.picture"
           class="show-card"
         />
       </div>
       <div class="track-summary">
         <CardsBottomPlayerTrackCard
-          :artist="playerStore.track.artist"
-          :title="playerStore.track.title"
-          :cover="playerStore.track.picture"
+          v-if="
+            playerStore.id3Track &&
+            playerStore.id3Track.artist &&
+            playerStore.id3Track.title &&
+            playerStore.id3Track.artworkUrl
+          "
+          :artist="playerStore.id3Track.artist"
+          :title="playerStore.id3Track.title"
+          :cover="playerStore.id3Track.artworkUrl"
           class="track-card"
         />
       </div>
-      <div v-if="!playerStore.videoMode" class="actions">
+      <div class="actions">
         <div class="actions-container" @click.stop>
-          <v-slider
+          <VSlider
             v-model="volume"
             class="volume-slider"
             :prepend-icon="volumePrependIcon"
             hide-details
-            @click:prepend="volume = 0"
+            @click:prepend="playerStore.muted = !playerStore.muted"
           />
-          <v-progress-circular
-            v-if="playerStore.state.loading && playerStore.state.playing"
-            indeterminate
-          />
-          <v-btn v-else icon variant="text" @click="playerStore.playPause">
-            <v-icon v-if="playerStore.state.playing && !playerStore.state.loading"
-              >mdi-pause</v-icon
-            >
-            <v-icon v-else>mdi-play</v-icon>
-          </v-btn>
-          <v-btn icon="mdi-close" variant="text" @click="stopStuff" />
-          <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true" />
+          <VProgressCircular v-if="playerStore.state === 'loading'" indeterminate />
+          <VBtn v-else icon variant="text" @click="playerStore.toggle">
+            <VIcon v-if="playerStore.state === 'playing'">mdi-pause</VIcon>
+            <VIcon v-else>mdi-play</VIcon>
+          </VBtn>
+          <VBtn icon="mdi-close" variant="text" @click="playerStore.link = undefined" />
+          <VBtn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true" />
         </div>
-      </div>
-      <div v-else class="d-flex flex-1-1 justify-end">
-        <v-btn icon="mdi-chevron-up" variant="text" @click="playerStore.fullscreen = true" />
       </div>
     </div>
   </div>

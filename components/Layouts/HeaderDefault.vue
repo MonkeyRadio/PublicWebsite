@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { brandConfig } from "@/constants/brandConfig";
-import { playLive } from "@/composables/playLive";
+import { useNewPlayerStore } from "~/stores/newPlayerStore";
+import { useRadioConfig } from "~/stores/radioConfig";
+
+const radioConfig = useRadioConfig();
+const playerStore = useNewPlayerStore();
+
+const playLive = () => {
+  playerStore.link = radioConfig.liveLink;
+  playerStore.fullscreen = true;
+};
 </script>
 
 <template>
