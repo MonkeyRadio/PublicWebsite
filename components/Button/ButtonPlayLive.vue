@@ -18,30 +18,6 @@ const playerStore = useNewPlayerStore();
   </ButtonLinkAnimatedWithIcon>
 </template>
 
-<style lang="scss" scoped>
-@media only screen and (max-width: 700px) {
-  .container-fluid {
-    padding: 25px 35px;
-
-    .brand-logo {
-      width: 55px;
-      height: 55px;
-      margin-right: 35px;
-    }
-  }
-
-  .brand-name {
-    font-size: $font-h3;
-  }
-}
-
-@media only screen and (max-width: 450px) {
-  .brand-name {
-    display: none;
-  }
-}
-</style>
-
 <style lang="scss">
 .live-button {
   p {
