@@ -221,6 +221,8 @@ onMounted(() => {
   if (videoEl.value)
     videoEl.value.textTracks.addEventListener("addtrack", addId3Event);
   playerStore.el = videoEl.value;
+  if (!playerStore.id3Track)
+    playerStore.id3Track = new id3TagsManager();
 });
 
 onBeforeUnmount(() => {
