@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { brandConfig } from '~/constants/brandConfig';
+
 const props = defineProps<{
-  cover: string;
+  cover?: string;
   title: string;
   artist: string;
 }>();
 
 const getCssImageBackground = computed(() => {
+  if (!props.cover) return `background-image: url(${brandConfig.transparentLogo});`;
   return `background-image: url(${props.cover});`;
 });
 </script>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { brandConfig } from "@/constants/brandConfig";
 import { isIOS } from "@vueuse/core";
 import { useRadioConfig } from "@/stores/radioConfig";
 import { useNewPlayerStore } from "~/stores/newPlayerStore";
@@ -52,6 +53,12 @@ const timingDisplayable = computed(
     trackElapsed.value &&
     trackElapsed.value <= playerStore.id3TrackDurationMs,
 );
+
+const percentElapsed = computed(() => {
+  if (trackElapsed.value && playerStore.id3TrackDurationMs)
+    return (trackElapsed.value * 100) / playerStore.id3TrackDurationMs;
+  return 0;
+});
 </script>
 
 <template>
@@ -71,9 +78,16 @@ const timingDisplayable = computed(
               v-if="playerStore.id3Track.artworkUrl"
               :src="playerStore.id3Track.artworkUrl"
             />
+            <img
+              v-else
+              class="brand-logo"
+              :src="brandConfig.transparentLogo"
+              :alt="`${brandConfig.brandName}'s logo'`"
+            >
             <div class="summary">
               <h4 class="track-title">{{ playerStore.id3Track.title }}</h4>
-              <h4 class="track-artist">{{ playerStore.id3Track.artist }}</h4>
+              <h4 v-if="playerStore.id3Track.artist" class="track-artist">{{ playerStore.id3Track.artist }}</h4>
+              <h4 v-else-if="radioConfig.radio" class="track-artist">{{ radioConfig.radio.name }}</h4>
               <h6
                 v-if="playerStore.id3Track.album && playerStore.id3Track.year"
                 class="track-album"
@@ -90,9 +104,8 @@ const timingDisplayable = computed(
               </p>
             </div>
             <NewPlayerTrackProgressBar
-              v-if="trackElapsed && playerStore.id3TrackDurationMs"
               class="bar"
-              :value="(trackElapsed * 100) / playerStore.id3TrackDurationMs"
+              :value="percentElapsed"
             />
           </div>
           <NewPlayerActionsComponent class="actions-component-container" />
@@ -135,6 +148,11 @@ const timingDisplayable = computed(
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  .brand-logo {
+    width: 300px;
+    height: 300px;
+  }
 
   > * {
     margin: 10px 0px;

@@ -1,5 +1,7 @@
 import type { DiffusionLink } from "@monkey-radio/api-client";
+import type { RemovableRef } from "@vueuse/core";
 import { defineStore } from "pinia";
+import { useStorage } from "@vueuse/core";
 
 import type { id3TagsManager } from "~/managers/id3TagsManager";
 
@@ -8,7 +10,7 @@ export const useNewPlayerStore = defineStore("new-player", {
     el: HTMLVideoElement | undefined;
     link: DiffusionLink | undefined;
     fullscreen: boolean;
-    volume: number;
+    volume: RemovableRef<number>;
     muted: boolean;
     id3Track: id3TagsManager | undefined;
     savedId3TrackElapsed: number;
@@ -31,7 +33,7 @@ export const useNewPlayerStore = defineStore("new-player", {
       el: undefined,
       link: undefined,
       fullscreen: false,
-      volume: 50,
+      volume: useStorage("pinia/player/volume", 50),
       muted: false,
       id3Track: undefined,
       savedId3TrackElapsed: 0,
@@ -58,10 +60,12 @@ export const useNewPlayerStore = defineStore("new-player", {
     },
     seekForward(sec: number) {
       if (this.el && this.seekable(sec)) this.el.currentTime += sec;
+      this.savedId3TrackElapsed += sec * 1000;
       this.updateSeekable();
     },
     seekBackward(sec: number) {
       if (this.el && this.seekable(-sec)) this.el.currentTime -= sec;
+      this.savedId3TrackElapsed -= sec * 1000;
       this.updateSeekable();
     },
     seekToLive() {
@@ -92,5 +96,5 @@ export const useNewPlayerStore = defineStore("new-player", {
       if (!state.id3Track?.duration) return 0;
       return state.id3Track.duration * 1000;
     },
-  },
+  }
 });

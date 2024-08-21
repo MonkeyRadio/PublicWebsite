@@ -6,11 +6,8 @@ export class id3TagsManager {
   private customTags: Record<string, unknown> = {};
   private tags: Record<string, string> = {};
   private _artworkUrl: string | undefined = undefined;
-  public constructor(id3tracks: TextTrackCueList, radioId: string, cdn: CDN) {
-    this.update(id3tracks, radioId, cdn);
-  }
 
-  public update(id3tracks: TextTrackCueList, radioId: string, cdn: CDN) {
+  public async update(id3tracks: TextTrackCueList, radioId: string, cdn: CDN) {
     const cues: id3CueType[] = [];
     for (let i = 0; i < id3tracks.length; i++) {
       const cue = id3tracks[i] as id3CueType;
@@ -28,7 +25,7 @@ export class id3TagsManager {
     } catch {
       this.customTags = {};
     }
-    if (this.internalId !== oldInternalId) this.fetchArtworkUrl(radioId, cdn);
+    if (this.internalId !== oldInternalId) await this.fetchArtworkUrl(radioId, cdn);
   }
 
   private async fetchArtworkUrl(radioId: string, cdn: CDN) {
@@ -38,6 +35,12 @@ export class id3TagsManager {
     const radioUrl = cdn.radio.getTrackCover(radioId, radioId);
     const radioResponse = await fetch(radioUrl, { method: "HEAD" });
     if (radioResponse.ok) return (this._artworkUrl = radioUrl);
+  }
+
+  public clear(): void {
+    this.tags = {};
+    this.customTags = {};
+    this._artworkUrl = undefined;
   }
 
   public get title(): string | undefined {
@@ -57,7 +60,7 @@ export class id3TagsManager {
   }
 
   public get year(): number | undefined {
-    return Number(this.tags["TYEAR"]) || undefined;
+    return Number(this.tags["TYER"]) || undefined;
   }
 
   private get comment(): string | undefined {
