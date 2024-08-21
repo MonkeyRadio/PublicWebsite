@@ -4,6 +4,9 @@
       <VMain>
         <LayoutsHeaderDefault />
         <slot />
+        <ClientOnly>
+          <NewPlayerContainer />
+        </ClientOnly>
       </VMain>
       <VDialog v-model="networkError" width="auto" persistent>
         <VCard>

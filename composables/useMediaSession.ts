@@ -59,4 +59,7 @@ export const useMediaSession = () => ({
     createMediaSession(media);
   },
   hasMediaSession: () => !!navigator.mediaSession.metadata,
+  clear: () => {
+    navigator.mediaSession.metadata = null;
+  }
 });

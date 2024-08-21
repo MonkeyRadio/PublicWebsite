@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useNewPlayerStore } from "~/stores/newPlayerStore";
+import { useRadioConfig } from "~/stores/radioConfig";
 
 const playerStore = useNewPlayerStore();
+const radioConfig = useRadioConfig();
 
 const now = useNow();
 
@@ -34,6 +36,18 @@ const trackElapsed = computed(() => {
   if (playerStore.state === "playing") return playerStore.getId3TrackElapsed(now.value.getTime());
   return playerStore.savedId3TrackElapsed;
 });
+
+const percentElapsed = computed(() => {
+  if (trackElapsed.value && playerStore.id3TrackDurationMs)
+    return (trackElapsed.value * 100) / playerStore.id3TrackDurationMs;
+  return 0;
+});
+
+const trackData = computed(() => ({
+  artist: playerStore.id3Track?.artist || radioConfig.radio?.name || "",
+  title: playerStore.id3Track?.title || "",
+  artworkUrl: playerStore.id3Track?.artworkUrl,
+}));
 </script>
 
 <template>
@@ -43,8 +57,7 @@ const trackElapsed = computed(() => {
   >
     <div class="bottom-player-progress-bar">
       <ProgressThinBar
-        v-if="trackElapsed && playerStore.id3TrackDurationMs"
-        :value="(trackElapsed * 100) / playerStore.id3TrackDurationMs"
+        :value="percentElapsed"
         active-color="var(--primary)"
       />
     </div>
@@ -60,15 +73,9 @@ const trackElapsed = computed(() => {
       </div>
       <div class="track-summary">
         <CardsBottomPlayerTrackCard
-          v-if="
-            playerStore.id3Track &&
-            playerStore.id3Track.artist &&
-            playerStore.id3Track.title &&
-            playerStore.id3Track.artworkUrl
-          "
-          :artist="playerStore.id3Track.artist"
-          :title="playerStore.id3Track.title"
-          :cover="playerStore.id3Track.artworkUrl"
+          :artist="trackData.artist"
+          :title="trackData.title"
+          :cover="trackData.artworkUrl"
           class="track-card"
         />
       </div>

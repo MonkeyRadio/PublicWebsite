@@ -174,10 +174,11 @@ const onLoading = () => {
   saveId3Elapsed();
 };
 
-const updateId3Tags = (activeCues: TextTrackCueList) => {
+const updateId3Tags = async (activeCues: TextTrackCueList) => {
   if (!radioConfig.radio?.id || playerStore.state !== "playing") return;
-  if (playerStore.id3Track) playerStore.id3Track.update(activeCues, radioConfig.radio.id, cdn);
-  else playerStore.id3Track = new id3TagsManager(activeCues, radioConfig.radio.id, cdn);
+  if (!playerStore.id3Track)
+    playerStore.id3Track = new id3TagsManager();
+  await playerStore.id3Track.update(activeCues, radioConfig.radio.id, cdn);
   if (mediaSession.hasMediaSession())
     mediaSession.update({
       title: playerStore.id3Track.title || "No title",
@@ -203,23 +204,32 @@ const updateId3Tags = (activeCues: TextTrackCueList) => {
     );
 };
 
+const cueChange = () => {
+  if (
+    videoEl.value?.textTracks[0]?.activeCues &&
+    videoEl.value.textTracks[0].activeCues.length > 0
+  )
+  return updateId3Tags(videoEl.value.textTracks[0].activeCues);
+};
+
 const addId3Event = () => {
-  if (!videoEl.value) return;
-  videoEl.value.textTracks.addEventListener("addtrack", () => {
-    if (videoEl.value && videoEl.value.textTracks.length > 0)
-      videoEl.value.textTracks[0].addEventListener("cuechange", () => {
-        if (
-          videoEl.value?.textTracks[0]?.activeCues &&
-          videoEl.value.textTracks[0].activeCues.length > 0
-        )
-          updateId3Tags(videoEl.value.textTracks[0].activeCues);
-      });
-  });
+  if (videoEl.value && videoEl.value.textTracks.length > 0)
+      videoEl.value.textTracks[0].addEventListener("cuechange", cueChange);
 };
 
 onMounted(() => {
-  addId3Event();
+  if (videoEl.value)
+    videoEl.value.textTracks.addEventListener("addtrack", addId3Event);
   playerStore.el = videoEl.value;
+});
+
+onBeforeUnmount(() => {
+  if (videoEl.value)
+    videoEl.value.textTracks.removeEventListener("addtrack", addId3Event);
+  if (playerStore.id3Track) playerStore.id3Track.clear();
+  mediaSession.clear();
+  if (videoEl.value && videoEl.value.textTracks[0])
+    videoEl.value.textTracks[0].removeEventListener("cuechange", cueChange);
 });
 </script>
 
