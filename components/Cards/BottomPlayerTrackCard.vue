@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import { brandConfig } from '~/constants/brandConfig';
+
 const props = defineProps<{
-  cover: string;
+  cover?: string;
   title: string;
   artist: string;
 }>();
 
 const getCssImageBackground = computed(() => {
+  if (!props.cover) return `background-image: url(${brandConfig.transparentLogo});`;
   return `background-image: url(${props.cover});`;
 });
 </script>
 
 <template>
   <div class="track-container">
-    <div v-if="getCssImageBackground" class="track-cover" :style="getCssImageBackground"></div>
+    <div v-if="getCssImageBackground" class="track-cover" :style="getCssImageBackground" />
     <div class="track-information d-flex flex-column ga-1">
       <h6 v-if="title" class="track-title">{{ title }}</h6>
       <h6 v-if="artist" class="track-artist">{{ artist }}</h6>

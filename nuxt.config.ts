@@ -1,4 +1,4 @@
-import vuetify from "vite-plugin-vuetify";
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 // PWA Config
 const title = "Monkey";
@@ -12,6 +12,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: "",
+      diffusionUrl: "",
+      cdnUrl: "",
     },
   },
 
@@ -23,36 +25,44 @@ export default defineNuxtConfig({
         },
       },
     },
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
   },
+
   nitro: {
     prerender: {
       routes: ["/sitemap.xml"],
     },
   },
-  // import styles
+
   css: ["@/assets/main.scss"],
-  // enable takeover mode
-  typescript: { shim: false },
-  build: {
-    ssr: false,
-    terser: {
-      terserOptions: {
-        compress: {
-          drop_console: true,
-        },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        baseUrl: "./",
       },
     },
+  },
+
+  build: {
     transpile: ["vuetify"],
-  } as any,
+  },
+
   modules: [
     "@kevinmarrec/nuxt-pwa",
-    (_options, nuxt) => {
-      nuxt.hooks.hook("vite:extendConfig", (config) =>
-        // @ts-ignore
-        config.plugins.push(vuetify()),
-      );
-    },
     "@pinia/nuxt",
+    "@vueuse/nuxt",
+    "@nuxt/eslint",
+    (_options, nuxt) => {
+      nuxt.hooks.hook("vite:extendConfig", (config) => {
+        // @ts-expect-error - vite vuetify config
+        config.plugins.push(vuetify({ autoImport: true }));
+      });
+    },
   ],
 
   app: {
@@ -155,4 +165,6 @@ export default defineNuxtConfig({
       description,
     },
   },
+
+  compatibilityDate: "2024-08-15",
 });

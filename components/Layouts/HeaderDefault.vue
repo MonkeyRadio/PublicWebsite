@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { brandConfig } from "@/constants/brandConfig";
+import ButtonPlayLive from "../Button/ButtonPlayLive.vue";
 </script>
 
 <template>
@@ -9,12 +10,12 @@ import { brandConfig } from "@/constants/brandConfig";
         class="brand-logo"
         :src="brandConfig.brandLogo"
         :alt="`${brandConfig.brandName}'s logo'`"
-      />
+      >
       <h1 class="brand-name">{{ brandConfig.brandName }}</h1>
     </div>
-    <ButtonsLinkAnimatedWithIcon text="Live" class="live-button" @click="playLive">
-      <path d="M15 12.3301L9 16.6603L9 8L15 12.3301Z" fill="currentColor" />
-    </ButtonsLinkAnimatedWithIcon>
+    <ClientOnly>
+      <ButtonPlayLive />
+    </ClientOnly>
   </div>
 </template>
 
@@ -63,34 +64,6 @@ import { brandConfig } from "@/constants/brandConfig";
 @media only screen and (max-width: 450px) {
   .brand-name {
     display: none;
-  }
-}
-</style>
-
-<style lang="scss">
-.live-button {
-  p {
-    font-size: $font-h2 !important;
-    line-height: 1.1;
-  }
-
-  svg {
-    width: 30px !important;
-    height: 30px;
-  }
-}
-
-@media only screen and (max-width: 700px) {
-  .live-button {
-    p {
-      font-size: $font-h3 !important;
-      line-height: 1.1;
-    }
-
-    svg {
-      width: 20px !important;
-      height: 20px;
-    }
   }
 }
 </style>

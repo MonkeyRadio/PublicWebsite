@@ -1,52 +1,39 @@
 <template>
   <div>
-    <VApp :class="{ transition: true, 'padding-for-bottom-player': playerStore.fired }">
+    <VApp :class="{ transition: true }">
       <VMain>
         <LayoutsHeaderDefault />
         <slot />
+        <ClientOnly>
+          <NewPlayerContainer />
+        </ClientOnly>
       </VMain>
-      <PlayerFullScreen />
       <VDialog v-model="networkError" width="auto" persistent>
         <VCard>
           <VCardText>
             <p class="red">Cannot connect to Monkey Radio...</p>
           </VCardText>
           <VCardActions>
-            <v-btn color="primary" block @click="retry">Retry</v-btn>
+            <VBtn color="primary" block @click="retry">Retry</VBtn>
           </VCardActions>
         </VCard>
       </VDialog>
       <LoadingDialog v-model="uiStore.loader" />
-      <LayoutsBottomPlayer :fired="playerStore.fired" />
       <ModalsErrorModal />
     </VApp>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAPI } from "@/services/api";
-import { usePlayerStore } from "@/stores/playerStore";
 import { useUiStore } from "@/stores/uiStore";
 
-const playerStore = usePlayerStore();
 const uiStore = useUiStore();
-const api = useAPI();
 
 const retry = () => {
   window.location.reload();
 };
 
 const networkError = ref(false);
-
-onNuxtReady(async () => {
-  try {
-    await api.ping();
-    uiStore.finishLoad();
-  } catch (error: any) {
-    uiStore.finishLoad();
-    networkError.value = true;
-  }
-});
 </script>
 
 <style lang="scss" scoped>

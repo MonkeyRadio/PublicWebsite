@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useUiStore } from "@/stores/uiStore";
-
-const uiStore = useUiStore();
-
 useHead({
   titleTemplate: "Monkey Radio",
   meta: [
@@ -14,16 +10,14 @@ useHead({
 });
 
 onMounted(async () => {
-  uiStore.load();
   await liveCardRefresh();
-  uiStore.finishLoad();
   setInterval(liveCardRefresh, 10000);
 });
 </script>
 
 <template>
   <div class="home-container">
-    <CardsShowCard class="show-card"></CardsShowCard>
+    <CardsShowCard class="show-card" />
   </div>
 </template>
 

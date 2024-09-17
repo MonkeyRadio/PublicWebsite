@@ -1,4 +1,4 @@
-import { DefaultsInstance } from "vuetify/lib/framework.mjs";
+import type { DefaultsInstance } from "vuetify";
 
 /**
  * A few defaults that I like
