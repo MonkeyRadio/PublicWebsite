@@ -25,7 +25,7 @@ import ButtonPlayLive from "../Button/ButtonPlayLive.vue";
   align-items: center;
   justify-content: space-between;
   padding: 50px 85px;
-  font-family: "Nexa-Heavy", sans-serif;
+  font-family: $font-secondary, sans-serif;
 
   .brand {
     display: flex;
